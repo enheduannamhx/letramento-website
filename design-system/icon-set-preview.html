@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Letramento Icons - Pencil Style</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #fafafa;
+      color: #1a1a1a;
+      font-family: 'DM Sans', sans-serif;
+      padding: 60px 40px;
+    }
+    h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 400;
+      font-size: 2.2rem;
+      letter-spacing: -0.01em;
+      margin-bottom: 6px;
+    }
+    .subtitle {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      color: #666;
+      margin-bottom: 50px;
+    }
+    h2 {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: #888;
+      margin: 40px 0 16px;
+    }
+    .icon-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 12px;
+    }
+    .icon-card {
+      background: #fff;
+      border: 1px solid #e8e8e8;
+      border-radius: 6px;
+      padding: 20px 12px;
+      text-align: center;
+      transition: all 0.2s ease;
+    }
+    .icon-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+      border-color: #ccc;
+    }
+    .icon-card svg {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 12px;
+    }
+    .icon-card .name {
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: #333;
+    }
+    .icon-card .desc {
+      font-size: 0.6rem;
+      color: #888;
+      margin-top: 2px;
+    }
+    
+    /* Pencil sketch style */
+    .pencil-stroke {
+      fill: none;
+      stroke: #2a2a2a;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .pencil-fill {
+      fill: #2a2a2a;
+    }
+    .pencil-light {
+      fill: none;
+      stroke: #888;
+      stroke-width: 1;
+      stroke-linecap: round;
+    }
+    .pencil-shade {
+      fill: #ddd;
+    }
+  </style>
+</head>
+<body>
+  <h1>Letramento</h1>
+  <p class="subtitle">Escrita • Leitura • Criatividade</p>
+
+  <h2>Escrita</h2>
+  <div class="icon-grid">
+    <div class="icon-card">
+      <svg viewBox="0 0 48 48"><path class="pencil-stroke" d="M36 8c4-4 8-2 10 4 2 6-2 12-8 8-16-8 4-18 10-18 12z"/><path class="pencil-stroke" d="M36 8c-4 8-8 10-14 8"/><line class="pencil-stroke" x1="14" y1="42" x2="10" y2="46"/><path class="pencil-light" d="M18 40l-2-6"/><path class="pencil-light" d="M22 38l-4-8"/></svg>
+      <div class="name">Pena</div>
+      <div class="desc">O instrumento</div>
+  </div>
+    <div class="icon-card">
+      <svg viewBox="0 0 48 48"><path class="pencil-stroke" d="M12 40L28 12c2-2 6-2 8 0l4 6"/><circle class="pencil-stroke" cx="12" cy="40" r="4"/><line class="pencil-stroke" x1="28" y1="12" x2="34" y2="6"/><path class="pencil-light" d="M16 44l4-4"/><path class="pencil-light" d="M20 42l6-6"/></svg>
+      <div class="name">Caneta</div>
+      <div class="desc">O tinteiro</div>
+  </div>
+    <div class="icon-card">
+      <svg viewBox="0 0 48 48"><rect class="pencil-stroke" x="8" y="6" width="32" height="36" rx="2"/><line class="pencil-stroke" x1="14" y1="16" x2="34" y2="16"/><line class="pencil-stroke" x1="14" y1="24" x2="30" y2="24"/><line class="pencil-stroke" x1="14" y1="32" x2="26" y2="32"/><path class="pencil-light" d="M12 10l4-4"/><path class="pencil-light" d="M36 8l-4 4"/></svg>
+      <div class="name">Papel</div>
+      <div class="desc">A superfície</div>
+  </div>
+    <div class="icon-card">
+      <svg viewBox="0 0 48 48"><path class="pencil-stroke" d="M6 10c0-2 2-4 4-4h28c2 0 4 2 4 4v28c0 2-2 4-4 4H10c-2 0-4-2-4-4V10z"/><path class="pencil-stroke" d="M18 8c0 0 6 2 12 2 6 0 12-2 12-2v30c0 0-6 2-12 2-6 0-12-2-12-2V8z"/><line class="pencil-stroke" x1="24" y1="10" x2="24" y2="36"/></svg>
+      <div class="name">Livro</div>
+      <div class="desc">A obra</div>
+  </div>
+</div>
+
+  <h2>Leitura</h2>
+  <div class="icon-grid">
+    <div class="icon-card">
+      <svg viewBox="0 0 48 48"><ellipse class="pencil-stroke" cx="24" cy="28" rx="16" ry="12"/><path class="pencil-stroke" d="M12 20c2 4 6 6 12 6"/><path class="pencil-stroke" d="M36 20c-2 4-6 6-12 6"/><circle class="pencil-stroke" cx="18" cy="24" r="3"/><circle class="pencil-stroke" cx="30" cy="24" r="3"/><path class="pencil-light" d="M18 26c1 1 3 1 4 0"/><path class="pencil-light" d="M30 26c-1 1-3 1-4 0"/></svg>
+      <div class="name">Óculos</div>
+      <div class="desc">Ver</div>
+  </div>
+    <div class="icon-card">
+      <svg viewBox="0 0 48 48"><path class="pencil-stroke" d="M8 24c0-10 8-18 16-18s16 8 16 18-8 18-16 18-16-8-16-18z"/><path class="pencil-stroke" d="M16 24c0-6 4-12 8-12s8 6 8 12-4 12-8 12-8-6-8-12z"/><circle class="pencil-stroke" cx="24" cy="24" r="2"/><path class="pencil-light" d="M14 22l2-2 4 2"/><path class="pencil-light" d="M34 22l-2-2-4 2"/></svg>
+      <div class="name">Olho</div>
+      <div class="desc">Observar</div>
+  </div>
+    <div class="icon-card">
+      <svg viewBox="0 0 48 48"><circle class="pencil-stroke" cx="24" cy="24" r="18"/><path class="pencil-stroke" d="M14 20c4 2 8 2 10 0"/><path class="pencil-stroke" d="M34 20c-4 2-8 2-10 0"/><path class="pencil-stroke" d="M14 28c4-2 8-2 10 0"/><path class="pencil-stroke" d="M34 28c-4-2-8-2-10 0"/><circle class="pencil-fill" cx="24" cy="24" r="4"/></svg>
+      <div class="name">Mente</div>
+      <div class="desc">Entender</div>
+  </div>
+    <div class="icon-card">
+      <svg viewBox="0 0 48 48"><path class="pencil-stroke" d="M8 40c0-12 8-20 16-20s16 8 16 20"/><path class="pencil-stroke" d="M12 40c0-8 6-14 12-14s12 6 12 14"/><path class="pencil-stroke" d="M16 40c0-4 4-8 8-8s8 4 8 8"/><line class="pencil-stroke" x1="24" y1="20" x2="24" y2="8"/><path class="pencil-light" d="M20 12l4-4 4 4"/></svg>
+      <div class="name">Ampulheta</div>
+      <div class="desc">Tempo</div>
+  </div>
+</div>
+
+  <h2>Criatividade</h2>
+  <div class="icon-grid">
+    <div class="icon-card">
+      <svg viewBox="0 0 48 48"><path class="pencil-stroke" d="M24 6c-12 0-18 10-18 18 0 12 10 18 18 18 0-8-18-18-18-18z"/><path class="pencil-stroke" d="M18 18c2 4 6 6 6 0-2-6-4-8-6-6-6 0-4 6 0 6 6-2-6 4-8 6-6"/><circle class="pencil-fill" cx="24" cy="22" r="2"/><path class="pencil-light" d="M16 30c4 4 8 6 16 4"/></svg>
+      <div class="name">Ideia</div>
+      <div class="desc">Poeira</div>
+  </div>
+    <div class="icon-card">
+      <svg viewBox="0 0 48 48"><path class="pencil-stroke" d="M24 8l3 8 8 1-6 6 1 8-6-6 1-8-8 1 3-8-3-1z"/><path class="pencil-stroke" d="M24 16v20"/><path class="pencil-stroke" d="M18 22l6 4 6-4"/><path class="pencil-light" d="M21 12l3 2 3-2"/><path class="pencil-light" d="M24 8v-3"/></svg>
+      <div class="name">Estrela</div>
+      <div class="desc">Brilho</div>
+  </div>
+    <div class="icon-card">
+      <svg viewBox="0 0 48 48"><path class="pencil-stroke" d="M12 32c4-8 12-12 12-20 0-10-8-14-12-14s-12 4-12 14c0 8 8 12 12 20"/><path class="pencil-stroke" d="M12 32c-2 6 2 10 12 10"/><path class="pencil-stroke" d="M36 32c-4-8-12-12-12-20 0-10 8-14 12-14s12 4 12 14c0 8-8 12-12 20"/><path class="pencil-light" d="M18 24c4 4 4 8 6 12"/></svg>
+      <div class="name">Mente</div>
+      <div class="desc">Pensamento</div>
+  </div>
+    <div class="icon-card">
+      <svg viewBox="0 0 48 48"><ellipse class="pencil-stroke" cx="24" cy="28" rx="14" ry="14"/><path class="pencil-stroke" d="M14 24h20"/><circle class="pencil-fill" cx="18" cy="24" r="2"/><circle class="pencil-fill" cx="30" cy="24" r="2"/><path class="pencil-light" d="M18 28c2 2 4 2 6 0"/><path class="pencil-light" d="M30 28c-2 2-4 2-6 0"/></svg>
+      <div class="name">Rosto</div>
+      <div class="desc">Expressão</div>
+  </div>
+</div>
+
+  <h2>Comunicação</h2>
+  <div class="icon-grid">
+    <div class="icon-card">
+      <svg viewBox="0 0 48 48"><path class="pencil-stroke" d="M8 12c0-2 2-4 4-4h24c2 0 4 2 4 4v24c0 2-2 4-4 4H12c-2 0-4-2-4-4V12z"/><path class="pencil-stroke" d="M16 20h16"/><path class="pencil-stroke" d="M16 28h10"/><path class="pencil-light" d="M14 14l4-4 6 6"/></svg>
+      <div class="name">Mensagem</div>
+      <div class="desc">Texto</div>
+  </div>
+    <div class="icon-card">
+      <svg viewBox="0 0 48 48"><circle class="pencil-stroke" cx="16" cy="20" r="6"/><circle class="pencil-stroke" cx="32" cy="20" r="6"/><circle class="pencil-stroke" cx="24" cy="36" r="6"/><line class="pencil-stroke" x1="21" y1="24" x2="27" y2="24"/><line class="pencil-stroke" x1="19" y1="33" x2="29" y2="33"/><path class="pencil-light" d="M11 18l-3 3"/><path class="pencil-light" d="M21 18l3 3"/></svg>
+      <div class="name">Grupo</div>
+      <div class="desc">Comunidade</div>
+  </div>
+    <div class="icon-card">
+      <svg viewBox="0 0 48 48"><circle class="pencil-stroke" cx="24" cy="24" r="16"/><path class="pencil-stroke" d="M24 14v20"/><path class="pencil-stroke" d="M14 24h20"/><path class="pencil-light" d="M18 18l3 3 3-3"/><path class="pencil-light" d="M30 30l-3-3-3 3"/></svg>
+      <div class="name">Globo</div>
+      <div class="desc">Mundo</div>
+  </div>
+    <div class="icon-card">
+      <svg viewBox="0 0 48 48"><path class="pencil-stroke" d="M8 36l8-28 8 8 8 20 8-20 8 28"/><path class="pencil-stroke" d="M16 8v28"/><path class="pencil-stroke" d="M24 8v28"/><path class="pencil-stroke" d="M32 8v28"/><path class="pencil-light" d="M12 24l4-16"/></svg>
+      <div class="name">Partituras</div>
+      <div class="desc">Ritmo</div>
+  </div>
+</div>
+
+  <h2>Aprendizagem</h2>
+  <div class="icon-grid">
+    <div class="icon-card">
+      <svg viewBox="0 0 48 48"><path class="pencil-stroke" d="M24 6l-4 8H8l6 8-4 14 12-6 12 6-4-14 6-8h-12l-4-8z"/><path class="pencil-stroke" d="M24 14l-2 4h-4l2 4"/><path class="pencil-light" d="M20 14l-2 4"/><path class="pencil-light" d="M28 14l2 4"/></svg>
+      <div class="name">Mapa</div>
+      <div class="desc">Navegação</div>
+  </div>
+    <div class="icon-card">
+      <svg viewBox="0 0 48 48"><path class="pencil-stroke" d="M24 8c-10 0-16 8-16 16 0 12 6 16 16 16 0-8-6-16-16-16z"/><path class="pencil-stroke" d="M24 24c-4 0-8 4-8 8 0 4 4 8 8 8 0-4-4-8-8-8-8z"/><path class="pencil-light" d="M20 36c2 2 6 2 8 0"/></svg>
+      <div class="name">Alvo</div>
+      <div class="desc">Meta</div>
+  </div>
+    <div class="icon-card">
+      <svg viewBox="0 0 48 48"><path class="pencil-stroke" d="M12 40c0-8 6-14 12-14s12 6 12 14"/><path class="pencil-stroke" d="M16 40c0-4 4-8 8-8s8 4 8 8"/><line class="pencil-stroke" x1="24" y1="18" x2="24" y2="8"/><path class="pencil-stroke" d="M20 12l4-4 4 4"/><path class="pencil-light" d="M24 8v-4"/></svg>
+      <div class="name">Crescimento</div>
+      <div class="desc">Evolução</div>
+  </div>
+    <div class="icon-card">
+      <svg viewBox="0 0 48 48"><circle class="pencil-stroke" cx="24" cy="24" r="18"/><path class="pencil-stroke" d="M24 12v24"/><path class="pencil-stroke" d="M12 24h24"/><path class="pencil-stroke" d="M18 18l12 12"/><path class="pencil-stroke" d="M30 18l-12 12"/><path class="pencil-light" d="M14 14l4 4"/></svg>
+      <div class="name">Vitória</div>
+      <div class="desc">Conquista</div>
+  </div>
+</div>
+
+  <h2>Expressão</h2>
+  <div class="icon-grid">
+    <div class="icon-card">
+      <svg viewBox="0 0 48 48"><path class="pencil-stroke" d="M8 24c0-8 8-16 16-16s16 8 16 16-8 16-16 16-16-8-16-16z"/><path class="pencil-stroke" d="M18 24c0-4 4-8 6-8s6 4 6 8-4 8-6 8-6-4-6-8z"/><path class="pencil-fill" cx="22" cy="24" r="1.5"/><path class="pencil-fill" cx="26" cy="24" r="1.5"/><path class="pencil-light" d="M16 20c2 2 4 2 6 0"/></svg>
+      <div class="name">Sorriso</div>
+      <div class="desc">Alegria</div>
+  </div>
+    <div class="icon-card">
+      <svg viewBox="0 0 48 48"><path class="pencil-stroke" d="M8 24c0-8 8-16 16-16s16 8 16 16-8 16-16 16-16-8-16-16z"/><path class="pencil-stroke" d="M18 24c0-4 4-8 6-8s6 4 6 8-4 8-6 8-6-4-6-8z"/><path class="pencil-fill" cx="22" cy="24" r="1.5"/><path class="pencil-fill" cx="26" cy="24" r="1.5"/><path class="pencil-light" d="M16 30c2-2 4-2 6 0"/></svg>
+      <div class="name">Tristeza</div>
+      <div class="desc">Dor</div>
+  </div>
+    <div class="icon-card">
+      <svg viewBox="0 0 48 48"><path class="pencil-stroke" d="M8 24c0-8 8-16 16-16s16 8 16 16-8 16-16 16-16-8-16-16z"/><circle class="pencil-fill" cx="22" cy="22" r="2"/><circle class="pencil-fill" cx="26" cy="22" r="2"/><path class="pencil-stroke" d="M18 30c2 2 6 2 12 0"/><path class="pencil-light" d="M16 20l4 2"/></svg>
+      <div class="name">Neutro</div>
+      <div class="desc">Indiferença</div>
+  </div>
+    <div class="icon-card">
+      <svg viewBox="0 0 48 48"><path class="pencil-stroke" d="M8 24c0-8 8-16 16-16s16 8 16 16-8 16-16 16-16-8-16-16z"/><path class="pencil-stroke" d="M18 22c0-2 2-4 6-4s6 2 6 4"/><circle class="pencil-fill" cx="22" cy="20" r="1.5"/><circle class="pencil-fill" cx="26" cy="20" r="1.5"/><path class="pencil-stroke" d="M18 30c2 2 6 2 12 0"/><path class="pencil-light" d="M16 16l4-2 4 2"/></svg>
+      <div class="name">Surpresa</div>
+      <div class="desc">Espanto</div>
+  </div>
+</div>
+
+</body>
+</html>
