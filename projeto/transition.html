@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎓 Transição</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg: #0D0D1A; --surface: #1E1E32; --border: #2D2D44; --accent: #7C3AED; --accent-light: #A78BFA; --success: #10B981; --warning: #F59E0B; --text: #fff; --text-muted: #9CA3AF; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* Background particles */
+        .particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+        .particle { position: absolute; width: 4px; height: 4px; background: var(--accent); border-radius: 50%; opacity: 0; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0) scale(1); opacity: 0; } 50% { transform: translateY(-100px) scale(1.5); opacity: 0.6; } }
+        
+        .container { position: relative; z-index: 1; text-align: center; padding: 40px; max-width: 600px; }
+        
+        .phase-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--border); display: inline-block; margin: 0 4px; transition: all 0.5s ease; }
+        .phase-dot.active { background: var(--accent); box-shadow: 0 0 20px var(--accent); }
+        .phase-dot.completed { background: var(--success); }
+        
+        /* Text animations with glow */
+        .transition-text {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            text-shadow: 0 0 20px rgba(124, 58, 237, 0);
+        }
+        
+        .transition-text.visible {
+            opacity: 1;
+            transform: translateY(0);
+            text-shadow: 0 0 30px rgba(124, 58, 237, 0.3);
+            animation: glowPulse 3s ease-in-out infinite;
+        }
+        
+        @keyframes glowPulse {
+            0%, 100% { text-shadow: 0 0 20px rgba(124, 58, 237, 0.2); }
+            50% { text-shadow: 0 0 40px rgba(124, 58, 237, 0.5); }
+        }
+        
+        .transition-subtext {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transition-delay: 0.4s;
+        }
+        
+        .transition-subtext.visible { opacity: 1; transform: translateY(0); }
+        
+        .progress-container { width: 300px; margin: 40px auto; }
+        .progress-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+        .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--accent-light), var(--success)); border-radius: 3px; transition: width 0.1s linear; }
+        
+        .progress-text { font-size: 0.85rem; color: var(--text-muted); margin-top: 12px; }
+        
+        /* Countdown with glow */
+        .countdown {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 5rem;
+            font-weight: 700;
+            color: var(--accent-light);
+            opacity: 0;
+            transform: scale(0.3);
+            transition: all 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            text-shadow: 0 0 30px rgba(124, 58, 237, 0);
+        }
+        
+        .countdown.visible {
+            opacity: 1;
+            transform: scale(1);
+            text-shadow: 0 0 50px rgba(124, 58, 237, 0.6);
+        }
+        
+        .final-message {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 2s cubic-bezier(0.4, 0, 0.2, 1);
+            text-shadow: none;
+        }
+        
+        .final-message.visible {
+            opacity: 1;
+            transform: translateY(0);
+            animation: finalGlow 2s ease-in-out infinite;
+        }
+        
+        @keyframes finalGlow {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.3); }
+        }
+        
+        .phases { margin-bottom: 40px; }
+        
+        /* Slower slide up overlay for next page */
+        .exit-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg);
+            z-index: 50;
+            transform: translateY(100%);
+            transition: transform 2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .exit-overlay.active { transform: translateY(0); }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <div class="exit-overlay" id="exitOverlay"></div>
+    
+    <div class="container">
+        <div class="phases">
+            <span class="phase-dot completed" id="phase1"></span>
+            <span class="phase-dot active" id="phase2"></span>
+            <span class="phase-dot" id="phase3"></span>
+        </div>
+        
+        <div class="transition-text" id="mainText">✏️ Atividade Concluída</div>
+        <div class="transition-subtext" id="subText">
+            Você escreveu seu texto com autonomia.<br>
+            Agora, vamos conhecer você melhor.
+        </div>
+        
+        <div class="progress-container">
+            <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+            <div class="progress-text" id="progressText">Preparando próxima atividade...</div>
+        </div>
+        
+        <div class="countdown" id="countdown">3</div>
+        <div class="final-message" id="finalMessage">Vamos começar?</div>
+    </div>
+
+    <script>
+        // Create particles
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 20; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.top = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 3 + 's';
+            particle.style.animationDuration = (2 + Math.random() * 2) + 's';
+            particlesContainer.appendChild(particle);
+        }
+        
+        // Transition phases - longer durations
+        const phases = [
+            { text: "✏️ Atividade Concluída", sub: "Você escreveu seu texto com autonomia.<br>Agora, vamos conhecer você melhor.", duration: 4000 },
+            { text: "💭 Processando sua Escrita", sub: "Analisamos padrões de digitação,<br>revisão e fluência.", duration: 4500 },
+            { text: "📊 Perfil em Formação", sub: "Na próxima etapa, você responderá<br>8 perguntas sobre si mesmo.", duration: 4500 },
+            { text: "🎯 Preparando Questionário", sub: "Cada resposta revela<br>um detalhe da sua essência.", duration: 4000 }
+        ];
+        
+        let currentPhase = 0;
+        const mainText = document.getElementById('mainText');
+        const subText = document.getElementById('subText');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        const countdown = document.getElementById('countdown');
+        const finalMessage = document.getElementById('finalMessage');
+        const exitOverlay = document.getElementById('exitOverlay');
+        
+        // Slower easing
+        function easeInOutExpo(t) {
+            return t === 0 ? 0 : t === 1 ? 1 : t < 0.5 ? Math.pow(2, 20 * t - 10) / 2 : (2 - Math.pow(2, -20 * t + 10)) / 2;
+        }
+        
+        function easeInOutQuad(t) { return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; }
+        
+        function runPhase(phaseIndex) {
+            if (phaseIndex >= phases.length) {
+                showCountdown();
+                return;
+            }
+            
+            const phase = phases[phaseIndex];
+            
+            // Fade out with slower easing
+            mainText.classList.remove('visible');
+            subText.classList.remove('visible');
+            
+            setTimeout(() => {
+                mainText.textContent = phase.text;
+                subText.innerHTML = phase.sub;
+                
+                setTimeout(() => {
+                    mainText.classList.add('visible');
+                    subText.classList.add('visible');
+                }, 100);
+                
+                // Slower progress bar
+                const startTime = Date.now();
+                const duration = phase.duration;
+                const startProgress = (phaseIndex / phases.length) * 100;
+                const endProgress = ((phaseIndex + 1) / phases.length) * 100;
+                
+                function animateProgress() {
+                    const elapsed = Date.now() - startTime;
+                    const t = Math.min(elapsed / duration, 1);
+                    const easedT = easeInOutExpo(t);
+                    const progress = startProgress + (endProgress - startProgress) * easedT;
+                    
+                    progressFill.style.width = progress + '%';
+                    
+                    if (t < 1) {
+                        requestAnimationFrame(animateProgress);
+                    } else {
+                        progressText.textContent = phase.text + "...";
+                        setTimeout(() => runPhase(phaseIndex + 1), 800);
+                    }
+                }
+                
+                animateProgress();
+                
+            }, 1500);
+        }
+        
+        function showCountdown() {
+            mainText.classList.remove('visible');
+            subText.classList.remove('visible');
+            progressText.textContent = "";
+            
+            setTimeout(() => {
+                countdown.classList.add('visible');
+                
+                let count = 3;
+                countdown.textContent = count;
+                
+                const countInterval = setInterval(() => {
+                    count--;
+                    if (count > 0) {
+                        countdown.textContent = count;
+                        countdown.style.transform = 'scale(1.3)';
+                        setTimeout(() => countdown.style.transform = 'scale(1)', 300);
+                    } else {
+                        clearInterval(countInterval);
+                        countdown.classList.remove('visible');
+                        
+                        finalMessage.classList.add('visible');
+                        
+                        // Slower exit to next page
+                        setTimeout(() => {
+                            exitOverlay.classList.add('active');
+                            setTimeout(() => {
+                                window.location.href = '/continuum.html';
+                            }, 2000);
+                        }, 2500);
+                    }
+                }, 1200);
+            }, 1000);
+        }
+        
+        // Start
+        setTimeout(() => {
+            mainText.classList.add('visible');
+            subText.classList.add('visible');
+            runPhase(0);
+        }, 1000);
+    </script>
+</body>
+</html>
