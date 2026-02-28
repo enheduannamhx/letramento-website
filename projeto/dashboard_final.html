@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Métricas Completas</title>
+    <style>
+        :root {
+            --primary: #7C3AED;
+            --secondary: #A78BFA;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --dark: #1F2937;
+            --light: #F9FAFB;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+        
+        h1 { color: var(--primary); margin-bottom: 30px; }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary), #9F7AEA);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            position: relative;
+            cursor: help;
+        }
+        
+        .stat-card h3 { font-size: 2.5rem; margin-bottom: 5px; }
+        .stat-card p { opacity: 0.9; font-size: 0.9rem; }
+        
+        /* Tooltip */
+        .stat-card:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--dark);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            width: 250px;
+            text-align: left;
+            z-index: 100;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            line-height: 1.4;
+        }
+        
+        .stat-card:hover::before {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 10px solid transparent;
+            border-top-color: var(--dark);
+            margin-bottom: -20px;
+        }
+        
+        /* Sections */
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #F9FAFB;
+            border-radius: 15px;
+        }
+        
+        .section h2 { 
+            color: var(--primary); 
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #E5E7EB;
+        }
+        
+        th { 
+            background: var(--primary); 
+            color: white;
+            position: relative;
+            cursor: help;
+        }
+        
+        th:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: var(--dark);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            width: 200px;
+            z-index: 100;
+        }
+        
+        tr:hover { background: #F3F4F6; }
+        
+        /* Buttons */
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .btn:hover { background: #6D28D9; transform: translateY(-2px); }
+        
+        /* Progress bars */
+        .progress-bar {
+            height: 30px;
+            background: #E5E7EB;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success), var(--primary));
+            transition: width 0.5s;
+            display: flex;
+            align-items: center;
+            padding-left: 15px;
+            color: white;
+            font-weight: bold;
+        }
+        
+        /* Metrics badges */
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .badge-success { background: #D1FAE5; color: #065F46; }
+        .badge-warning { background: #FEF3C7; color: #92400E; }
+        .badge-danger { background: #FEE2E2; color: #991B1B; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Dashboard de Métricas Completas</h1>
+        
+        <div class="stats-grid">
+            <div class="stat-card" data-tooltip="Total de estudantes que iniciaram o exercício de escrita sobre personalidade. Cada estudante é identificado por um ID único.">
+                <h3 id="totalStudents">0</h3>
+                <p>Total Estudantes</p>
+            </div>
+            
+            <div class="stat-card" data-tooltip="Média de palavras escritas por estudante. O objetivo é 100-200 palavras para uma reflexão completa sobre personalidade.">
+                <h3 id="avgWords">0</h3>
+                <p>Média Palavras</p>
+            </div>
+            
+            <div class="stat-card" data-tooltip="Porcentagem de estudantes que atingiu o objetivo de 100-200 palavras. Indica a qualidade do engajamento com a atividade.">
+                <h3 id="completionRate">0%</h3>
+                <p>Taxa Conclusão</p>
+            </div>
+            
+            <div class="stat-card" data-tooltip="Tempo médio gasto no exercício em segundos. O tempo ideal é entre 60-180 segundos para uma reflexão genuína.">
+                <h3 id="avgTime">0s</h3>
+                <p>Tempo Médio</p>
+            </div>
+            
+            <div class="stat-card" data-tooltip="Palavras por minuto calculadas pela divisão do total de palavras pelo tempo gasto. WPM acima de 20 indica fluência.">
+                <h3 id="avgWpm">0</h3>
+                <p>Média WPM</p>
+            </div>
+            
+            <div class="stat-card" data-tooltip="Quantidade de mensagens trocadas com o especialista em filosofia. Mais mensagens = mais engajamento.">
+                <h3 id="avgMessages">0</h3>
+                <p>Média Mensagens</p>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>📈 Análise de Escrita</h2>
+            <div id="writingAnalysis"></div>
+        </div>
+        
+        <div class="section">
+            <h2>🎯 Métricas Avançadas</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th data-tooltip="Identificador único do estudante">ID</th>
+                        <th data-tooltip="Quantidade de palavras no texto">Palavras</th>
+                        <th data-tooltip="Tempo gasto em milissegundos">Tempo (s)</th>
+                        <th data-tooltip="Palavras por minuto - velocidade de escrita">WPM</th>
+                        <th data-tooltip="Mensagens trocadas com especialista">Msgs</th>
+                        <th data-tooltip="Status de conclusão do objetivo">Status</th>
+                    </tr>
+                </thead>
+                <tbody id="studentTable"></tbody>
+            </table>
+        </div>
+        
+        <div class="section">
+            <h2>📊 Distribuição de Palavras</h2>
+            <div id="wordDistribution"></div>
+        </div>
+        
+        <button class="btn" onclick="refreshData()">🔄 Atualizar Dados</button>
+    </div>
+
+    <script>
+        async function loadData() {
+            try {
+                const response = await fetch('/api/dashboard/list');
+                const data = await response.json();
+                
+                // Update stats
+                const students = data.students || [];
+                document.getElementById('totalStudents').textContent = students.length;
+                
+                const words = students.map(s => s.wordCount || 0);
+                const avgWords = words.reduce((a, b) => a + b, 0) / words.length;
+                document.getElementById('avgWords').textContent = Math.round(avgWords);
+                
+                const complete = words.filter(w => w >= 100 && w <= 200).length;
+                const rate = words.length > 0 ? Math.round(complete / words.length * 100) : 0;
+                document.getElementById('completionRate').textContent = rate + '%';
+                
+                const times = students.map(s => s.timeSpent || 0);
+                const avgTime = times.reduce((a, b) => a + b, 0) / times.length;
+                document.getElementById('avgTime').textContent = Math.round(avgTime / 1000) + 's';
+                
+                const wpms = students.map(s => s.wpm || 0);
+                const avgWpm = wpms.reduce((a, b) => a + b, 0) / wpms.length;
+                document.getElementById('avgWpm').textContent = Math.round(avgWpm);
+                
+                const msgs = students.map(s => s.messageCount || 0);
+                const avgMsgs = msgs.reduce((a, b) => a + b, 0) / msgs.length;
+                document.getElementById('avgMessages').textContent = Math.round(avgMsgs);
+                
+                // Update table
+                const tbody = document.getElementById('studentTable');
+                tbody.innerHTML = students.map(s => {
+                    const status = s.wordCount >= 100 && s.wordCount <= 200 ? 
+                        '<span class="badge badge-success">Completo</span>' :
+                        s.wordCount >= 50 ?
+                        '<span class="badge badge-warning">Parcial</span>' :
+                        '<span class="badge badge-danger">Incompleto</span>';
+                    
+                    return `
+                        <tr>
+                            <td>${s.studentId.substring(0, 20)}...</td>
+                            <td>${s.wordCount || 0}</td>
+                            <td>${Math.round((s.timeSpent || 0) / 1000)}s</td>
+                            <td>${Math.round(s.wpm || 0)}</td>
+                            <td>${s.messageCount || 0}</td>
+                            <td>${status}</td>
+                        </tr>
+                    `;
+                }).join('');
+                
+                // Word distribution
+                const distribution = [0, 0, 0, 0, 0];
+                words.forEach(w => {
+                    if (w < 50) distribution[0]++;
+                    else if (w < 100) distribution[1]++;
+                    else if (w < 150) distribution[2]++;
+                    else if (w < 200) distribution[3]++;
+                    else distribution[4]++;
+                });
+                
+                const maxDist = Math.max(...distribution, 1);
+                document.getElementById('wordDistribution').innerHTML = 
+                    ['<50', '50-99', '100-149', '150-199', '200+'].map((label, i) => `
+                        <div style="margin: 10px 0;">
+                            <span>${label} palavras: ${distribution[i]} estudantes</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${(distribution[i] / maxDist) * 100}%">
+                                    ${distribution[i]}
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                
+            } catch (e) {
+                console.error('Error:', e);
+            }
+        }
+        
+        function refreshData() {
+            loadData();
+        }
+        
+        loadData();
+        setInterval(loadData, 30000);
+    </script>
+</body>
+</html>
