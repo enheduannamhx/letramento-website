@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Letramento Design System - Componentes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="tokens.css">
+  <style>
+    body {
+      background: var(--color-midnight);
+      color: var(--color-text-primary);
+      font-family: var(--font-body);
+      margin: 0;
+      padding: 40px;
+    }
+    
+    h1, h2, h3 { font-family: var(--font-heading); }
+    
+    .section {
+      margin-bottom: 60px;
+    }
+    
+    .section-title {
+      font-size: var(--text-3xl);
+      margin-bottom: 24px;
+      color: var(--color-electric);
+    }
+    
+    .demo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+    
+    .demo-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+    }
+    
+    .demo-label {
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+      margin-bottom: 12px;
+      display: block;
+    }
+    
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border: none;
+      border-radius: var(--radius-md);
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      font-weight: var(--font-semibold);
+      cursor: pointer;
+      transition: all var(--duration-normal) var(--ease-smooth);
+    }
+    
+    .btn-primary {
+      background: var(--gradient-primary);
+      color: white;
+      box-shadow: 0 4px 16px rgba(124, 58, 237, 0.3);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(124, 58, 237, 0.5);
+    }
+    
+    .btn-secondary {
+      background: var(--color-elevated);
+      color: var(--color-text-primary);
+      border: 1px solid var(--color-border);
+    }
+    
+    .btn-secondary:hover {
+      background: var(--color-surface);
+      border-color: var(--color-border-hover);
+    }
+    
+    .btn-ghost {
+      background: transparent;
+      color: var(--color-text-secondary);
+    }
+    
+    .btn-ghost:hover {
+      background: var(--color-elevated);
+      color: var(--color-text-primary);
+    }
+    
+    .btn-sm {
+      padding: 10px 20px;
+      font-size: var(--text-sm);
+    }
+    
+    .btn-lg {
+      padding: 18px 36px;
+      font-size: var(--text-lg);
+    }
+    
+    /* Inputs */
+    .input {
+      width: 100%;
+      padding: 14px 18px;
+      background: var(--color-void);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      color: var(--color-text-primary);
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      transition: all var(--duration-fast) ease;
+      box-sizing: border-box;
+    }
+    
+    .input:focus {
+      outline: none;
+      border-color: var(--color-electric);
+      box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.15);
+    }
+    
+    .input::placeholder {
+      color: var(--color-text-tertiary);
+    }
+    
+    /* Cards */
+    .card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow-md);
+    }
+    
+    .card-glass {
+      background: rgba(30, 30, 50, 0.6);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+    }
+    
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 12px;
+      border-radius: var(--radius-full);
+      font-size: var(--text-xs);
+      font-weight: var(--font-semibold);
+    }
+    
+    .badge-electric {
+      background: rgba(124, 58, 237, 0.2);
+      color: var(--color-electric-light);
+    }
+    
+    .badge-aurora {
+      background: rgba(16, 185, 129, 0.2);
+      color: var(--color-aurora-light);
+    }
+    
+    .badge-sunset {
+      background: rgba(245, 158, 11, 0.2);
+      color: var(--color-sunset-light);
+    }
+    
+    /* Progress */
+    .progress {
+      height: 8px;
+      background: var(--color-void);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+    }
+    
+    .progress-bar {
+      height: 100%;
+      background: var(--gradient-primary);
+      border-radius: var(--radius-full);
+      transition: width var(--duration-slow) var(--ease-smooth);
+    }
+    
+    /* Avatar */
+    .avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-full);
+      background: var(--gradient-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-heading);
+      font-weight: var(--font-bold);
+      font-size: var(--text-lg);
+      color: white;
+    }
+    
+    .avatar-sm { width: 32px; height: 32px; font-size: var(--text-sm); }
+    .avatar-lg { width: 64px; height: 64px; font-size: var(--text-xl); }
+    
+    /* Icons */
+    .icon {
+      width: 24px;
+      height: 24px;
+      stroke: currentColor;
+      stroke-width: 1.5;
+      fill: none;
+    }
+    
+    .icon-sm { width: 16px; height: 16px; }
+    .icon-lg { width: 32px; height: 32px; }
+    
+    /* Tooltip */
+    .tooltip {
+      position: relative;
+    }
+    
+    .tooltip::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%) translateY(-8px);
+      padding: 8px 12px;
+      background: var(--color-elevated);
+      color: var(--color-text-primary);
+      font-size: var(--text-xs);
+      border-radius: var(--radius-sm);
+      white-space: nowrap;
+      opacity: 0;
+      visibility: hidden;
+      transition: all var(--duration-fast) ease;
+    }
+    
+    .tooltip:hover::after {
+      opacity: 1;
+      visibility: visible;
+    }
+  </style>
+</head>
+<body>
+  
+  <h1>🎨 Letramento Design System</h1>
+  <p style="color: var(--color-text-secondary); margin-bottom: 40px;">Biblioteca de componentes para o projeto de mapeamento de letramento.</p>
+  
+  <!-- Botões -->
+  <section class="section">
+    <h2 class="section-title">Botões</h2>
+    <div class="demo-grid">
+      <div class="demo-card">
+        <span class="demo-label">Primary</span>
+        <button class="btn btn-primary">Continuar</button>
+      </div>
+      <div class="demo-card">
+        <span class="demo-label">Secondary</span>
+        <button class="btn btn-secondary">Cancelar</button>
+      </div>
+      <div class="demo-card">
+        <span class="demo-label">Ghost</span>
+        <button class="btn btn-ghost">Ver mais</button>
+      </div>
+      <div class="demo-card">
+        <span class="demo-label">Tamanhos</span>
+        <button class="btn btn-sm btn-primary">Small</button>
+        <button class="btn btn-primary">Normal</button>
+        <button class="btn btn-lg btn-primary">Large</button>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Inputs -->
+  <section class="section">
+    <h2 class="section-title">Inputs</h2>
+    <div class="demo-grid">
+      <div class="demo-card">
+        <span class="demo-label">Padrão</span>
+        <input type="text" class="input" placeholder="Digite seu texto...">
+      </div>
+      <div class="demo-card">
+        <span class="demo-label">Com foco</span>
+        <input type="text" class="input" value="Texto digitado" style="border-color: var(--color-electric);">
+      </div>
+      <div class="demo-card">
+        <span class="demo-label">Textarea</span>
+        <textarea class="input" rows="3" placeholder="Área de texto..."></textarea>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Cards -->
+  <section class="section">
+    <h2 class="section-title">Cards</h2>
+    <div class="demo-grid">
+      <div class="card">
+        <h3 style="margin-bottom: 12px;">Card Padrão</h3>
+        <p style="color: var(--color-text-secondary);">Conteúdo do card com informações relevantes.</p>
+      </div>
+      <div class="card-glass">
+        <h3 style="margin-bottom: 12px;">Card Glass</h3>
+        <p style="color: var(--color-text-secondary);">Card com efeito de vidro fosco (glassmorphism).</p>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Badges -->
+  <section class="section">
+    <h2 class="section-title">Badges</h2>
+    <div class="demo-grid">
+      <div class="demo-card">
+        <span class="demo-label">Electric</span>
+        <span class="badge badge-electric">Novo</span>
+      </div>
+      <div class="demo-card">
+        <span class="demo-label">Aurora</span>
+        <span class="badge badge-aurora">Concluído</span>
+      </div>
+      <div class="demo-card">
+        <span class="demo-label">Sunset</span>
+        <span class="badge badge-sunset">Em progresso</span>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Progress -->
+  <section class="section">
+    <h2 class="section-title">Progress</h2>
+    <div class="demo-card">
+      <span class="demo-label">Barra de progresso</span>
+      <div class="progress" style="margin-top: 12px;">
+        <div class="progress-bar" style="width: 75%;"></div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Avatar -->
+  <section class="section">
+    <h2 class="section-title">Avatar</h2>
+    <div class="demo-grid">
+      <div class="demo-card">
+        <span class="demo-label">Pequeno</span>
+        <span class="avatar avatar-sm">A</span>
+      </div>
+      <div class="demo-card">
+        <span class="demo-label">Normal</span>
+        <span class="avatar">A</span>
+      </div>
+      <div class="demo-card">
+        <span class="demo-label">Grande</span>
+        <span class="avatar avatar-lg">A</span>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Ícones -->
+  <section class="section">
+    <h2 class="section-title">Sistema de Ícones</h2>
+    <div class="demo-card">
+      <p style="color: var(--color-text-secondary); margin-bottom: 16px;">Use o sistema de ícones SVG:</p>
+      <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+        <svg class="icon icon-lg" style="color: var(--color-electric);"><use href="icons.svg#icon-editor"/></svg>
+        <svg class="icon icon-lg" style="color: var(--color-neon);"><use href="icons.svg#icon-coach"/></svg>
+        <svg class="icon icon-lg" style="color: var(--color-aurora);"><use href="icons.svg#icon-stats"/></svg>
+        <svg class="icon icon-lg" style="color: var(--color-sunset);"><use href="icons.svg#icon-progress"/></svg>
+        <svg class="icon icon-lg" style="color: var(--color-glow);"><use href="icons.svg#icon-achievement"/></svg>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Include icons -->
+  <script src="icons.svg" type="svg.include"></script>
+  
+</body>
+</html>
