@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comparação de Bibliotecas de Ícones</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.0.3/src/regular/style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.0.3/src/fill/style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons@2.47.0/encapsulated/tabler-icons.encapsulated.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lucide@0.344.0/dist/umd/lucide.min.js">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #0D0D1A;
+      color: #fff;
+      font-family: system-ui, sans-serif;
+      padding: 40px;
+    }
+    h1 { font-size: 2rem; margin-bottom: 40px; color: #7C3AED; }
+    h2 { font-size: 1.5rem; margin-bottom: 20px; color: #06B6D4; }
+    .section { margin-bottom: 60px; }
+    .icon-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 16px;
+    }
+    .icon-item {
+      background: #1E1E32;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    .icon-item:hover {
+      border-color: #7C3AED;
+      transform: translateY(-2px);
+    }
+    .icon-item i { font-size: 32px; display: block; margin-bottom: 8px; }
+    .icon-item span { font-size: 12px; color: #888; }
+    .preview { font-size: 48px; margin-bottom: 20px; }
+  </style>
+</head>
+<body>
+  <h1>📚 Comparação de Bibliotecas de Ícones</h1>
+
+  <!-- Phosphor Regular -->
+  <section class="section">
+    <h2>Phosphor Icons - Regular</h2>
+    <div class="icon-grid">
+      <div class="icon-item"><i class="ph ph-pencil-simple"></i><span>pencil-simple</span></div>
+      <div class="icon-item"><i class="ph ph-brain"></i><span>brain</span></div>
+      <div class="icon-item"><i class="ph ph-chart-line-up"></i><span>chart-line-up</span></div>
+      <div class="icon-item"><i class="ph ph-plant"></i><span>plant</span></div>
+      <div class="icon-item"><i class="ph ph-sparkle"></i><span>sparkle</span></div>
+      <div class="icon-item"><i class="ph ph-users-three"></i><span>users-three</span></div>
+      <div class="icon-item"><i class="ph ph-target"></i><span>target</span></div>
+      <div class="icon-item"><i class="ph ph-lightbulb"></i><span>lightbulb</span></div>
+    </div>
+  </section>
+
+  <!-- Phosphor Duotone -->
+  <section class="section">
+    <h2>Phosphor Icons - Duotone</h2>
+    <div class="icon-grid">
+      <div class="icon-item"><i class="ph ph-duotone ph-pencil-simple"></i><span>pencil-simple</span></div>
+      <div class="icon-item"><i class="ph ph-duotone ph-brain"></i><span>brain</span></div>
+      <div class="icon-item"><i class="ph ph-duotone ph-chart-line-up"></i><span>chart-line-up</span></div>
+      <div class="icon-item"><i class="ph ph-duotone ph-plant"></i><span>plant</span></div>
+      <div class="icon-item"><i class="ph ph-duotone ph-sparkle"></i><span>sparkle</span></div>
+      <div class="icon-item"><i class="ph ph-duotone ph-users-three"></i><span>users-three</span></div>
+    </div>
+  </section>
+
+  <!-- Tabler Icons -->
+  <section class="section">
+    <h2>Tabler Icons</h2>
+    <div class="icon-grid">
+      <div class="icon-item"><i class="ti ti-pencil"></i><span>pencil</span></div>
+      <div class="icon-item"><i class="ti ti-brain"></i><span>brain</span></div>
+      <div class="icon-item"><i class="ti ti-chart-line"></i><span>chart-line</span></div>
+      <div class="icon-item"><i class="ti ti-leaf"></i><span>leaf</span></div>
+      <div class="icon-item"><i class="ti ti-sparkles"></i><span>sparkles</span></div>
+      <div class="icon-item"><i class="ti ti-users"></i><span>users</span></div>
+      <div class="icon-item"><i class="ti ti-target"></i><span>target</span></div>
+      <div class="icon-item"><i class="ti ti-bulb"></i><span>bulb</span></div>
+    </div>
+  </section>
+
+  <!-- Lucide -->
+  <section class="section">
+    <h2>Lucide Icons</h2>
+    <div class="icon-grid">
+      <div class="icon-item"><i data-lucide="pencil"></i><span>pencil</span></div>
+      <div class="icon-item"><i data-lucide="brain"></i><span>brain</span></div>
+      <div class="icon-item"><i data-lucide="trending-up"></i><span>trending-up</span></div>
+      <div class="icon-item"><i data-lucide="sprout"></i><span>sprout</span></div>
+      <div class="icon-item"><i data-lucide="sparkles"></i><span>sparkles</span></div>
+      <div class="icon-item"><i data-lucide="users"></i><span>users</span></div>
+      <div class="icon-item"><i data-lucide="target"></i><span>target</span></div>
+      <div class="icon-item"><i data-lucide="lightbulb"></i><span>lightbulb</span></div>
+    </div>
+  </section>
+
+  <!-- Heroicons -->
+  <section class="section">
+    <h2>Heroicons</h2>
+    <div class="icon-grid">
+      <div class="icon-item"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg><span>pencil</span></div>
+      <div class="icon-item"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg><span>brain</span></div>
+      <div class="icon-item"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg><span>trending</span></div>
+      <div class="icon-item"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg><span>book</span></div>
+    </div>
+  </section>
+
+  <script src="https://unpkg.com/lucide@0.344.0/dist/umd/lucide.min.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>
