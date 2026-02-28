@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Escrita</title>
+    <style>
+        body { font-family: sans-serif; background: #fff; color: #333; padding: 20px; }
+        textarea { width: 100%; height: 300px; padding: 20px; font-size: 18px; border: 2px solid #333; border-radius: 10px; }
+        #timer { font-size: 24px; font-weight: bold; margin-bottom: 10px; }
+        button { padding: 15px 40px; font-size: 18px; background: #333; color: white; border: none; border-radius: 8px; cursor: pointer; }
+        button:disabled { background: #ccc; }
+        #chat { margin-top: 30px; }
+        .msg { padding: 10px; margin: 5px 0; border-radius: 8px; }
+        .user { background: #eee; }
+        .ai { background: #333; color: white; }
+    </style>
+</head>
+<body>
+    <h1>✍️ Escrita sobre Personalidade</h1>
+    <p>Escreva 2 parágrafos sobre você (mínimo 50 palavras)</p>
+    
+    <div id="timer">0:00</div>
+    <textarea id="texto" placeholder="Comece a escrever..."></textarea>
+    <br><br>
+    <button id="enviar" disabled onclick="enviar()">Enviar</button>
+    
+    <div id="chat">
+        <h3>🤖 Especialista</h3>
+        <div id="mensagens"></div>
+        <input type="text" id="msg" placeholder="Digite..." style="width:70%;padding:10px;">
+        <button onclick="mandarMsg()">Enviar</button>
+    </div>
+
+    <script>
+        // Timer SIMPLES que funciona
+        let start = Date.now();
+        setInterval(() => {
+            let elapsed = Math.floor((Date.now() - start) / 1000);
+            let min = Math.floor(elapsed / 60);
+            let sec = elapsed % 60;
+            document.getElementById('timer').textContent = min + ':' + (sec < 10 ? '0' : '') + sec;
+        }, 1000);
+        
+        // Contador de palavras
+        document.getElementById('texto').addEventListener('input', () => {
+            let palavras = document.getElementById('texto').value.trim().split(/\s+/).filter(w => w).length;
+            document.getElementById('enviar').disabled = palavras < 50;
+        });
+        
+        // Enviar texto
+        async function enviar() {
+            let texto = document.getElementById('texto').value;
+            let studentId = 'student_' + Date.now();
+            
+            await fetch('/api/submit', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    studentId,
+                    text: texto,
+                    wordCount: texto.trim().split(/\s+/).filter(w => w).length,
+                    timeSpent: Date.now() - start
+                })
+            });
+            
+            alert('Texto enviado! Agora pode conversar com o especialista.');
+        }
+        
+        // Chat com especialista
+        async function mandarMsg() {
+            let input = document.getElementById('msg');
+            let texto = input.value;
+            if (!texto) return;
+            
+            let msgs = document.getElementById('mensagens');
+            msgs.innerHTML += '<div class="msg user">Você: ' + texto + '</div>';
+            input.value = '';
+            
+            let res = await fetch('/api/chat', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    studentId: 'student_' + Date.now(),
+                    message: texto,
+                    studentText: document.getElementById('texto').value
+                })
+            });
+            
+            let data = await res.json();
+            msgs.innerHTML += '<div class="msg ai">Especialista: ' + data.response + '</div>';
+        }
+    </script>
+</body>
+</html>
