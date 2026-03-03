@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste - Emicida</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+        
+        .header {
+            background: rgba(0,0,0,0.3);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .header h1 {
+            font-size: 1.5rem;
+            color: #f0e68c;
+        }
+        
+        .header p {
+            opacity: 0.7;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        
+        .chat-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            height: calc(100vh - 150px);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        #chat {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            max-width: 80%;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .user-message {
+            background: #2d4a3e;
+            margin-left: auto;
+            border: 1px solid #4a7c59;
+        }
+        
+        .emicida-message {
+            background: #3d2a2a;
+            border: 1px solid #8b4513;
+        }
+        
+        .message-label {
+            font-size: 0.75rem;
+            opacity: 0.7;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .input-area {
+            display: flex;
+            gap: 10px;
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            border-radius: 10px;
+        }
+        
+        #userInput {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            font-size: 1rem;
+            resize: none;
+        }
+        
+        #userInput:focus {
+            outline: none;
+            background: rgba(255,255,255,0.15);
+        }
+        
+        #userInput::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+        
+        button {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #f0e68c 0%, #daa520 100%);
+            border: none;
+            border-radius: 8px;
+            color: #1a1a2e;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(240, 230, 140, 0.3);
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .typing {
+            display: flex;
+            gap: 5px;
+            padding: 15px;
+        }
+        
+        .typing span {
+            width: 8px;
+            height: 8px;
+            background: #daa520;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out;
+        }
+        
+        .typing span:nth-child(1) { animation-delay: 0s; }
+        .typing span:nth-child(2) { animation-delay: 0.2s; }
+        .typing span:nth-child(3) { animation-delay: 0.4s; }
+        
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+        
+        .clear-btn {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.3);
+            color: rgba(255,255,255,0.7);
+            padding: 8px 15px;
+            font-size: 0.8rem;
+        }
+        
+        .clear-btn:hover {
+            background: rgba(255,255,255,0.1);
+            box-shadow: none;
+            transform: none;
+        }
+        
+        .memory-indicator {
+            font-size: 0.7rem;
+            opacity: 0.5;
+            text-align: center;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🗣️ Teste - Conversa com Emicida</h1>
+        <p>Uma experiência de conversa com a essência do Emicida</p>
+    </div>
+    
+    <div class="chat-container">
+        <div id="chat">
+            <div class="message emicida-message">
+                <div class="message-label">Emicida</div>
+                <p>E aí, mano! Tudo bem? 🖖🏿<br><br>Boa parte das pessoas não têm a ideia de que esse espaço pertence a elas também. Mas você chegou até aqui, né? Sabe como é, a gente vai construindo caminho enquanto caminha.<br><br>Me conta: o que você quer conversar?</p>
+            </div>
+        </div>
+        
+        <div class="input-area">
+            <textarea id="userInput" placeholder="Digite sua mensagem..." rows="1"></textarea>
+            <button id="sendBtn" onclick="sendMessage()">Enviar</button>
+            <button class="clear-btn" onclick="clearChat()">Limpar</button>
+        </div>
+        <div class="memory-indicator" id="memoryIndicator">Memória: 0 mensagens</div>
+    </div>
+
+    <script>
+        // LocalStorage key for persistence
+        const MEMORY_KEY = 'emicida_chat_memory';
+        
+        // Load memory from localStorage
+        function loadMemory() {
+            const saved = localStorage.getItem(MEMORY_KEY);
+            if (saved) {
+                return JSON.parse(saved);
+            }
+            return [];
+        }
+        
+        // Save memory to localStorage
+        function saveMemory(messages) {
+            // Keep only last 50 messages to avoid localStorage limits
+            const toSave = messages.slice(-50);
+            localStorage.setItem(MEMORY_KEY, JSON.stringify(toSave));
+            updateMemoryIndicator(toSave.length);
+        }
+        
+        function updateMemoryIndicator(count) {
+            document.getElementById('memoryIndicator').textContent = `Memória: ${count} mensagens`;
+        }
+        
+        // Load previous chat
+        const chatHistory = loadMemory();
+        
+        // Render existing messages
+        chatHistory.forEach(msg => {
+            addMessage(msg.role, msg.content, false);
+        });
+        
+        updateMemoryIndicator(chatHistory.length);
+        
+        const chat = document.getElementById('chat');
+        const userInput = document.getElementById('userInput');
+        const sendBtn = document.getElementById('sendBtn');
+        
+        // Auto-resize textarea
+        userInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+        
+        // Send on Enter (without Shift)
+        userInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+        
+        function addMessage(role, content, save = true) {
+            const div = document.createElement('div');
+            div.className = `message ${role === 'user' ? 'user-message' : 'emicida-message'}`;
+            
+            const label = role === 'user' ? 'Você' : 'Emicida';
+            const emoji = role === 'user' ? '🧑' : '🖖🏿';
+            
+            // Convert line breaks to <br>
+            const formattedContent = content.replace(/\n/g, '<br>');
+            
+            div.innerHTML = `
+                <div class="message-label">${emoji} ${label}</div>
+                <p>${formattedContent}</p>
+            `;
+            
+            chat.appendChild(div);
+            chat.scrollTop = chat.scrollHeight;
+            
+            if (save && role === 'user') {
+                chatHistory.push({ role: 'user', content: content });
+                chatHistory.push({ role: 'emicida', content: content });
+                saveMemory(chatHistory);
+            }
+        }
+        
+        function showTyping() {
+            const div = document.createElement('div');
+            div.id = 'typing';
+            div.className = 'message emicida-message';
+            div.innerHTML = `
+                <div class="message-label">🖖🏿 Emicida</div>
+                <div class="typing">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            `;
+            chat.appendChild(div);
+            chat.scrollTop = chat.scrollHeight;
+        }
+        
+        function hideTyping() {
+            const typing = document.getElementById('typing');
+            if (typing) typing.remove();
+        }
+        
+        async function sendMessage() {
+            const message = userInput.value.trim();
+            if (!message) return;
+            
+            userInput.value = '';
+            userInput.style.height = 'auto';
+            
+            addMessage('user', message);
+            sendBtn.disabled = true;
+            showTyping();
+            
+            try {
+                // Send to backend
+                const response = await fetch('/api/emicida', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        history: chatHistory.slice(-20) // Send last 20 messages for context
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Erro na requisição');
+                }
+                
+                const data = await response.json();
+                
+                hideTyping();
+                addMessage('emicida', data.response);
+                
+                // Update memory
+                chatHistory.push({ role: 'user', content: message });
+                chatHistory.push({ role: 'emicida', content: data.response });
+                saveMemory(chatHistory);
+                
+            } catch (error) {
+                hideTyping();
+                console.error('Erro:', error);
+                addMessage('emicida', 'Man, deu um erro aqui. Tenta de novo? 🇧🇷');
+            }
+            
+            sendBtn.disabled = false;
+            userInput.focus();
+        }
+        
+        function clearChat() {
+            if (confirm('Limpar toda a conversa? A memória será apagada.')) {
+                chat.innerHTML = `
+                    <div class="message emicida-message">
+                        <div class="message-label">🖖🏿 Emicida</div>
+                        <p>E aí, mano! Tudo bem? 🖖🏿<br><br>Boa parte das pessoas não têm a ideia de que esse espaço pertence a elas também. Mas você chegou até aqui, né? Sabe como é, a gente vai construindo caminho enquanto caminha.<br><br>Me conta: o que você quer conversar?</p>
+                    </div>
+                `;
+                localStorage.removeItem(MEMORY_KEY);
+                chatHistory.length = 0;
+                updateMemoryIndicator(0);
+            }
+        }
+    </script>
+</body>
+</html>
