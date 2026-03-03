@@ -792,6 +792,59 @@
         .plan-section .finish-btn {
             background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
         }
+        
+        .plan-section .input-area {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, #0d0d0d 80%, transparent);
+            padding: 20px;
+            padding-bottom: 40px;
+        }
+        
+        .plan-section .input-wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            padding: 5px 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .plan-section .input-wrapper textarea {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 1rem;
+            padding: 10px;
+            outline: none;
+            resize: none;
+            font-family: inherit;
+        }
+        
+        .plan-section .send-btn {
+            background: #4CAF50;
+            border: none;
+            color: #fff;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        .plan-section .send-btn:hover {
+            background: #66BB6A;
+            transform: scale(1.1);
+        }
     </style>
 
     <script>
