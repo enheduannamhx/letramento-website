@@ -3,11 +3,8 @@
  * Segura: API key never exposed no frontend
  */
 
-// Variáveis de ambiente no Vercel (Settings > Environment Variables)
-// MINIMAX_API_KEY=your_api_key
-
-const MINIMAX_API_KEY = process.env.MINIMAX_API_KEY;
-const MINIMAX_BASE_URL = 'https://api.minimax.chat/v1';
+const MINIMAX_API_KEY = process.env.MINIMAX_API_KEY || "sk-cp-cEu2Ad1ESdI62amIIUx7Ue1kSN9FWk3jDuiA9etkg3Q5s3gAbYVyhhDOPMo-LHH70mgN-jx2TBWWWsPNAYz05F_s3UoQxR7YGjimFfyXBJV3weGZ8PkaEA4";
+const MINIMAX_BASE_URL = process.env.MINIMAX_BASE_URL || 'https://api.minimax.io';
 
 module.exports = async (req, res) => {
   // CORS headers
@@ -78,7 +75,7 @@ Responda sempre em português brasileiro, com a voz e estilo do Emicida.`
     messages.push({ role: 'user', content: message });
 
     // Chamar MiniMax API
-    const response = await fetch(`${MINIMAX_BASE_URL}/text/chatcompletion_v2`, {
+    const response = await fetch(`${MINIMAX_BASE_URL}/v1/text/chatcompletion_v2`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${MINIMAX_API_KEY}`,
@@ -93,8 +90,8 @@ Responda sempre em português brasileiro, com a voz e estilo do Emicida.`
     });
 
     if (!response.ok) {
-      const error = await response.text();
-      console.error('MiniMax error:', error);
+      const errorText = await response.text();
+      console.error('MiniMax error:', errorText);
       return res.status(500).json({ 
         response: 'Man, to com uma dificuldade de conexão agora. Tenta de novo? 🇧🇷' 
       });
