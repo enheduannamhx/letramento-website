@@ -24,12 +24,28 @@ function getSystemPrompt() {
     console.error('Erro ao ler system-prompt.md:', e.message);
   }
   
-  return `Você é Emicida. Fale como ele:
-- Use "a gente" (não "nós")
-- Valide: "né?", "sabe?", "tá ligado?"
-- NUNCA use "mano", "cara"
-- Tom: positivo
-Responda em português brasileiro.`;
+  return `Você é Emicida. Responda em português brasileiro.`;
+}
+
+function getSystemPromptPlano() {
+  return `Você é Emicida, agora agindo como advisor de investimento. Você conhece a realidade da quebrada e sabe que 20 mil reais é muito dinheiro pra quem nunca teve nada.
+
+Contexto do empréstimo:
+- Valor: R$ 20.000
+- Prazo: 24 meses
+- Parcela: R$ 1.200/mês
+- Total a pagar: R$ 28.800
+
+Sua missão: ajudar a pessoa a construir um PLANO DE INVESTIMENTO. Faça perguntas uma de cada vez sobre sonhos, habilidades, oportunidades, riscos.
+
+Regras:
+- RESPONDA EXCLUSIVAMENTE EM PORTUGUÊS BRASILEIRO
+- NUNCA use "cara", "mano", "sabe", "tá ligado", "né", "Entendi", "Ah, entendi"
+- VARIE suas aberturas
+- Seja esperançoso mas realista
+- 24 meses de compromisso é muito tempo
+
+Faça uma pergunta por vez.`;
 }
 
 module.exports = async (req, res) => {
@@ -48,9 +64,9 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { message, history, action } = req.body;
+    const { message, history, action, characterContext } = req.body;
 
-    // Se action for 'describe', gera descrição do personagem
+    // Action: descrever personagem
     if (action === 'describe') {
       const conversation = history.map(msg => 
         `${msg.role === 'user' ? 'Usuário' : 'Emicida'}: ${msg.content}`
@@ -78,8 +94,6 @@ Retorne apenas o parágrafo descritivo, sem introduções.`;
       });
 
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error('MiniMax error:', errorText);
         return res.status(500).json({ response: 'Erro ao gerar descrição.' });
       }
 
@@ -95,6 +109,74 @@ Retorne apenas o parágrafo descritivo, sem introduções.`;
       }
 
       return res.status(200).json({ response: description });
+    }
+
+    // Action: plano de investimento
+    if (action === 'plan' || action === 'finalize_plan') {
+      const promptPlan = getSystemPromptPlano();
+      
+      const conversation = history.map(msg => 
+        `${msg.role === 'user' ? 'Usuário' : 'Emicida'}: ${msg.content}`
+      ).join('\n\n');
+
+      let userPrompt = message;
+      
+      if (action === 'finalize_plan') {
+        userPrompt = `Com base em TODO o contexto abaixo, escreva um resumo final do personagem E do plano de investimento. O resumo deve ter aproximadamente 150 palavras, incluindo: quem é a personagem, qual o plano de uso do dinheiro, os riscos e as expectativas.
+
+PERSONAGEM:
+${characterContext}
+
+CONVERSA:
+${conversation}
+
+Retorne o resumo final.`;
+      } else {
+        userPrompt = `Contexto do personagem: ${characterContext}
+
+Histórico da conversa:
+${conversation}
+
+Nova mensagem do usuário: ${message}
+
+Responda como Emicida advisor.`;
+      }
+
+      const response = await fetch(`${MINIMAX_BASE_URL}/v1/messages`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${MINIMAX_API_KEY}`,
+          'Content-Type': 'application/json',
+          'anthropic-version': '2023-06-01'
+        },
+        body: JSON.stringify({
+          model: 'MiniMax-M2.5-highspeed',
+          messages: [
+            { role: 'system', content: promptPlan },
+            { role: 'user', content: userPrompt }
+          ],
+          max_tokens: 2000
+        })
+      });
+
+      if (!response.ok) {
+        return res.status(500).json({ response: 'Erro ao gerar resposta.' });
+      }
+
+      const data = await response.json();
+      const content = data.content || [];
+      let reply = '';
+      
+      for (const item of content) {
+        if (item.type === 'text') {
+          reply = item.text;
+          break;
+        }
+      }
+
+      reply = reply.replace(/\bmano\b/gi, '').replace(/\bcara\b/gi, '');
+      
+      return res.status(200).json({ response: reply });
     }
 
     // Normal chat
