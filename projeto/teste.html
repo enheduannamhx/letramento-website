@@ -313,6 +313,24 @@
             color: #fff;
         }
         
+        .character-textarea {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            font-family: inherit;
+            resize: vertical;
+            outline: none;
+        }
+        
+        .character-textarea:focus {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 10px;
+        }
+        
         .result-buttons {
             display: flex;
             justify-content: center;
@@ -689,16 +707,11 @@
         function showResult(description) {
             document.getElementById('chatSection').style.display = 'none';
             document.getElementById('resultSection').style.display = 'block';
-            document.getElementById('characterDescription').textContent = description;
-        }
-        
-        function editCharacter() {
-            document.getElementById('resultSection').style.display = 'none';
-            document.getElementById('chatSection').style.display = 'flex';
+            document.getElementById('characterDescription').value = description;
         }
         
         function confirmCharacter() {
-            const description = document.getElementById('characterDescription').textContent;
+            const description = document.getElementById('characterDescription').value;
             alert('Personagem confirmado!\n\n' + description);
         }
         
@@ -711,10 +724,9 @@
     <div class="result-section" id="resultSection">
         <h1>✨ Seu Personagem</h1>
         <div class="character-box">
-            <p id="characterDescription">Carregando descrição...</p>
+            <textarea id="characterDescription" class="character-textarea" rows="6">Carregando descrição...</textarea>
         </div>
         <div class="result-buttons">
-            <button class="edit-btn" onclick="editCharacter()">✏️ Editar</button>
             <button class="confirm-btn" onclick="confirmCharacter()">✅ Confirmar</button>
         </div>
     </div>
