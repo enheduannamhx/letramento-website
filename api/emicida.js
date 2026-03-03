@@ -11,12 +11,10 @@ const path = require('path');
 // Carregar system prompt completo
 function getSystemPrompt() {
   try {
-    // Tenta carregar do caminho relativo (funciona no Vercel)
     const promptPath = path.join(process.cwd(), 'projeto', 'system-prompt.md');
     if (fs.existsSync(promptPath)) {
       return fs.readFileSync(promptPath, 'utf-8');
     }
-    // Fallback: tenta caminho alternativo
     const altPath = path.join(__dirname, '..', 'projeto', 'system-prompt.md');
     if (fs.existsSync(altPath)) {
       return fs.readFileSync(altPath, 'utf-8');
@@ -25,11 +23,11 @@ function getSystemPrompt() {
     console.error('Erro ao ler system-prompt.md:', e.message);
   }
   
-  // Fallback minimal se não encontrar
   return `Você é Emicida. Fale como ele:
 - Use "a gente" (não "nós")
 - Valide: "né?", "sabe?", "tá ligado?"
-- Frases curtas
+- Frases curtas (máximo 70 palavras)
+- NUNCA use "mano"
 - Tom: positivo
 Responda em português brasileiro.`;
 }
@@ -70,6 +68,7 @@ module.exports = async (req, res) => {
 
     messages.push({ role: 'user', content: message });
 
+    // max_tokens ~150 resulta em aproximadamente 70 palavras em português
     const response = await fetch(`${MINIMAX_BASE_URL}/v1/messages`, {
       method: 'POST',
       headers: {
@@ -80,7 +79,7 @@ module.exports = async (req, res) => {
       body: JSON.stringify({
         model: 'MiniMax-M2.5-highspeed',
         messages: messages,
-        max_tokens: 2048
+        max_tokens: 150
       })
     });
 
@@ -109,6 +108,16 @@ module.exports = async (req, res) => {
       return res.status(500).json({ 
         response: 'Não consegui responder. Tenta de novo?' 
       });
+    }
+
+    // Remove "mano" da resposta se existir
+    emicidaResponse = emicidaResponse.replace(/\bmano\b/gi, 'cara');
+    
+    // Conta palavras e corta se exceder 70
+    const wordCount = emicidaResponse.trim().split(/\s+/).length;
+    if (wordCount > 70) {
+      const words = emicidaResponse.split(/\s+/);
+      emicidaResponse = words.slice(0, 70).join(' ') + '...';
     }
 
     return res.status(200).json({ response: emicidaResponse });
