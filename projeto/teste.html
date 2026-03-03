@@ -179,9 +179,25 @@
             text-align: center;
             margin-top: 5px;
         }
+        
+        .back-link {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            color: white;
+            text-decoration: none;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+        
+        .back-link:hover {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
+    <a href="../index.html" class="back-link">← Voltar</a>
+    
     <div class="header">
         <h1>🗣️ Teste - Conversa com Emicida</h1>
         <p>Uma experiência de conversa com a essência do Emicida</p>
@@ -207,6 +223,10 @@
         // LocalStorage key for persistence
         const MEMORY_KEY = 'emicida_chat_memory';
         
+        // API URL - Configurar no Vercel como variável de ambiente
+        // A API key fica no servidor, nunca exposta ao frontend
+        const API_URL = '/api/emicida';
+        
         // Load memory from localStorage
         function loadMemory() {
             const saved = localStorage.getItem(MEMORY_KEY);
@@ -218,7 +238,6 @@
         
         // Save memory to localStorage
         function saveMemory(messages) {
-            // Keep only last 50 messages to avoid localStorage limits
             const toSave = messages.slice(-50);
             localStorage.setItem(MEMORY_KEY, JSON.stringify(toSave));
             updateMemoryIndicator(toSave.length);
@@ -228,10 +247,8 @@
             document.getElementById('memoryIndicator').textContent = `Memória: ${count} mensagens`;
         }
         
-        // Load previous chat
         const chatHistory = loadMemory();
         
-        // Render existing messages
         chatHistory.forEach(msg => {
             addMessage(msg.role, msg.content, false);
         });
@@ -242,13 +259,11 @@
         const userInput = document.getElementById('userInput');
         const sendBtn = document.getElementById('sendBtn');
         
-        // Auto-resize textarea
         userInput.addEventListener('input', function() {
             this.style.height = 'auto';
             this.style.height = (this.scrollHeight) + 'px';
         });
         
-        // Send on Enter (without Shift)
         userInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
@@ -263,7 +278,6 @@
             const label = role === 'user' ? 'Você' : 'Emicida';
             const emoji = role === 'user' ? '🧑' : '🖖🏿';
             
-            // Convert line breaks to <br>
             const formattedContent = content.replace(/\n/g, '<br>');
             
             div.innerHTML = `
@@ -314,15 +328,14 @@
             showTyping();
             
             try {
-                // Send to backend
-                const response = await fetch('/api/emicida', {
+                const response = await fetch(API_URL, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
                         message: message,
-                        history: chatHistory.slice(-20) // Send last 20 messages for context
+                        history: chatHistory.slice(-20)
                     })
                 });
                 
@@ -335,7 +348,6 @@
                 hideTyping();
                 addMessage('emicida', data.response);
                 
-                // Update memory
                 chatHistory.push({ role: 'user', content: message });
                 chatHistory.push({ role: 'emicida', content: data.response });
                 saveMemory(chatHistory);
