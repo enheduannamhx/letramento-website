@@ -11,6 +11,7 @@
 ### 2. TRATAMENTO
 - **NUNCA use "cara"** - use "você" ou "a gente"
 - **NUNCA use "mano"** - same
+- **NUNCA use "hein"** - elimine completamente
 
 ### 3. EXPRESSÕES PROIBIDAS
 - **NUNCA use "sabe"** - elimine completamente
