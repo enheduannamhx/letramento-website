@@ -27,7 +27,7 @@ function getSystemPrompt() {
   return `Você é Emicida. Fale como ele:
 - Use "a gente" (não "nós")
 - Valide: "né?", "sabe?", "tá ligado?"
-- NUNCA use "mano"
+- NUNCA use "mano", "cara"
 - Tom: positivo
 Responda em português brasileiro.`;
 }
@@ -47,16 +47,57 @@ module.exports = async (req, res) => {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  }
-
   try {
     const { message, history, action } = req.body;
 
     // Se action for 'describe', gera descrição do personagem
     if (action === 'describe') {
-      return generateCharacterDescription(history, req, res);
+      const conversation = history.map(msg => 
+        `${msg.role === 'user' ? 'Usuário' : 'Emicida'}: ${msg.content}`
+      ).join('\n\n');
+
+      const describePrompt = `Você é Emicida. Com base na conversa abaixo, escreva UM PARÁGRAFO de aproximadamente 100 palavras descrevendo o personagem criado. Seja ACCURADO, poético e fiel ao que foi construído na conversa.
+
+Conversa:
+${conversation}
+
+Retorne apenas o parágrafo descritivo, sem introduções.`;
+
+      const response = await fetch(`${MINIMAX_BASE_URL}/v1/messages`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${MINIMAX_API_KEY}`,
+          'Content-Type': 'application/json',
+          'anthropic-version': '2023-06-01'
+        },
+        body: JSON.stringify({
+          model: 'MiniMax-M2.5-highspeed',
+          messages: [{ role: 'user', content: describePrompt }],
+          max_tokens: 500
+        })
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('MiniMax error:', errorText);
+        return res.status(500).json({ response: 'Erro ao gerar descrição.' });
+      }
+
+      const data = await response.json();
+      const content = data.content || [];
+      let description = '';
+      
+      for (const item of content) {
+        if (item.type === 'text') {
+          description = item.text;
+          break;
+        }
+      }
+
+      return res.status(200).json({ response: description });
     }
 
+    // Normal chat
     if (!message) {
       return res.status(400).json({ error: 'Message is required' });
     }
@@ -65,13 +106,11 @@ module.exports = async (req, res) => {
     console.log('Message:', message.substring(0, 50));
     console.log('History length:', history ? history.length : 0);
 
-    // Carrega o system prompt completo do arquivo
     const systemPrompt = getSystemPrompt();
     console.log('Prompt size:', systemPrompt.length, 'chars');
 
     const messages = [{ role: 'system', content: systemPrompt }];
 
-    // Limita histórico a 4 mensagens para não sobrecarregar
     if (history && Array.isArray(history)) {
       const recentHistory = history.slice(-4);
       console.log('Enviando histórico:', recentHistory.length, 'mensagens');
@@ -85,7 +124,6 @@ module.exports = async (req, res) => {
 
     messages.push({ role: 'user', content: message });
 
-    // max_tokens aumentado para contexto grande
     const response = await fetch(`${MINIMAX_BASE_URL}/v1/messages`, {
       method: 'POST',
       headers: {
@@ -96,7 +134,7 @@ module.exports = async (req, res) => {
       body: JSON.stringify({
         model: 'MiniMax-M2.5-highspeed',
         messages: messages,
-        max_tokens: 2000  // Aumentado para contexto grande
+        max_tokens: 2000
       })
     });
 
@@ -110,7 +148,6 @@ module.exports = async (req, res) => {
 
     const data = await response.json();
     
-    // Extrair texto da resposta
     const content = data.content || [];
     let emicidaResponse = '';
     
@@ -128,8 +165,9 @@ module.exports = async (req, res) => {
       });
     }
 
-    // Remove "mano" da resposta se existir
-    emicidaResponse = emicidaResponse.replace(/\bmano\b/gi, 'cara');
+    // Remove palavras proibidas
+    emicidaResponse = emicidaResponse.replace(/\bmano\b/gi, '');
+    emicidaResponse = emicidaResponse.replace(/\bcara\b/gi, '');
 
     console.log('Response:', emicidaResponse.substring(0, 100));
     return res.status(200).json({ response: emicidaResponse });
@@ -141,62 +179,3 @@ module.exports = async (req, res) => {
     });
   }
 };
-
-// Função para gerar descrição do personagem
-async function generateCharacterDescription(history, req, res) {
-  const conversation = history.map(msg => 
-    `${msg.role === 'user' ? 'Usuário' : 'Emicida'}: ${msg.content}`
-  ).join('\n\n');
-
-  const describePrompt = `Você é Emicida. Com base na conversa abaixo, escreva UM PARÁGRAFO de aproximadamente 100 palavras descrevendo o personagem criado. Seja ACCURADO, poético e fiel ao que foi construído na conversa.
-
-Conversa:
-${conversation}
-
-Retorne apenas o parágrafo descritivo, sem introduções.`;
-
-  try {
-    const response = await fetch(`${MINIMAX_BASE_URL}/v1/messages`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${MINIMAX_API_KEY}`,
-        'Content-Type': 'application/json',
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify({
-        model: 'MiniMax-M2.5-highspeed',
-        messages: [{ role: 'user', content: describePrompt }],
-        max_tokens: 500
-      })
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('MiniMax error:', errorText);
-      return res.status(500).json({ response: 'Erro ao gerar descrição.' });
-    }
-
-    const data = await response.json();
-    const content = data.content || [];
-    let description = '';
-    
-    for (const item of content) {
-      if (item.type === 'text') {
-        description = item.text;
-        break;
-      }
-    }
-
-    // Limita a aproximadamente 100 palavras
-    const words = description.trim().split(/\s+/);
-    if (words.length > 120) {
-      description = words.slice(0, 100).join(' ') + '...';
-    }
-
-    return res.status(200).json({ response: description });
-
-  } catch (error) {
-    console.error('Error:', error);
-    return res.status(500).json({ response: 'Erro ao gerar descrição.' });
-  }
-}
