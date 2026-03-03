@@ -363,8 +363,10 @@
             // Se não tem memória, mostra mensagem inicial uma única vez
             if (chatHistory.length === 0) {
                 addMessageToUI('emicida', MENSAGEM_INICIAL);
-                chatHistory.push({ role: 'emicida', content: MENSAGEM_INICIAL });
-                saveMemory();
+                // NÃO salva a mensagem inicial no histórico que é enviado para API
+                // chatHistory.push({ role: 'emicida', content: MENSAGEM_INICIAL });
+                // Apenas salva no localStorage para exibição
+                localStorage.setItem(MEMORY_KEY, JSON.stringify([{ role: 'emicida', content: MENSAGEM_INICIAL }]));
             }
             
             userInputEl.focus();
@@ -390,6 +392,15 @@
             const toSave = chatHistory.slice(-50);
             localStorage.setItem(MEMORY_KEY, JSON.stringify(toSave));
             updateMemoryIndicator();
+        }
+        
+        // Retorna histórico para API (exclui mensagem inicial se for a primeira)
+        function getHistoryForAPI() {
+            // Se a primeira mensagem for a inicial, ignora ela no histórico
+            if (chatHistory.length > 0 && chatHistory[0].content === MENSAGEM_INICIAL) {
+                return chatHistory.slice(1);
+            }
+            return chatHistory;
         }
         
         function updateMemoryIndicator() {
@@ -484,7 +495,7 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         message: message,
-                        history: chatHistory.slice(-20)
+                        history: getHistoryForAPI().slice(-10)
                     })
                 });
                 
