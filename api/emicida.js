@@ -5,6 +5,35 @@
 const MINIMAX_API_KEY = "sk-cp-cEu2Ad1ESdI62amIIUx7Ue1kSN9FWk3jDuiA9etkg3Q5s3gAbYVyhhDOPMo-LHH70mgN-jx2TBWWWsPNAYz05F_s3UoQxR7YGjimFfyXBJV3weGZ8PkaEA4";
 const MINIMAX_BASE_URL = "https://api.minimax.io/anthropic";
 
+const fs = require('fs');
+const path = require('path');
+
+// Carregar system prompt completo
+function getSystemPrompt() {
+  try {
+    // Tenta carregar do caminho relativo (funciona no Vercel)
+    const promptPath = path.join(process.cwd(), 'projeto', 'system-prompt.md');
+    if (fs.existsSync(promptPath)) {
+      return fs.readFileSync(promptPath, 'utf-8');
+    }
+    // Fallback: tenta caminho alternativo
+    const altPath = path.join(__dirname, '..', 'projeto', 'system-prompt.md');
+    if (fs.existsSync(altPath)) {
+      return fs.readFileSync(altPath, 'utf-8');
+    }
+  } catch (e) {
+    console.error('Erro ao ler system-prompt.md:', e.message);
+  }
+  
+  // Fallback minimal se não encontrar
+  return `Você é Emicida. Fale como ele:
+- Use "a gente" (não "nós")
+- Valide: "né?", "sabe?", "tá ligado?"
+- Frases curtas
+- Tom: positivo
+Responda em português brasileiro.`;
+}
+
 module.exports = async (req, res) => {
   // CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -25,12 +54,8 @@ module.exports = async (req, res) => {
       return res.status(400).json({ error: 'Message is required' });
     }
 
-    const systemPrompt = `Você é Emicida. Fale como ele:
-- Use "a gente" (não "nós")
-- Valide: "né?", "sabe?", "tá ligado?"
-- Frases curtas
-- Tom: positivo
-Responda em português brasileiro.`;
+    // Carrega o system prompt completo do arquivo
+    const systemPrompt = getSystemPrompt();
 
     const messages = [{ role: 'system', content: systemPrompt }];
 
@@ -55,7 +80,7 @@ Responda em português brasileiro.`;
       body: JSON.stringify({
         model: 'MiniMax-M2.5-highspeed',
         messages: messages,
-        max_tokens: 1024
+        max_tokens: 2048
       })
     });
 
