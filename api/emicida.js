@@ -47,8 +47,16 @@ module.exports = async (req, res) => {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  }
+
   try {
-    const { message, history } = req.body;
+    const { message, history, action } = req.body;
+
+    // Se action for 'describe', gera descrição do personagem
+    if (action === 'describe') {
+      return generateCharacterDescription(history, req, res);
+    }
+
     if (!message) {
       return res.status(400).json({ error: 'Message is required' });
     }
@@ -133,3 +141,62 @@ module.exports = async (req, res) => {
     });
   }
 };
+
+// Função para gerar descrição do personagem
+async function generateCharacterDescription(history, req, res) {
+  const conversation = history.map(msg => 
+    `${msg.role === 'user' ? 'Usuário' : 'Emicida'}: ${msg.content}`
+  ).join('\n\n');
+
+  const describePrompt = `Você é Emicida. Com base na conversa abaixo, escreva UM PARÁGRAFO de aproximadamente 100 palavras descrevendo o personagem criado. Seja ACCURADO, poético e fiel ao que foi construído na conversa.
+
+Conversa:
+${conversation}
+
+Retorne apenas o parágrafo descritivo, sem introduções.`;
+
+  try {
+    const response = await fetch(`${MINIMAX_BASE_URL}/v1/messages`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${MINIMAX_API_KEY}`,
+        'Content-Type': 'application/json',
+        'anthropic-version': '2023-06-01'
+      },
+      body: JSON.stringify({
+        model: 'MiniMax-M2.5-highspeed',
+        messages: [{ role: 'user', content: describePrompt }],
+        max_tokens: 500
+      })
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('MiniMax error:', errorText);
+      return res.status(500).json({ response: 'Erro ao gerar descrição.' });
+    }
+
+    const data = await response.json();
+    const content = data.content || [];
+    let description = '';
+    
+    for (const item of content) {
+      if (item.type === 'text') {
+        description = item.text;
+        break;
+      }
+    }
+
+    // Limita a aproximadamente 100 palavras
+    const words = description.trim().split(/\s+/);
+    if (words.length > 120) {
+      description = words.slice(0, 100).join(' ') + '...';
+    }
+
+    return res.status(200).json({ response: description });
+
+  } catch (error) {
+    console.error('Error:', error);
+    return res.status(500).json({ response: 'Erro ao gerar descrição.' });
+  }
+}

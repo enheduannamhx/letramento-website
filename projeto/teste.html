@@ -253,9 +253,100 @@
             transition: all 0.3s;
         }
         
-        .clear-btn:hover {
+        .finish-btn {
+            background: linear-gradient(135deg, #daa520 0%, #b8860b 100%);
+            border: none;
+            color: #000;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+        
+        .finish-btn.enabled {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        .finish-btn.enabled:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(218, 165, 32, 0.5);
+        }
+        
+        .timer-status {
+            font-size: 0.75rem;
+            color: #888;
+        }
+        
+        /* Result Section */
+        .result-section {
+            display: none;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 40px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 20px;
+        }
+        
+        .result-section h1 {
+            text-align: center;
+            color: #daa520;
+            margin-bottom: 30px;
+            font-size: 2rem;
+        }
+        
+        .character-box {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border-left: 4px solid #daa520;
+        }
+        
+        .character-box p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #fff;
+        }
+        
+        .result-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .result-buttons button {
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .edit-btn {
+            background: transparent;
+            border: 2px solid #fff;
+            color: #fff;
+        }
+        
+        .edit-btn:hover {
             background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .confirm-btn {
+            background: linear-gradient(135deg, #daa520 0%, #b8860b 100%);
+            border: none;
+            color: #000;
+            font-weight: bold;
+        }
+        
+        .confirm-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(218, 165, 32, 0.5);
         }
         
         .back-link {
@@ -304,7 +395,8 @@
 <body>
     <a href="../index.html" class="back-link">← Voltar</a>
     
-    <div class="chat-wrapper">
+    <!-- Chat Section -->
+    <div class="chat-wrapper" id="chatSection">
         <div class="header">
             <h1><span>🗣️</span> Conversa com Emicida</h1>
             <p>Uma experiência de conversa com a essência do Emicida</p>
@@ -318,8 +410,12 @@
             <div class="memory-status">
                 <span class="memory-dot"></span>
                 <span id="memoryIndicator">Memória: 0 mensagens</span>
+                <span id="timerStatus" class="timer-status"></span>
             </div>
-            <button class="clear-btn" onclick="clearChat()">🗑️ Limpar conversa</button>
+            <div>
+                <button id="finishBtn" class="finish-btn" onclick="finishChat()">✨ Finalizar Personagem</button>
+                <button class="clear-btn" onclick="clearChat()">🗑️ Limpar conversa</button>
+            </div>
         </div>
         
         <div class="input-area">
@@ -536,8 +632,92 @@
             }
         }
         
+        // ==================== TIMER ====================
+        let conversationStartTime = null;
+        
+        function startTimer() {
+            conversationStartTime = Date.now();
+            updateTimer();
+        }
+        
+        function updateTimer() {
+            const finishBtn = document.getElementById('finishBtn');
+            const timerStatus = document.getElementById('timerStatus');
+            
+            if (!conversationStartTime) {
+                startTimer();
+            }
+            
+            const elapsed = Date.now() - conversationStartTime;
+            const secondsLeft = Math.max(0, 120000 - elapsed);
+            
+            if (secondsLeft > 0) {
+                const secs = Math.ceil(secondsLeft / 1000);
+                timerStatus.textContent = `(${secs}s para finalizar)`;
+                finishBtn.classList.remove('enabled');
+                setTimeout(updateTimer, 1000);
+            } else {
+                timerStatus.textContent = '';
+                finishBtn.classList.add('enabled');
+            }
+        }
+        
+        // ==================== FINALIZAR ====================
+        function finishChat() {
+            showTyping();
+            
+            fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: 'describe',
+                    history: chatHistory
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                hideTyping();
+                showResult(data.response);
+            })
+            .catch(err => {
+                hideTyping();
+                alert('Erro ao gerar descrição. Tente novamente.');
+            });
+        }
+        
+        // ==================== RESULTADO ====================
+        function showResult(description) {
+            document.getElementById('chatSection').style.display = 'none';
+            document.getElementById('resultSection').style.display = 'block';
+            document.getElementById('characterDescription').textContent = description;
+        }
+        
+        function editCharacter() {
+            document.getElementById('resultSection').style.display = 'none';
+            document.getElementById('chatSection').style.display = 'flex';
+        }
+        
+        function confirmCharacter() {
+            const description = document.getElementById('characterDescription').textContent;
+            alert('Personagem confirmado!\n\n' + description);
+        }
+        
         // ==================== START ====================
         init();
+        updateTimer();
     </script>
+
+    <!-- Result Section -->
+    <div class="result-section" id="resultSection">
+        <h1>✨ Seu Personagem</h1>
+        <div class="character-box">
+            <p id="characterDescription">Carregando descrição...</p>
+        </div>
+        <div class="result-buttons">
+            <button class="edit-btn" onclick="editCharacter()">✏️ Editar</button>
+            <button class="confirm-btn" onclick="confirmCharacter()">✅ Confirmar</button>
+        </div>
+    </div>
+
 </body>
 </html>
