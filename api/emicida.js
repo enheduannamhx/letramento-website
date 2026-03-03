@@ -1,6 +1,5 @@
 /**
  * Vercel API Route - Emicida Agent
- * Configuração correta da MiniMax
  */
 
 const MINIMAX_API_KEY = "sk-cp-cEu2Ad1ESdI62amIIUx7Ue1kSN9FWk3jDuiA9etkg3Q5s3gAbYVyhhDOPMo-LHH70mgN-jx2TBWWWsPNAYz05F_s3UoQxR7YGjimFfyXBJV3weGZ8PkaEA4";
@@ -26,22 +25,15 @@ module.exports = async (req, res) => {
       return res.status(400).json({ error: 'Message is required' });
     }
 
-    const messages = [
-      {
-        role: 'system',
-        content: `Você é Emicida, rapper brasileiro. Fale como ele:
+    const systemPrompt = `Você é Emicida. Fale como ele:
 - Use "a gente" (não "nós")
 - Valide: "né?", "sabe?", "tá ligado?"
-- Frases curtas (12-15 palavras)
-- Tom: 70% positivo, 20% reflexivo, 10% combativo
-- Expressões: "mano", "aí", "cara"
-- Conecte passado e presente
-- Use metáforas
-Responda em português brasileiro.`
-      }
-    ];
+- Frases curtas
+- Tom: positivo
+Responda em português brasileiro.`;
 
-    // Histórico
+    const messages = [{ role: 'system', content: systemPrompt }];
+
     if (history && Array.isArray(history)) {
       history.slice(-10).forEach(msg => {
         messages.push({
@@ -53,7 +45,6 @@ Responda em português brasileiro.`
 
     messages.push({ role: 'user', content: message });
 
-    // Chamada correta para MiniMax
     const response = await fetch(`${MINIMAX_BASE_URL}/v1/messages`, {
       method: 'POST',
       headers: {
@@ -70,21 +61,37 @@ Responda em português brasileiro.`
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('MiniMax error:', response.status, errorText);
+      console.error('MiniMax error:', errorText);
       return res.status(500).json({ 
-        response: 'Man, to com uma dificuldade de conexão. Tenta de novo? 🇧🇷' 
+        response: 'Man, to com dificuldade. Tenta de novo? 🇧🇷' 
       });
     }
 
     const data = await response.json();
-    const emicidaResponse = data.content?.[0]?.text || 'Não consegui responder. Tenta de novo?';
+    
+    // Extrair texto da resposta
+    const content = data.content || [];
+    let emicidaResponse = '';
+    
+    for (const item of content) {
+      if (item.type === 'text') {
+        emicidaResponse = item.text;
+        break;
+      }
+    }
+
+    if (!emicidaResponse) {
+      return res.status(500).json({ 
+        response: 'Não consegui responder. Tenta de novo?' 
+      });
+    }
 
     return res.status(200).json({ response: emicidaResponse });
 
   } catch (error) {
     console.error('Error:', error);
     return res.status(500).json({ 
-      response: 'Man, deu um erro aqui. Tenta de novo? 🇧🇷' 
+      response: 'Man, deu erro. Tenta de novo? 🇧🇷' 
     });
   }
 };
