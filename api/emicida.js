@@ -1,5 +1,6 @@
 /**
  * Vercel API Route - Emicida Agent
+ * Sistema robusto - prioriza qualidade sobre velocidade
  */
 
 const MINIMAX_API_KEY = "sk-cp-cEu2Ad1ESdI62amIIUx7Ue1kSN9FWk3jDuiA9etkg3Q5s3gAbYVyhhDOPMo-LHH70mgN-jx2TBWWWsPNAYz05F_s3UoQxR7YGjimFfyXBJV3weGZ8PkaEA4";
@@ -26,7 +27,6 @@ function getSystemPrompt() {
   return `Você é Emicida. Fale como ele:
 - Use "a gente" (não "nós")
 - Valide: "né?", "sabe?", "tá ligado?"
-- Frases curtas (máximo 70 palavras)
 - NUNCA use "mano"
 - Tom: positivo
 Responda em português brasileiro.`;
@@ -37,6 +37,7 @@ module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Max-Age', '86400');
   
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
@@ -52,13 +53,21 @@ module.exports = async (req, res) => {
       return res.status(400).json({ error: 'Message is required' });
     }
 
+    console.log('=== Nova Requisição ===');
+    console.log('Message:', message.substring(0, 50));
+    console.log('History length:', history ? history.length : 0);
+
     // Carrega o system prompt completo do arquivo
     const systemPrompt = getSystemPrompt();
+    console.log('Prompt size:', systemPrompt.length, 'chars');
 
     const messages = [{ role: 'system', content: systemPrompt }];
 
+    // Limita histórico a 4 mensagens para não sobrecarregar
     if (history && Array.isArray(history)) {
-      history.slice(-10).forEach(msg => {
+      const recentHistory = history.slice(-4);
+      console.log('Enviando histórico:', recentHistory.length, 'mensagens');
+      recentHistory.forEach(msg => {
         messages.push({
           role: msg.role === 'user' ? 'user' : 'assistant',
           content: msg.content
@@ -68,7 +77,7 @@ module.exports = async (req, res) => {
 
     messages.push({ role: 'user', content: message });
 
-    // max_tokens ~150 resulta em aproximadamente 70 palavras em português
+    // max_tokens aumentado para contexto grande
     const response = await fetch(`${MINIMAX_BASE_URL}/v1/messages`, {
       method: 'POST',
       headers: {
@@ -79,7 +88,7 @@ module.exports = async (req, res) => {
       body: JSON.stringify({
         model: 'MiniMax-M2.5-highspeed',
         messages: messages,
-        max_tokens: 150
+        max_tokens: 2000  // Aumentado para contexto grande
       })
     });
 
@@ -87,7 +96,7 @@ module.exports = async (req, res) => {
       const errorText = await response.text();
       console.error('MiniMax error:', errorText);
       return res.status(500).json({ 
-        response: 'Man, to com dificuldade. Tenta de novo? 🇧🇷' 
+        response: 'Cara, to com dificuldade agora. Tenta de novo?' 
       });
     }
 
@@ -105,6 +114,7 @@ module.exports = async (req, res) => {
     }
 
     if (!emicidaResponse) {
+      console.error('Resposta vazia do modelo');
       return res.status(500).json({ 
         response: 'Não consegui responder. Tenta de novo?' 
       });
@@ -112,20 +122,14 @@ module.exports = async (req, res) => {
 
     // Remove "mano" da resposta se existir
     emicidaResponse = emicidaResponse.replace(/\bmano\b/gi, 'cara');
-    
-    // Conta palavras e corta se exceder 70
-    const wordCount = emicidaResponse.trim().split(/\s+/).length;
-    if (wordCount > 70) {
-      const words = emicidaResponse.split(/\s+/);
-      emicidaResponse = words.slice(0, 70).join(' ') + '...';
-    }
 
+    console.log('Response:', emicidaResponse.substring(0, 100));
     return res.status(200).json({ response: emicidaResponse });
 
   } catch (error) {
     console.error('Error:', error);
     return res.status(500).json({ 
-      response: 'Man, deu erro. Tenta de novo? 🇧🇷' 
+      response: 'Cara, deu erro. Tenta de novo?' 
     });
   }
 };
