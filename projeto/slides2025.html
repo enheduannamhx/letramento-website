@@ -46,7 +46,7 @@
         
         .chart-wrapper {
             width: 100%;
-            max-width: 700px;
+            max-width: 750px;
             height: 450px;
         }
         
@@ -228,8 +228,9 @@
             'TO': { nome: 'Tocantins', dados: [5.0, 5.5, 6.6, 22.1, 46.4], rank: 22 }
         };
         
-        const brasil = [5.3, 5.7, 6.8, 27.6, 47.4];
-        const anos = [2020, 2021, 2022, 2023, 2024];
+        // Adicionar dados extras para o stepped area aparecer além de 2024
+        const brasil = [5.3, 5.7, 6.8, 27.6, 47.4, 47.4, 47.4];
+        const anos = [2020, 2021, 2022, 2023, 2024, 2025, 2026];
         const ufs = Object.keys(dadosUF);
         let currentIndex = 0;
         let chart = null;
@@ -269,6 +270,9 @@
             const uf = ufs[currentIndex];
             const dados = dadosUF[uf];
             
+            // Dados do UF com extensão para caber o stepped
+            const dadosUFCompleto = [...dados.dados, dados.dados[4], dados.dados[4]];
+            
             document.getElementById('prevBtn').disabled = currentIndex === 0;
             document.getElementById('nextBtn').disabled = currentIndex === ufs.length - 1;
             
@@ -286,23 +290,26 @@
                             type: 'line',
                             label: 'Brasil',
                             data: brasil,
-                            borderColor: 'transparent',
-                            backgroundColor: 'rgba(200, 200, 200, 0.2)',
-                            borderWidth: 0,
+                            borderColor: 'rgba(150, 150, 150, 0.8)',
+                            backgroundColor: 'rgba(180, 180, 180, 0.25)',
+                            borderWidth: 3,
                             fill: true,
                             tension: 0,
                             pointRadius: 0,
                             order: 2,
-                            stepped: true
+                            stepped: 'before',
+                            segment: {
+                                borderDash: ctx => undefined
+                            }
                         },
                         {
                             label: '%',
-                            data: dados.dados,
+                            data: dadosUFCompleto,
                             backgroundColor: '#541f7c',
                             borderRadius: 0,
                             borderSkipped: false,
-                            barPercentage: 0.9,
-                            categoryPercentage: 1.0,
+                            barPercentage: 0.7,
+                            categoryPercentage: 0.8,
                             order: 1
                         }
                     ]
@@ -311,29 +318,17 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            enabled: false
-                        }
+                        legend: { display: false },
+                        tooltip: { enabled: false }
                     },
                     scales: {
                         x: {
-                            grid: {
-                                display: false
-                            },
+                            grid: { display: false },
                             ticks: {
-                                font: {
-                                    family: 'Anybody',
-                                    size: 18,
-                                    weight: 'bold'
-                                },
+                                font: { family: 'Anybody', size: 18, weight: 'bold' },
                                 color: '#333'
                             },
-                            border: {
-                                display: false
-                            },
+                            border: { display: false },
                             offset: true
                         },
                         y: {
@@ -343,11 +338,7 @@
                         }
                     },
                     layout: {
-                        padding: {
-                            top: 30,
-                            left: 20,
-                            right: 20
-                        }
+                        padding: { top: 30, left: 30, right: 30 }
                     }
                 },
                 plugins: [{
@@ -358,11 +349,16 @@
                         ctx.fillStyle = '#ffffff';
                         ctx.textAlign = 'center';
                         
-                        chart.data.datasets[1].data.forEach(function(value, index) {
-                            const meta = chart.getDatasetMeta(1);
-                            const bar = meta.data[index];
-                            const top = bar.y - 8;
-                            ctx.fillText(value + '%', bar.x, top);
+                        // Só mostrar labels nas primeiras 5 colunas (dados reais)
+                        chart.data.datasets[1].data.slice(0, 5).forEach(function(value, index) {
+                            if (index < 5) {
+                                const meta = chart.getDatasetMeta(1);
+                                if (meta.data[index]) {
+                                    const bar = meta.data[index];
+                                    const top = bar.y - 8;
+                                    ctx.fillText(value + '%', bar.x, top);
+                                }
+                            }
                         });
                     }
                 }]
