@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slides 2025 - ENEM por UF</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 40px 0;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #a0a0a0;
+            font-size: 1.1rem;
+        }
+        
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+        
+        .uf-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .uf-card:hover {
+            background: rgba(102, 126, 234, 0.2);
+            border-color: #667eea;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+        
+        .uf-card h3 {
+            font-size: 1.5rem;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+        
+        .uf-card .ranking {
+            font-size: 0.85rem;
+            color: #a0a0a0;
+        }
+        
+        /* Slide Modal */
+        .slide-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        
+        .slide-modal.active {
+            display: block;
+        }
+        
+        .slide-content {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 40px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 20px;
+            position: relative;
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 2rem;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+        
+        .close-btn:hover {
+            opacity: 1;
+        }
+        
+        .slide-header {
+            margin-bottom: 30px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 20px;
+        }
+        
+        .slide-header h2 {
+            font-size: 2rem;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .slide-header p {
+            color: #a0a0a0;
+        }
+        
+        /* Chart Container */
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin: 30px 0;
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .stat-card .label {
+            color: #a0a0a0;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        
+        /* Navigation */
+        .slide-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-btn {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border: none;
+            color: #fff;
+            padding: 12px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: transform 0.3s;
+        }
+        
+        .nav-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎓 Slides 2025</h1>
+            <p class="subtitle">ENEM - Análise por Estado</p>
+        </header>
+        
+        <div class="cards-grid" id="cardsGrid">
+            <!-- Cards serão gerados via JavaScript -->
+        </div>
+    </div>
+    
+    <!-- Slide Modal -->
+    <div class="slide-modal" id="slideModal">
+        <div class="slide-content">
+            <button class="close-btn" onclick="closeSlide()">&times;</button>
+            
+            <div class="slide-header">
+                <h2 id="slideTitle">AC - Acre</h2>
+                <p>Evolução do % de estudantes que escreveram a redação do ENEM</p>
+            </div>
+            
+            <div class="chart-container">
+                <canvas id="slideChart"></canvas>
+            </div>
+            
+            <div class="stats-grid" id="statsGrid">
+                <!-- Stats serão gerados via JavaScript -->
+            </div>
+            
+            <div class="slide-nav">
+                <button class="nav-btn" id="prevBtn" onclick="prevSlide()">← Anterior</button>
+                <button class="nav-btn" id="nextBtn" onclick="nextSlide()">Próximo →</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Dados do ENEM 2024 (mock - depois pegamos da API)
+        const dadosUF = {
+            'AC': { nome: 'Acre', dados: [5.1, 4.6, 6.3, 27.2, 55.8], rank: 13 },
+            'AL': { nome: 'Alagoas', dados: [5.0, 4.2, 6.0, 33.6, 65.5], rank: 8 },
+            'AM': { nome: 'Amazonas', dados: [4.6, 7.3, 6.7, 24.6, 45.0], rank: 19 },
+            'AP': { nome: 'Amapá', dados: [5.3, 5.4, 7.3, 31.5, 65.8], rank: 7 },
+            'BA': { nome: 'Bahia', dados: [4.1, 3.9, 4.0, 16.2, 58.0], rank: 21 },
+            'CE': { nome: 'Ceará', dados: [14.6, 15.5, 19.5, 68.3, 76.4], rank: 1 },
+            'DF': { nome: 'Distrito Federal', dados: [10.0, 9.5, 10.7, 40.8, 61.0], rank: 2 },
+            'ES': { nome: 'Espírito Santo', dados: [8.3, 8.9, 10.1, 40.8, 61.1], rank: 4 },
+            'GO': { nome: 'Goiás', dados: [6.0, 8.0, 9.5, 41.1, 64.3], rank: 3 },
+            'MA': { nome: 'Maranhão', dados: [4.6, 4.7, 6.2, 26.8, 48.3], rank: 18 },
+            'MG': { nome: 'Minas Gerais', dados: [4.2, 4.8, 5.1, 19.3, 45.2], rank: 24 },
+            'MS': { nome: 'Mato Grosso do Sul', dados: [4.9, 5.6, 6.9, 25.6, 47.3], rank: 17 },
+            'MT': { nome: 'Mato Grosso', dados: [4.3, 4.2, 5.8, 27.0, 45.0], rank: 20 },
+            'PA': { nome: 'Pará', dados: [4.4, 3.7, 5.2, 25.3, 52.9], rank: 16 },
+            'PB': { nome: 'Paraíba', dados: [7.1, 6.3, 8.3, 38.6, 68.1], rank: 5 },
+            'PE': { nome: 'Pernambuco', dados: [6.5, 7.0, 7.5, 31.3, 60.4], rank: 10 },
+            'PI': { nome: 'Piauí', dados: [6.2, 5.8, 7.1, 30.5, 63.1], rank: 9 },
+            'PR': { nome: 'Paraná', dados: [4.2, 6.4, 6.6, 28.1, 50.0], rank: 15 },
+            'RJ': { nome: 'Rio de Janeiro', dados: [3.9, 4.4, 5.6, 19.9, 40.9], rank: 25 },
+            'RN': { nome: 'Rio Grande do Norte', dados: [5.0, 4.8, 7.1, 30.1, 59.3], rank: 12 },
+            'RO': { nome: 'Rondônia', dados: [6.1, 6.2, 8.5, 36.1, 55.0], rank: 11 },
+            'RR': { nome: 'Roraima', dados: [4.3, 3.5, 3.9, 17.8, 38.1], rank: 26 },
+            'RS': { nome: 'Rio Grande do Sul', dados: [5.2, 6.3, 7.0, 27.9, 52.1], rank: 14 },
+            'SC': { nome: 'Santa Catarina', dados: [4.2, 5.2, 6.5, 24.8, 38.4], rank: 23 },
+            'SE': { nome: 'Sergipe', dados: [6.0, 5.8, 7.5, 30.3, 66.6], rank: 6 },
+            'SP': { nome: 'São Paulo', dados: [4.2, 4.3, 5.3, 22.0, 29.3], rank: 27 },
+            'TO': { nome: 'Tocantins', dados: [5.0, 5.5, 6.6, 22.1, 46.4], rank: 22 }
+        };
+        
+        const anos = [2020, 2021, 2022, 2023, 2024];
+        const ufs = Object.keys(dadosUF);
+        let currentIndex = 0;
+        let chart = null;
+        
+        // Gerar cards
+        function generateCards() {
+            const grid = document.getElementById('cardsGrid');
+            grid.innerHTML = '';
+            
+            // Ordenar por ranking
+            const sortedUfs = ufs.sort((a, b) => dadosUF[a].rank - dadosUF[b].rank);
+            
+            sortedUfs.forEach(uf => {
+                const card = document.createElement('div');
+                card.className = 'uf-card';
+                card.onclick = () => openSlide(uf);
+                card.innerHTML = `
+                    <h3>${uf}</h3>
+                    <p class="ranking">#${dadosUF[uf].rank}</p>
+                `;
+                grid.appendChild(card);
+            });
+        }
+        
+        // Abrir slide
+        function openSlide(uf) {
+            currentIndex = ufs.indexOf(uf);
+            document.getElementById('slideModal').classList.add('active');
+            renderSlide();
+        }
+        
+        // Fechar slide
+        function closeSlide() {
+            document.getElementById('slideModal').classList.remove('active');
+        }
+        
+        // Renderizar slide
+        function renderSlide() {
+            const uf = ufs[currentIndex];
+            const dados = dadosUF[uf];
+            
+            document.getElementById('slideTitle').textContent = `${uf} - ${dados.nome}`;
+            
+            // Atualizar botões
+            document.getElementById('prevBtn').disabled = currentIndex === 0;
+            document.getElementById('nextBtn').disabled = currentIndex === ufs.length - 1;
+            
+            // Destruir chart anterior
+            if (chart) {
+                chart.destroy();
+            }
+            
+            // Criar novo chart
+            const ctx = document.getElementById('slideChart').getContext('2d');
+            chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: anos,
+                    datasets: [
+                        {
+                            label: '% Escrita',
+                            data: dados.dados,
+                            backgroundColor: 'rgba(102, 126, 234, 0.8)',
+                            borderColor: '#667eea',
+                            borderWidth: 2,
+                            borderRadius: 8,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: 'Brasil',
+                            data: [5.3, 5.7, 6.8, 27.6, 47.4],
+                            type: 'line',
+                            borderColor: '#fee086',
+                            backgroundColor: 'rgba(254, 224, 134, 0.2)',
+                            borderWidth: 3,
+                            tension: 0.4,
+                            fill: true,
+                            yAxisID: 'y'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#fff' }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { color: '#a0a0a0' },
+                            grid: { color: 'rgba(255,255,255,0.1)' }
+                        },
+                        y: {
+                            ticks: { 
+                                color: '#a0a0a0',
+                                callback: value => value + '%'
+                            },
+                            grid: { color: 'rgba(255,255,255,0.1)' },
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }
+                }
+            });
+            
+            // Stats
+            const statsGrid = document.getElementById('statsGrid');
+            statsGrid.innerHTML = `
+                <div class="stat-card">
+                    <div class="value">#${dados.rank}º</div>
+                    <div class="label">Ranking Nacional</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value">${dados.dados[4]}%</div>
+                    <div class="label">% em 2024</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value">+${(dados.dados[4] - dados.dados[0]).toFixed(1)}%</div>
+                    <div class="label">Crescimento (2020-2024)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value">${dados.dados[4] - 47.4 > 0 ? '+' : ''}${(dados.dados[4] - 47.4).toFixed(1)}%</div>
+                    <div class="label">vs Média Brasil</div>
+                </div>
+            `;
+        }
+        
+        // Navegação
+        function prevSlide() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                renderSlide();
+            }
+        }
+        
+        function nextSlide() {
+            if (currentIndex < ufs.length - 1) {
+                currentIndex++;
+                renderSlide();
+            }
+        }
+        
+        // Inicializar
+        generateCards();
+        
+        // Fechar com Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeSlide();
+        });
+    </script>
+</body>
+</html>

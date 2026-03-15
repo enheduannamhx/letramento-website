@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Letramento.org - Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #a0a0a0;
+            font-size: 1.1rem;
+        }
+        
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .project-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        
+        .project-card:hover {
+            background: rgba(102, 126, 234, 0.15);
+            border-color: #667eea;
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+        }
+        
+        .project-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        .project-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+        
+        .project-desc {
+            color: #a0a0a0;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        .badge {
+            display: inline-block;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 Letramento.org</h1>
+            <p class="subtitle">Escolha um projeto para começar</p>
+        </header>
+        
+        <div class="projects-grid">
+            <!-- Chat Emicida -->
+            <a href="teste.html" class="project-card">
+                <div class="project-icon">💬</div>
+                <div class="project-title">Chat Emicida</div>
+                <div class="project-desc">
+                    Converse com personagens icônicos da música brasileira. 
+                    Explore interpretação de texto e expressão criativa.
+                </div>
+                <span class="badge">Novo</span>
+            </a>
+            
+            <!-- Editor de Texto -->
+            <a href="editor.html" class="project-card">
+                <div class="project-icon">✍️</div>
+                <div class="project-title">Editor de Texto</div>
+                <div class="project-desc">
+                    Pratique sua escrita com feedback inteligente. 
+                    Desenvolvimento de habilidades de redação.
+                </div>
+            </a>
+            
+            <!-- Dashboard ENEM -->
+            <a href="dashboard_final.html" class="project-card">
+                <div class="project-icon">📊</div>
+                <div class="project-title">Dashboard ENEM</div>
+                <div class="project-desc">
+                    Análise estatística do ENEM por estado. 
+                    Dados de desempenho e participação.
+                </div>
+            </a>
+            
+            <!-- Slides 2025 - NOVO -->
+            <a href="slides2025.html" class="project-card">
+                <div class="project-icon">🎓</div>
+                <div class="project-title">Slides 2025</div>
+                <div class="project-desc">
+                    Visualização interativa dos dados do ENEM por UF.
+                    Gráficos e ranking por estado.
+                </div>
+                <span class="badge">Novo</span>
+            </a>
+        </div>
+    </div>
+</body>
+</html>
