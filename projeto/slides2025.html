@@ -298,7 +298,14 @@
                     maintainAspectRatio: false,
                     plugins: {
                         legend: { display: false },
-                        tooltip: { enabled: false }
+                        tooltip: { enabled: false },
+                        datalabels: {
+                            anchor: 'end',
+                            align: 'top',
+                            offset: -20,
+                            color: '#fff',
+                            font: { weight: 'bold', size: 14 }
+                        }
                     },
                     scales: {
                         x: {
@@ -324,20 +331,21 @@
                     id: 'valueLabels',
                     afterDatasetsDraw: function(chart) {
                         const ctx = chart.ctx;
+                        const meta = chart.getDatasetMeta(0);
+                        const data = meta.data;
+                        const chartArea = chart.chartArea;
+                        
                         ctx.font = 'bold 14px Anybody';
                         ctx.fillStyle = '#ffffff';
                         ctx.textAlign = 'center';
                         
-                        chart.data.datasets[0].data.forEach(function(value, index) {
+                        data.forEach(function(bar, index) {
+                            const value = chart.data.datasets[0].data[index];
                             if (value !== null) {
-                                const meta = chart.getDatasetMeta(0);
-                                if (meta.data[index]) {
-                                    const bar = meta.data[index];
-                                    // Dentro da coluna, na parte de cima
-                                    const barHeight = bar.y - bar.base;
-                                    const labelY = bar.y - (barHeight * 0.15);
-                                    ctx.fillText(value + '%', bar.x, labelY);
-                                }
+                                // Posição fixa: 20px acima do topo da barra
+                                // Isso garante uniformidade independenteme do tamanho da coluna
+                                const labelY = bar.y - 18;
+                                ctx.fillText(value + '%', bar.x, labelY);
                             }
                         });
                     }
