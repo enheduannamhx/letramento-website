@@ -228,8 +228,6 @@
             'TO': { nome: 'Tocantins', dados: [5.0, 5.5, 6.6, 22.1, 46.4], rank: 22 }
         };
         
-        // Apenas 2020-2024, 2025 vazio
-        const brasil = [5.3, 5.7, 6.8, 27.6, 47.4, null];
         const anos = [2020, 2021, 2022, 2023, 2024, 2025];
         const ufs = Object.keys(dadosUF);
         let currentIndex = 0;
@@ -270,8 +268,8 @@
             const uf = ufs[currentIndex];
             const dados = dadosUF[uf];
             
-            // Dados do UF com 2025 vazio (null)
-            const dadosUFCompleto = [...dados.dados, null];
+            // Dados com 2025 vazio
+            const dadosCompleto = [...dados.dados, null];
             
             document.getElementById('prevBtn').disabled = currentIndex === 0;
             document.getElementById('nextBtn').disabled = currentIndex === ufs.length - 1;
@@ -285,31 +283,15 @@
                 type: 'bar',
                 data: {
                     labels: anos,
-                    datasets: [
-                        {
-                            label: '%',
-                            data: dadosUFCompleto,
-                            backgroundColor: '#541f7c',
-                            borderRadius: 0,
-                            borderSkipped: false,
-                            barPercentage: 0.7,
-                            categoryPercentage: 0.8,
-                            order: 2
-                        },
-                        {
-                            type: 'line',
-                            label: 'Brasil',
-                            data: brasil,
-                            borderColor: 'rgba(150, 150, 150, 0.8)',
-                            backgroundColor: 'rgba(180, 180, 180, 0.25)',
-                            borderWidth: 3,
-                            fill: true,
-                            tension: 0,
-                            pointRadius: 0,
-                            order: 1,
-                            stepped: 'before'
-                        }
-                    ]
+                    datasets: [{
+                        label: '%',
+                        data: dadosCompleto,
+                        backgroundColor: '#541f7c',
+                        borderRadius: 0,
+                        borderSkipped: false,
+                        barPercentage: 0.7,
+                        categoryPercentage: 0.8
+                    }]
                 },
                 options: {
                     responsive: true,
@@ -342,7 +324,7 @@
                     id: 'valueLabels',
                     afterDatasetsDraw: function(chart) {
                         const ctx = chart.ctx;
-                        ctx.font = 'bold 16px Anybody';
+                        ctx.font = 'bold 14px Anybody';
                         ctx.fillStyle = '#ffffff';
                         ctx.textAlign = 'center';
                         
@@ -351,8 +333,10 @@
                                 const meta = chart.getDatasetMeta(0);
                                 if (meta.data[index]) {
                                     const bar = meta.data[index];
-                                    const top = bar.y - 8;
-                                    ctx.fillText(value + '%', bar.x, top);
+                                    // Dentro da coluna, na parte de cima
+                                    const barHeight = bar.y - bar.base;
+                                    const labelY = bar.y - (barHeight * 0.15);
+                                    ctx.fillText(value + '%', bar.x, labelY);
                                 }
                             }
                         });
