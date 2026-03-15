@@ -386,12 +386,27 @@
                     labels: anos,
                     datasets: [
                         {
+                            type: 'line',
+                            label: 'Brasil',
+                            data: brasil,
+                            borderColor: 'rgba(180, 180, 180, 0.5)',
+                            backgroundColor: 'rgba(200, 200, 200, 0.15)',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            fill: true,
+                            tension: 0,
+                            pointRadius: 0,
+                            order: 2,
+                            stepped: true
+                        },
+                        {
                             label: '%',
                             data: dados.dados,
                             backgroundColor: '#541f7c',
                             borderRadius: 8,
                             borderSkipped: false,
-                            barThickness: 40
+                            barThickness: 90,  // 3x mais largo (era ~30)
+                            order: 1
                         }
                     ]
                 },
@@ -442,8 +457,8 @@
                         ctx.fillStyle = '#333';
                         ctx.textAlign = 'center';
                         
-                        chart.data.datasets[0].data.forEach(function(value, index) {
-                            const meta = chart.getDatasetMeta(0);
+                        chart.data.datasets[1].data.forEach(function(value, index) {
+                            const meta = chart.getDatasetMeta(1);
                             const position = meta.data[index].getProps(['x', 'y'], true);
                             ctx.fillText(value + '%', position.x, position.y - 10);
                         });
