@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Slides 2025 - ENEM por UF</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Anybody:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Anybody:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -32,7 +32,6 @@
             display: flex;
         }
         
-        /* Left Side - Empty */
         .slide-left {
             width: 40%;
             padding-right: 40px;
@@ -45,14 +44,12 @@
             justify-content: center;
         }
         
-        /* Chart */
         .chart-wrapper {
             width: 100%;
             max-width: 700px;
             height: 450px;
         }
         
-        /* Navigation */
         .nav-container {
             position: fixed;
             bottom: 30px;
@@ -86,7 +83,6 @@
             transform: none;
         }
         
-        /* Cards Grid (Initial View) */
         .cards-view {
             display: block;
         }
@@ -178,7 +174,6 @@
         </header>
         
         <div class="cards-grid" id="cardsGrid">
-            <!-- Cards gerados via JS -->
         </div>
     </div>
     
@@ -187,7 +182,6 @@
         <button class="back-btn" onclick="showCards()">← Voltar</button>
         
         <div class="slide-left">
-            <!-- Parte esquerda vazia -->
         </div>
         
         <div class="slide-right">
@@ -204,7 +198,6 @@
     </div>
     
     <script>
-        // Dados do ENEM
         const dadosUF = {
             'AC': { nome: 'Acre', dados: [5.1, 4.6, 6.3, 27.2, 55.8], rank: 13 },
             'AL': { nome: 'Alagoas', dados: [5.0, 4.2, 6.0, 33.6, 65.5], rank: 8 },
@@ -241,11 +234,9 @@
         let currentIndex = 0;
         let chart = null;
         
-        // Gerar cards
         function generateCards() {
             const grid = document.getElementById('cardsGrid');
             grid.innerHTML = '';
-            
             const sortedUfs = ufs.sort((a, b) => dadosUF[a].rank - dadosUF[b].rank);
             
             sortedUfs.forEach(uf => {
@@ -260,14 +251,12 @@
             });
         }
         
-        // Mostrar cards
         function showCards() {
             document.getElementById('cardsView').style.display = 'block';
             document.getElementById('slideView').classList.remove('active');
             document.getElementById('navContainer').style.display = 'none';
         }
         
-        // Abrir slide
         function openSlide(uf) {
             currentIndex = ufs.indexOf(uf);
             document.getElementById('cardsView').style.display = 'none';
@@ -276,21 +265,17 @@
             renderSlide();
         }
         
-        // Renderizar slide
         function renderSlide() {
             const uf = ufs[currentIndex];
             const dados = dadosUF[uf];
             
-            // Botões de navegação
             document.getElementById('prevBtn').disabled = currentIndex === 0;
             document.getElementById('nextBtn').disabled = currentIndex === ufs.length - 1;
             
-            // Destruir chart anterior
             if (chart) {
                 chart.destroy();
             }
             
-            // Criar novo chart
             const ctx = document.getElementById('slideChart').getContext('2d');
             chart = new Chart(ctx, {
                 type: 'bar',
@@ -314,10 +299,10 @@
                             label: '%',
                             data: dados.dados,
                             backgroundColor: '#541f7c',
-                            borderRadius: 4,
+                            borderRadius: 0,
                             borderSkipped: false,
                             barPercentage: 0.9,
-                            categoryPercentage: 0.85,
+                            categoryPercentage: 1.0,
                             order: 1
                         }
                     ]
@@ -341,13 +326,15 @@
                             ticks: {
                                 font: {
                                     family: 'Anybody',
-                                    size: 14
+                                    size: 18,
+                                    weight: 'bold'
                                 },
-                                color: '#666'
+                                color: '#333'
                             },
                             border: {
                                 display: false
-                            }
+                            },
+                            offset: true
                         },
                         y: {
                             display: false,
@@ -357,7 +344,9 @@
                     },
                     layout: {
                         padding: {
-                            top: 20
+                            top: 30,
+                            left: 20,
+                            right: 20
                         }
                     }
                 },
@@ -365,21 +354,21 @@
                     id: 'valueLabels',
                     afterDatasetsDraw: function(chart) {
                         const ctx = chart.ctx;
-                        ctx.font = 'bold 14px Anybody';
-                        ctx.fillStyle = '#333';
+                        ctx.font = 'bold 16px Anybody';
+                        ctx.fillStyle = '#ffffff';
                         ctx.textAlign = 'center';
                         
                         chart.data.datasets[1].data.forEach(function(value, index) {
                             const meta = chart.getDatasetMeta(1);
-                            const position = meta.data[index].getProps(['x', 'y'], true);
-                            ctx.fillText(value + '%', position.x, position.y - 10);
+                            const bar = meta.data[index];
+                            const top = bar.y - 8;
+                            ctx.fillText(value + '%', bar.x, top);
                         });
                     }
                 }]
             });
         }
         
-        // Navegação
         function prevSlide() {
             if (currentIndex > 0) {
                 currentIndex--;
@@ -394,10 +383,8 @@
             }
         }
         
-        // Inicializar
         generateCards();
         
-        // Navegação com teclado
         document.addEventListener('keydown', (e) => {
             if (document.getElementById('slideView').classList.contains('active')) {
                 if (e.key === 'ArrowLeft') prevSlide();
