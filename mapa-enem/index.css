@@ -1,0 +1,611 @@
+/* ESTILOS CONSOLIDADOS DO PROJETO MAPA DE DESEMPENHO EM REDAÇÃO POR UF */
+
+/* ===== ESTILOS GLOBAIS ===== */
+body {
+    font-family: 'Gochi Hand', cursive;
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 6s ease;
+}
+
+body.loaded {
+    opacity: 1;
+}
+
+/* classes para transição em cascata dos elementos */
+.fade-in {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 2s ease, transform 2s ease;
+}
+
+.fade-in.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Atrasos escalonados para diferentes elementos */
+.index-title.fade-in { transition-delay: 0.3s; }
+.index-map-section.fade-in { transition-delay: 1s; }
+.index-legend-section.fade-in { transition-delay: 2s; }
+.index-instruction-text.fade-in { transition-delay: 3s; }
+.logo-container.fade-in { transition-delay: 3.5s; } /* Added delay for the logo */
+
+/* ===== ESTILOS DO CABEÇALHO ===== */
+.main-header {
+    position: absolute; /* Or fixed, depending on desired scroll behavior */
+    top: 15px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center; /* Center buttons horizontally */
+    gap: 0px; /* Space between buttons */
+    padding: 10px 0;
+    z-index: 1100; /* Ensure it's above other content */
+    background-color: transparent; /* Make it subtle */
+    transition-delay: 0.3s; /* Adjust fade-in delay if needed */
+}
+
+.header-button {
+    font-family: 'Gochi Hand', cursive;
+    font-size: 1.1rem; /* Adjust size as needed */
+    padding: 8px 10px;
+    background-color: rgba(255, 255, 255, 1); /* Estado inicial */
+    color: #cacaca; /* Estado inicial */
+    border: 0px solid #ddd; /* Subtle border */
+    border-radius: 8px; /* Rounded corners */
+    cursor: pointer;
+    /* Defina AQUI todas as propriedades que devem transicionar */
+    transition: box-shadow 2.0s ease-in-out,
+                background-color 2.3s ease, /* Duração mais curta para cores */
+                color 2.3s ease;            /* Duração mais curta para cores */
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.04); /* Estado inicial */
+}
+
+.header-button + .header-button {
+    margin-left: -2spx; /* Ajuste o valor negativo para controlar a sobreposição */
+    z-index: -2; /* Opcional: Garante que o segundo botão fique por cima */
+}
+
+.header-button:hover {
+    background-color: rgba(255, 255, 255, 0.9); /* Estado final */
+    color: #333; /* Estado final */
+    box-shadow: inset 0 0 3px rgba(177, 177, 177, 0.9); /* Estado final */
+}
+
+.header-button:active {
+    background-color: rgba(230, 230, 230, 0.9);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* Adjust fade-in delay for header */
+.main-header.fade-in { transition-delay: 2.1s; }
+
+/* Adjust top margin of title if header overlaps */
+.index-title {
+    /* ... existing styles ... */
+    margin-top: 60px; /* Add or adjust this value to push title down */
+}
+
+/* ===== ESTRUTURA DO SLIDE ===== */
+.slide-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.slide {
+    width: 80%;
+    height: 80%;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    border-radius: 8px; /* Cantos arredondados */
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff; /* Cor de fundo suave */
+    border: 0px solid #e0e0e0; /* Borda sutil */
+    transition: box-shadow 2.8s ease-in-out;
+}
+
+.slide:hover {
+    box-shadow: 
+        inset 0 0 5px rgba(177, 177, 177, 0.9);
+}
+.slide-content {
+    width: 90%;
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.logo-container {
+    position: absolute; /* Position relative to the parent (.index-map-section) */
+    bottom: -8px;       /* Distance from bottom */
+    right: 10px;        /* Distance from right */
+    width: 100px;       /* Adjust width as needed */
+    height: auto;       /* Maintain aspect ratio */
+    z-index: 1001;      /* Ensure it's above map layers but potentially below controls if needed */
+    display: block;     /* Make the anchor a block element */
+    cursor: pointer;
+}
+
+.logo-container img {
+    position: absolute; /* Allow stacking images */
+    bottom: 0;
+    right: 0;
+    width: 90%;
+    height: auto;
+    transition: opacity 1.5s ease-in-out; /* Smooth fade transition */
+    display: block; /* Remove extra space below image */
+}
+
+.logo-default {
+    opacity: 1; /* Visible by default */
+}
+
+.logo-hover {
+    opacity: 0; /* Hidden by default */
+}
+
+.logo-container:hover .logo-default {
+    opacity: 0; /* Hide default logo on hover */
+}
+
+.logo-container:hover .logo-hover {
+    opacity: 1; /* Show hover logo on hover */
+}
+
+
+/* ===== RESPONSIVIDADE ===== */
+/* ... existing responsive styles ... */
+
+@media (max-width: 768px) {
+    /* ... existing responsive styles ... */
+
+
+    }
+
+
+/* ... rest of the file ... */
+/* ===== ESTILOS ESPECÍFICOS DA INDEX ===== */
+.index-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    height: 100%;
+    position: relative; /* Adiciona position para que z-index funcione */
+    z-index: 0; /* Define um z-index base (baixo) */
+}
+
+/* Estilo para o título */
+.index-title {
+    color: #555555;
+    font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Animation for the UF span in the title */
+.destaque-uf-animado {
+    display: inline-block;
+    animation: pulse 3.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+}
+
+/* Section containing the map (main visual area) */
+.index-map-section {
+    width: 60%;
+    height: 60%;
+    margin-bottom: 15px;
+    margin-top: 20px; /* Adicione esta linha e ajuste o valor conforme necessário */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Map container styles specific to index page */
+.index-map-section .map-container {
+    width: 120%;
+    height: 120%;
+    max-width: 1000px;
+    max-height: 600px;
+}
+
+.index-map-section .custom-tooltip .tooltip-content strong {
+    display: block; /* Garante que o strong ocupe a linha */
+    line-height: 0.5; /* Reduz a altura da linha do título. Ajuste entre 1.0 e 1.2 */
+    margin-bottom: -12px; /* Define um espaço pequeno abaixo do título. Ajuste 0px, 1px, 2px */
+    font-size: 1.1rem; /* Opcional: Pode ajustar o tamanho da fonte se ajudar */
+}
+
+/* Opcional: Ajustar a altura da linha para o restante do conteúdo do tooltip, se necessário */
+.index-map-section .custom-tooltip .tooltip-content {
+    line-height: 0.8; /* Ajuste a altura geral da linha para o texto do ranking */
+}
+
+/* Legend section below the map */
+.index-legend-section {
+    width: 100%;
+    margin: 5px 0;
+}
+
+/* Legend container for horizontal layout */
+.index-legend-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    padding: 10px 0;
+}
+
+/* Instruction text below the legend */
+.index-instruction-text {
+    margin-top: 10px;
+    text-align: center;
+    width: 80%;
+    font-size: 1.2rem;
+    color: #555;
+}
+
+/* ===== ESTILOS DO MAPA ===== */
+.map-container,
+.index-map-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+    background-color: transparent !important;
+    border-radius: 8px;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+}
+
+/* Força transparência em elementos Leaflet */
+.leaflet-container {
+    background-color: transparent !important;
+}
+
+.leaflet-pane, .leaflet-tile,
+.leaflet-marker-icon, .leaflet-marker-shadow,
+.leaflet-tile-pane, .leaflet-overlay-pane,
+.leaflet-shadow-pane, .leaflet-marker-pane,
+.leaflet-tooltip-pane, .leaflet-popup-pane,
+.leaflet-control {
+    background-color: transparent !important;
+}
+
+/* Estilo para tooltips (caixas de informação ao passar o mouse) */
+.leaflet-tooltip {
+    background-color: rgba(255, 255, 255, 0.9) !important;
+    border: 4px solid #111111 !important;
+    border-radius: 4px !important;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4) !important;
+    color: #333 !important;
+    font-size: 12px !important;
+    padding: 6px 10px !important;
+    white-space: normal !important;
+    max-width: 200px;
+}
+
+.leaflet-tooltip-content {
+    font-weight: bold;
+}
+
+/* Estilo para o conteúdo do tooltip personalizado */
+.tooltip-content {
+    font-family: 'Gochi Hand', cursive;
+    text-align: center;
+    font-size: 20px;
+    white-space: nowrap;
+}
+
+.tooltip-content strong {
+    font-weight: bold;
+}
+
+.tooltip-content span {
+    font-weight: bold;
+}
+
+/* Estilo para popups (caixas de informação ao clicar) */
+.leaflet-popup-content-wrapper {
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    border-radius: 8px !important;
+    box-shadow: 0 3px 14px rgba(0,0,0,0.4) !important;
+}
+
+.leaflet-popup-content {
+    font-family: 'Arial', sans-serif !important;
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+    margin: 15px !important;
+    color: #333 !important;
+}
+
+.leaflet-popup-content h4 {
+    margin: 0 0 10px 0;
+    font-size: 16px;
+    font-weight: bold;
+    color: #4E9076;
+}
+
+.leaflet-popup-tip-container {
+    display: none;
+}
+
+.leaflet-pane path {
+    transition: all 0.3s ease-out !important; /* Garante transição mesmo no estado padrão */
+    outline: none !important; /* Remove o contorno de foco padrão do navegador */
+}
+
+/* Estilo para destaque de UF */
+.highlight {
+    fill-opacity: 0.9 !important;
+    stroke: #000 !important;
+    stroke-width: 2px !important;
+}
+
+/* Estilo para controles de zoom personalizados */
+.custom-zoom-controls {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    background: white;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    padding: 4px;
+}
+
+.custom-zoom-button {
+    width: 32px;
+    height: 32px;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 4px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    background: white;
+    border-radius: 4px;
+    display: block;
+}
+
+.custom-zoom-button:hover {
+    background-color: #f4f4f4;
+}
+
+/* ===== ESTILOS DA LEGENDA ===== */
+.legend-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    margin-top: 15px;
+    gap: 20px;
+    flex-wrap: wrap;
+    padding: 10px 0;
+    width: 100%;
+}
+
+/* Oculta a descrição numérica nos itens da legenda na página index */
+.index-legend-container .legend-description {
+    display: none; /* Oculta as descrições numéricas na visualização padrão */
+}
+
+/* Estilos para o tooltip da legenda */
+.legend-tooltip {
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.95);
+    border: 4px solid #111111;
+    border-radius: 4px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
+    padding: 6px 10px;
+    font-family: 'Gochi Hand', cursive;
+    font-size: 16px;
+    color: #333;
+    z-index: 1010;
+    text-align: center;
+    pointer-events: none; /* Para que o tooltip não interfira com os eventos do mouse */
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    white-space: nowrap;
+}
+
+.legend-tooltip.visible {
+    opacity: 1;
+}
+
+.legend-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.5s, opacity 0.5s;
+    margin: 0 1px;
+    min-width: 80px;
+    text-align: center;
+}
+
+.legend-item:hover {
+    transform: scale(1.1);
+}
+
+.legend-item.active {
+    transform: scale(1.05);
+}
+
+.legend-item.inactive {
+    opacity: 0.4;
+}
+
+.color-box {
+    width: 30px;
+    height: 30px;
+    margin-bottom: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+    border: 1px solid #ccc;
+    flex-shrink: 0;
+}
+
+.legend-label-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.legend-label {
+    font-size: 20px;
+    margin: 0;
+    padding: 0 3px;
+    letter-spacing: 1px;
+    font-weight: bold;
+}
+
+.legend-description {
+    font-size: 14px;
+    color: #555;
+    text-align: center;
+    margin-top: 2px;
+}
+
+/* Classes para interação dos estados no mapa */
+.state-active {
+    stroke-width: 3px !important;
+    stroke: #000 !important;
+    fill-opacity: 0.9 !important;
+    transition: all 0.3s ease-out !important; /* Adiciona transição suave */;
+}
+
+.state-inactive {
+    fill-opacity: 0.1 !important;
+    transition: all 0.5s ease-out !important; /* Cria o efeito fade-out */
+}
+
+/* Estilo padrão para todos os caminhos SVG do mapa */
+.leaflet-pane path {
+    transition: all 0.3s ease-out !important; /* Garante transição mesmo no estado padrão */
+}
+
+/* Classe para itens da legenda na página index */
+.index-legend-item {
+    margin: 0 1px;
+    min-width: 90px;
+}
+
+/* ===== RESPONSIVIDADE ===== */
+@media (max-width: 768px) {
+    .index-title {
+        font-size: 2rem;
+        margin-bottom: 15px;
+    }
+    
+    .index-map-section {
+        height: 50%;
+    }
+    
+    .index-legend-container {
+        gap: 10px;
+    }
+    
+    .index-instruction-text {
+        font-size: 1rem;
+        width: 90%;
+    }
+    
+    .legend-container {
+        gap: 15px;
+        margin-top: 10px;
+    }
+    
+    .legend-item {
+        min-width: 70px;
+    }
+    
+    .color-box {
+        width: 25px;
+        height: 25px;
+    }
+    
+    .legend-label {
+        font-size: 18px;
+    }
+    
+    .legend-description {
+        font-size: 12px;
+    }
+    
+    .custom-zoom-controls {
+        top: 5px;
+        right: 5px;
+    }
+    
+    .custom-zoom-button {
+        width: 25px;
+        height: 25px;
+        font-size: 16px;
+        line-height: 25px;
+    }
+}
+
+@media (max-width: 480px) {
+    .index-title {
+        font-size: 1.6rem;
+        margin-bottom: 10px;
+    }
+    
+    .index-map-section {
+        width: 95%;
+        height: 45%;
+    }
+    
+    .index-legend-section {
+        width: 95%;
+        margin: 5px 0;
+    }
+    
+    .index-instruction-text {
+        font-size: 0.9rem;
+        margin-top: 5px;
+    }
+    
+    .legend-container {
+        gap: 10px;
+    }
+    
+    .legend-item {
+        min-width: 60px;
+        margin: 0 5px;
+    }
+    
+    .color-box {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .legend-label {
+        font-size: 16px;
+    }
+    
+    .legend-description {
+        font-size: 11px;
+    }
+}
+
+

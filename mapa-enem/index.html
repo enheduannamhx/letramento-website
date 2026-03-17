@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa de Desempenho em Redação por UF</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gochi+Hand&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div class="slide-container">
+        <div class="slide">
+            <div class="slide-content index-content">
+                <h1 class="index-title fade-in">
+                    Clique na <span class="destaque-uf-animado">UF</span> de sua preferência
+                </h1>
+                <section class="index-map-section fade-in">
+                    <div class="map-container index-map-container">
+                        <div id="map"></div>
+                    </div>
+                </section>
+
+                <section class="index-legend-section fade-in">
+                    <div id="legend-container" class="legend-container index-legend-container"></div>
+                </section>
+
+                <p class="index-instruction-text fade-in">
+                    Passe o mouse sobre a legenda ou sobre um estado para ver os detalhes. Clique em um estado para análise detalhada.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div id="error-container" style="display: none; color: red; text-align: center; margin-top: 20px;"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script type="module" src="index.js"></script>
+    <script>
+        // Script para modo capture - oculta tudo exceto o mapa
+        (function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('capture') === 'true') {
+                // Ocultar elementos não necessários
+                const elementsToHide = [
+                    '.index-title',
+                    '.index-legend-section', 
+                    '.index-instruction-text',
+                    '.main-header',
+                    'header'
+                ];
+                let style = document.createElement('style');
+                style.id = 'capture-mode-style';
+                style.textContent = elementsToHide.map(sel => sel + ' { display: none !important; }').join(' ') + 
+                    '.slide-container { margin: 0 !important; padding: 0 !important; } ' +
+                    '.index-map-container { width: 100% !important; height: 100vh !important; } ' +
+                    '#map { width: 100% !important; height: 100% !important; }';
+                document.head.appendChild(style);
+            }
+        })();
+    </script>
+</body>
+</html>

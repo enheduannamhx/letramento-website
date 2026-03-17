@@ -1,0 +1,50 @@
+{
+  "name": "slides-lab",
+  "version": "1.0.0",
+  "description": "Visualização de mapa interativo dos resultados de redação do ENEM",
+  "main": "index.html",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch"
+  },
+  "dependencies": {
+    "@radix-ui/react-dialog": "^1.1.13",
+    "@radix-ui/react-dropdown-menu": "^2.1.14",
+    "@radix-ui/react-label": "^2.1.6",
+    "@radix-ui/react-popover": "^1.1.13",
+    "@radix-ui/react-switch": "^1.2.4",
+    "@radix-ui/react-toast": "^1.2.13",
+    "@tailwindcss/vite": "^4.1.7",
+    "@tanstack/react-query": "^5.76.1",
+    "@theatre/core": "^0.7.2",
+    "@theatre/studio": "^0.7.2",
+    "autoprefixer": "^10.4.21",
+    "chart.js": "^4.4.9",
+    "clsx": "^2.1.1",
+    "leaflet": "^1.9.4",
+    "lucide-react": "^0.511.0",
+    "postcss": "^8.5.3",
+    "react": "^19.1.0",
+    "react-chartjs-2": "^5.3.0",
+    "react-dom": "^19.1.0",
+    "react-router-dom": "^7.6.0",
+    "recharts": "^2.15.3",
+    "tailwind-merge": "^3.3.0",
+    "tailwindcss": "^4.1.7"
+  },
+  "devDependencies": {
+    "@types/leaflet": "^1.9.8",
+    "typescript": "^5.3.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/justogui/slides-lab.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/justogui/slides-lab/issues"
+  },
+  "homepage": "https://github.com/justogui/slides-lab#readme"
+}

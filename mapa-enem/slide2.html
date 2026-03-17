@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análise de Desempenho em Redação</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gochi+Hand&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="slides.css">
+</head>
+<body>
+    <button id="prev-button" class="nav-button-external"><i class="fas fa-home"></i></button>
+    <button id="next-button" class="nav-button-external"><i class="fas fa-chevron-right"></i></button>
+
+    <div class="slide-container">
+        <div class="slide">
+            <div class="slide-content">
+                <h1 id="slide-title" class="slide-title fade-in">Carregando título...</h1>
+                <h2 id="slide-subtitle" class="slide-subtitle fade-in"></h2>
+
+                <section class="slide-map-section fade-in">
+                    <div class="slide-map-container">
+                        <div id="map"></div>
+                    </div>
+                </section>
+
+                <section id="slide-text" class="slide-text-section fade-in">
+                    <p>Carregando conteúdo...</p>
+                </section>
+                
+                <div class="source-text">Fonte: microdados do INEP, dados de estudantes de escolas estaduais regulares do Brasil.</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="error-container" style="display: none; color: red; text-align: center; margin-top: 20px;"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script type="module" src="slides.js"></script>
+    <script>
+        // Script para modo capture - oculta tudo exceto o mapa
+        (function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('capture') === 'true') {
+                const elementsToHide = [
+                    '.slide-title',
+                    '.slide-subtitle', 
+                    '.slide-text-section',
+                    '.source-text',
+                    '.nav-button-external',
+                    'header'
+                ];
+                let style = document.createElement('style');
+                style.id = 'capture-mode-style';
+                style.textContent = elementsToHide.map(sel => sel + ' { display: none !important; }').join(' ') + 
+                    '.slide-container { margin: 0 !important; padding: 0 !important; } ' +
+                    '.slide-map-container { width: 100% !important; height: 100vh !important; } ' +
+                    '#map { width: 100% !important; height: 100% !important; }';
+                document.head.appendChild(style);
+            }
+        })();
+    </script>
+</body>
+</html>
