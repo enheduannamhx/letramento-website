@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Questionário de Letramento</title>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: "Baloo 2", cursive;
+            background: linear-gradient(135deg, #0d0d0d 0%, #1a1a2e 50%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ===== WELCOME SCREEN ===== */
+        .screen { display: none; width: 100%; }
+        .screen.active { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+
+        .welcome {
+            text-align: center;
+            max-width: 600px;
+            padding: 40px 30px;
+        }
+
+        .welcome h1 {
+            font-size: 2.8rem;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #7C3AED, #06B6D4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .welcome p {
+            font-size: 1.15rem;
+            color: rgba(255,255,255,0.7);
+            line-height: 1.7;
+            margin-bottom: 40px;
+        }
+
+        .welcome p strong {
+            color: #A78BFA;
+            -webkit-text-fill-color: initial;
+        }
+
+        .btn-start {
+            display: inline-block;
+            padding: 16px 60px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            font-family: inherit;
+            color: #fff;
+            background: linear-gradient(135deg, #7C3AED, #6D28D9);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 8px 30px rgba(124, 58, 237, 0.4);
+        }
+
+        .btn-start:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 12px 40px rgba(124, 58, 237, 0.5);
+        }
+
+        /* ===== QUIZ SCREEN ===== */
+        .quiz-wrapper {
+            width: 100%;
+            max-width: 700px;
+            padding: 30px 20px;
+            margin: 0 auto;
+        }
+
+        /* Progress */
+        .progress-area {
+            margin-bottom: 30px;
+        }
+
+        .progress-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .progress-counter {
+            font-size: 0.95rem;
+            color: rgba(255,255,255,0.6);
+        }
+
+        .progress-counter span { color: #A78BFA; font-weight: 700; }
+
+        .category-badge {
+            display: inline-block;
+            padding: 4px 14px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #7C3AED, #06B6D4);
+            border-radius: 3px;
+            transition: width 0.4s ease;
+        }
+
+        /* Question card */
+        .question-card {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 40px 35px;
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: cardIn 0.4s ease forwards;
+        }
+
+        @keyframes cardIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question-text {
+            font-size: 1.35rem;
+            line-height: 1.6;
+            margin-bottom: 35px;
+            color: rgba(255,255,255,0.95);
+        }
+
+        /* Likert scale */
+        .likert {
+            display: flex;
+            gap: 10px;
+        }
+
+        .likert-option {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 14px 6px;
+            border-radius: 14px;
+            border: 2px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.03);
+            transition: all 0.25s ease;
+        }
+
+        .likert-option:hover {
+            border-color: rgba(124, 58, 237, 0.5);
+            background: rgba(124, 58, 237, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .likert-option:active {
+            transform: translateY(0) scale(0.97);
+        }
+
+        .likert-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            font-weight: 700;
+            transition: all 0.25s ease;
+        }
+
+        .likert-option:nth-child(1) .likert-circle { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+        .likert-option:nth-child(2) .likert-circle { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+        .likert-option:nth-child(3) .likert-circle { background: rgba(234, 179, 8, 0.2); color: #facc15; }
+        .likert-option:nth-child(4) .likert-circle { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+        .likert-option:nth-child(5) .likert-circle { background: rgba(6, 182, 212, 0.2); color: #22d3ee; }
+
+        .likert-option:hover:nth-child(1) { border-color: #f87171; background: rgba(239, 68, 68, 0.1); }
+        .likert-option:hover:nth-child(2) { border-color: #fbbf24; background: rgba(245, 158, 11, 0.1); }
+        .likert-option:hover:nth-child(3) { border-color: #facc15; background: rgba(234, 179, 8, 0.1); }
+        .likert-option:hover:nth-child(4) { border-color: #34d399; background: rgba(16, 185, 129, 0.1); }
+        .likert-option:hover:nth-child(5) { border-color: #22d3ee; background: rgba(6, 182, 212, 0.1); }
+
+        .likert-label {
+            font-size: 0.72rem;
+            color: rgba(255,255,255,0.5);
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        /* Back button */
+        .nav-row {
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .btn-back {
+            background: none;
+            border: 1px solid rgba(255,255,255,0.15);
+            color: rgba(255,255,255,0.5);
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-back:hover {
+            border-color: rgba(255,255,255,0.3);
+            color: rgba(255,255,255,0.8);
+        }
+
+        .btn-back:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        /* ===== RESULT SCREEN ===== */
+        .result-wrapper {
+            width: 100%;
+            max-width: 700px;
+            padding: 40px 20px;
+            margin: 0 auto;
+        }
+
+        .result-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .result-header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #7C3AED, #06B6D4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .result-header p {
+            color: rgba(255,255,255,0.6);
+            font-size: 1rem;
+        }
+
+        .score-overall {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .score-ring {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.6rem;
+            font-weight: 700;
+            background: conic-gradient(
+                #7C3AED var(--score-deg, 0deg),
+                rgba(255,255,255,0.08) var(--score-deg, 0deg)
+            );
+            position: relative;
+        }
+
+        .score-ring::after {
+            content: '';
+            position: absolute;
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background: #12122a;
+        }
+
+        .score-ring span {
+            position: relative;
+            z-index: 1;
+            color: #A78BFA;
+        }
+
+        .score-label {
+            font-size: 1rem;
+            color: rgba(255,255,255,0.5);
+        }
+
+        /* Category bars */
+        .category-results {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+
+        .cat-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .cat-name {
+            width: 120px;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.7);
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .cat-bar-bg {
+            flex: 1;
+            height: 24px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .cat-bar-fill {
+            height: 100%;
+            border-radius: 12px;
+            transition: width 1s ease;
+            min-width: 2px;
+        }
+
+        .cat-pct {
+            width: 45px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-align: left;
+            flex-shrink: 0;
+        }
+
+        .btn-home {
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            margin: 0 auto;
+            padding: 14px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            font-family: inherit;
+            color: #fff;
+            background: linear-gradient(135deg, #7C3AED, #6D28D9);
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 6px 20px rgba(124, 58, 237, 0.3);
+        }
+
+        .btn-home:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(124, 58, 237, 0.4);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 600px) {
+            .welcome h1 { font-size: 2rem; }
+            .question-text { font-size: 1.1rem; }
+            .likert { gap: 6px; }
+            .likert-option { padding: 10px 4px; }
+            .likert-circle { width: 34px; height: 34px; font-size: 0.95rem; }
+            .likert-label { font-size: 0.65rem; }
+            .quiz-wrapper { padding: 20px 14px; }
+            .question-card { padding: 28px 20px; }
+            .cat-name { width: 90px; font-size: 0.75rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SCREEN 1: WELCOME -->
+    <div class="screen active" id="welcomeScreen">
+        <div class="welcome">
+            <h1>Perfil de Letramento</h1>
+            <p>
+                Responda <strong>48 perguntas</strong> sobre seus hábitos de escrita.<br>
+                Não existem respostas certas ou erradas — seja honesto.<br>
+                Ao final, você verá seu perfil em <strong>10 dimensões</strong>.
+            </p>
+            <button class="btn-start" onclick="startQuiz()">Começar</button>
+        </div>
+    </div>
+
+    <!-- SCREEN 2: QUIZ -->
+    <div class="screen" id="quizScreen">
+        <div class="quiz-wrapper">
+            <div class="progress-area">
+                <div class="progress-top">
+                    <span class="progress-counter">Pergunta <span id="currentNum">1</span> de <span>48</span></span>
+                    <span class="category-badge" id="catBadge">revisão</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="question-card" id="questionCard">
+                <div class="question-text" id="questionText"></div>
+                <div class="likert" id="likertScale">
+                    <div class="likert-option" onclick="answer(1)">
+                        <div class="likert-circle">1</div>
+                        <div class="likert-label">Nunca</div>
+                    </div>
+                    <div class="likert-option" onclick="answer(2)">
+                        <div class="likert-circle">2</div>
+                        <div class="likert-label">Raramente</div>
+                    </div>
+                    <div class="likert-option" onclick="answer(3)">
+                        <div class="likert-circle">3</div>
+                        <div class="likert-label">Às vezes</div>
+                    </div>
+                    <div class="likert-option" onclick="answer(4)">
+                        <div class="likert-circle">4</div>
+                        <div class="likert-label">Frequente</div>
+                    </div>
+                    <div class="likert-option" onclick="answer(5)">
+                        <div class="likert-circle">5</div>
+                        <div class="likert-label">Sempre</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nav-row">
+                <button class="btn-back" id="btnBack" onclick="goBack()" disabled>← Voltar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCREEN 3: RESULTS -->
+    <div class="screen" id="resultScreen">
+        <div class="result-wrapper">
+            <div class="result-header">
+                <h1>Seu Perfil de Letramento</h1>
+                <p>Baseado nas suas 48 respostas</p>
+            </div>
+
+            <div class="score-overall">
+                <div class="score-ring" id="scoreRing"><span id="scoreValue">0%</span></div>
+                <div class="score-label">Pontuação geral</div>
+            </div>
+
+            <div class="category-results" id="categoryResults"></div>
+
+            <button class="btn-home" onclick="window.location.href='../index.html'">Voltar ao início</button>
+        </div>
+    </div>
+
+    <script src="questions_array.js"></script>
+    <script>
+        // ===== STATE =====
+        let current = 0;
+        const answers = new Array(questions.length).fill(null);
+
+        // ===== CATEGORY CONFIG =====
+        const catConfig = {
+            revisao:      { label: "Revisão",       color: "#f87171" },
+            criatividade: { label: "Criatividade",  color: "#fb923c" },
+            autonomia:    { label: "Autonomia",     color: "#fbbf24" },
+            planejamento: { label: "Planejamento",  color: "#a3e635" },
+            emocao:       { label: "Emoção",        color: "#34d399" },
+            ritmo:        { label: "Ritmo",         color: "#22d3ee" },
+            vocabulario:  { label: "Vocabulário",   color: "#60a5fa" },
+            estrutura:    { label: "Estrutura",     color: "#818cf8" },
+            reflexao:     { label: "Reflexão",      color: "#a78bfa" },
+            interacao:    { label: "Interação",     color: "#f472b6" }
+        };
+
+        // ===== SCREENS =====
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        // ===== START =====
+        function startQuiz() {
+            showScreen('quizScreen');
+            renderQuestion();
+        }
+
+        // ===== RENDER QUESTION =====
+        function renderQuestion() {
+            const q = questions[current];
+            const cat = catConfig[q.category];
+
+            document.getElementById('currentNum').textContent = current + 1;
+            document.getElementById('progressFill').style.width = ((current / questions.length) * 100) + '%';
+
+            const badge = document.getElementById('catBadge');
+            badge.textContent = cat.label;
+            badge.style.background = cat.color + '22';
+            badge.style.color = cat.color;
+
+            document.getElementById('questionText').textContent = q.text;
+            document.getElementById('btnBack').disabled = current === 0;
+
+            // Re-trigger card animation
+            const card = document.getElementById('questionCard');
+            card.style.animation = 'none';
+            card.offsetHeight; // reflow
+            card.style.animation = 'cardIn 0.4s ease forwards';
+        }
+
+        // ===== ANSWER =====
+        function answer(value) {
+            answers[current] = value;
+            current++;
+
+            if (current >= questions.length) {
+                showResults();
+            } else {
+                renderQuestion();
+            }
+        }
+
+        // ===== GO BACK =====
+        function goBack() {
+            if (current > 0) {
+                current--;
+                renderQuestion();
+            }
+        }
+
+        // ===== RESULTS =====
+        function showResults() {
+            showScreen('resultScreen');
+
+            // Calculate per-category scores
+            const catScores = {};
+            for (const key in catConfig) {
+                catScores[key] = { total: 0, count: 0 };
+            }
+
+            questions.forEach((q, i) => {
+                if (answers[i] !== null) {
+                    catScores[q.category].total += answers[i];
+                    catScores[q.category].count++;
+                }
+            });
+
+            // Overall score
+            const totalPoints = answers.reduce((a, b) => a + (b || 0), 0);
+            const maxPoints = questions.length * 5;
+            const overallPct = Math.round((totalPoints / maxPoints) * 100);
+
+            // Animate score ring
+            const ring = document.getElementById('scoreRing');
+            ring.style.setProperty('--score-deg', (overallPct * 3.6) + 'deg');
+            document.getElementById('scoreValue').textContent = overallPct + '%';
+
+            // Render category bars
+            const container = document.getElementById('categoryResults');
+            container.innerHTML = '';
+
+            for (const key in catConfig) {
+                const cat = catConfig[key];
+                const sc = catScores[key];
+                const pct = sc.count > 0 ? Math.round((sc.total / (sc.count * 5)) * 100) : 0;
+
+                const row = document.createElement('div');
+                row.className = 'cat-row';
+                row.innerHTML = `
+                    <div class="cat-name">${cat.label}</div>
+                    <div class="cat-bar-bg">
+                        <div class="cat-bar-fill" style="width: 0%; background: ${cat.color};"></div>
+                    </div>
+                    <div class="cat-pct" style="color: ${cat.color}">${pct}%</div>
+                `;
+                container.appendChild(row);
+
+                // Animate bar
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        row.querySelector('.cat-bar-fill').style.width = pct + '%';
+                    });
+                });
+            }
+        }
+    </script>
+</body>
+</html>
