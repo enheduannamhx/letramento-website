@@ -530,7 +530,7 @@
             showThinking();
 
             try {
-                const response = await fetch('/api/especialista', {
+                const response = await fetch('https://letramento-website.vercel.app/api/especialista', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
