@@ -53,14 +53,14 @@
         .entry-subtitle {
             color: var(--text-muted); margin-top: 14px; font-size: 1.05rem;
             opacity: 0; transform: translateY(20px);
-            transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1); transition-delay: 0.6s;
+            transition: all 1.4s cubic-bezier(0.4, 0, 0.2, 1); transition-delay: 1.2s;
         }
         .entry-subtitle.visible { opacity: 1; transform: translateY(0); }
 
         .entry-detail {
             color: var(--accent); margin-top: 28px; font-size: 0.85rem;
             letter-spacing: 2px; text-transform: uppercase;
-            opacity: 0; transition: opacity 1s ease; transition-delay: 1.4s;
+            opacity: 0; transition: opacity 1.2s ease; transition-delay: 2.8s;
         }
         .entry-detail.visible { opacity: 0.6; }
 
@@ -367,7 +367,7 @@
         <div class="entry-content">
             <div class="entry-title" id="entryTitle">Escrita sobre Personalidade</div>
             <div class="entry-subtitle" id="entrySubtitle">Escreva sobre quem você é — o especialista acompanha sua reflexão</div>
-            <div class="entry-detail" id="entryDetail">mínimo 50 palavras</div>
+            <div class="entry-detail" id="entryDetail">entre 80 e 160 palavras</div>
         </div>
     </div>
 
@@ -384,9 +384,9 @@
                     <h3>Instruções</h3>
                     <ul>
                         <li>Escreva 2 parágrafos sobre sua personalidade</li>
-                        <li>Mínimo 50 palavras</li>
+                        <li>Mínimo 80 palavras, máximo 160 palavras</li>
                         <li>O texto deve refletir quem você é</li>
-                        <li>Seja honesto e autêntico</li>
+                        <li>Honestidade e autenticidade são valorizadas nessa atividade</li>
                     </ul>
                 </div>
 
@@ -415,7 +415,6 @@
                     <div class="agent-avatar">🖊</div>
                     <div class="agent-info">
                         <h3>Especialista</h3>
-                        <p>Filósofo & Escritor</p>
                     </div>
                     <div class="agent-status"></div>
                 </div>
@@ -441,19 +440,26 @@
         // ENTRY ANIMATION
         // =============================================
         window.addEventListener('load', () => {
+            // Título aparece após pausa inicial
             setTimeout(() => {
                 document.getElementById('entryTitle').classList.add('visible');
+            }, 800);
+
+            // Subtítulo e detalhe — triggers via CSS transition-delay
+            setTimeout(() => {
                 document.getElementById('entrySubtitle').classList.add('visible');
                 document.getElementById('entryDetail').classList.add('visible');
-            }, 300);
+            }, 800);
 
+            // Overlay sobe depois de dar tempo de ler tudo (~7s)
             setTimeout(() => {
                 document.getElementById('entryOverlay').classList.add('slide-up');
-            }, 4200);
+            }, 7000);
 
+            // Conteúdo principal aparece após overlay subir
             setTimeout(() => {
                 document.getElementById('mainContainer').classList.add('visible');
-            }, 5200);
+            }, 8200);
         });
 
         // =============================================
@@ -482,6 +488,8 @@
         const charCountEl = document.getElementById('char-count');
         const submitBtn = document.getElementById('submit-btn');
 
+        let submitEnabled = false;
+
         textInput.addEventListener('input', () => {
             const text = textInput.value;
             const words = text.trim().split(/\s+/).filter(w => w).length;
@@ -489,9 +497,13 @@
 
             wordCountEl.textContent = words;
             charCountEl.textContent = chars;
-
-            submitBtn.disabled = words < 50;
         });
+
+        // Habilitar botão após 30 segundos
+        setTimeout(() => {
+            submitEnabled = true;
+            submitBtn.disabled = false;
+        }, 30000);
 
         // =============================================
         // SUBMIT TEXT → QUESTIONÁRIO
