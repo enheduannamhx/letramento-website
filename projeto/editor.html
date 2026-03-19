@@ -64,6 +64,56 @@
         }
         .entry-detail.visible { opacity: 0.6; }
 
+        /* ===== COUNTDOWN ===== */
+        .countdown-overlay {
+            position: fixed; inset: 0;
+            z-index: 150;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+        .countdown-overlay.active { opacity: 1; pointer-events: auto; }
+        .countdown-overlay.fade-out { opacity: 0; pointer-events: none; }
+
+        .countdown-content { text-align: center; position: relative; }
+
+        .countdown-label {
+            font-size: 1rem; font-weight: 500; color: rgba(255,255,255,0.7);
+            letter-spacing: 1px; margin-bottom: 20px;
+        }
+
+        .countdown-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 6rem; font-weight: 700;
+            color: #fff;
+            animation: countPulse 1s ease infinite;
+            line-height: 1;
+        }
+
+        .countdown-ring {
+            width: 140px; height: 140px;
+            border: 3px solid rgba(124, 58, 237, 0.3);
+            border-top: 3px solid #A78BFA;
+            border-radius: 50%;
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            animation: countSpin 1s linear infinite;
+        }
+
+        @keyframes countPulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+        @keyframes countSpin {
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .main-container.blurred { filter: blur(6px); }
+
+        @keyframes blink { 50% { border-color: transparent; } }
+
         /* ===== MAIN LAYOUT ===== */
         .main-container {
             min-height: 100vh;
@@ -336,6 +386,714 @@
 
         .chat-input button:hover { background: #6D28D9; }
 
+        /* ===== REPORT SCREEN (dark theme) ===== */
+        .report-container {
+            display: none;
+            background: #0D0D1A;
+            color: #fff;
+            min-height: 100vh;
+            overflow-y: auto;
+            padding: 32px 24px 60px;
+            font-family: 'DM Sans', sans-serif;
+        }
+        .report-container.active {
+            display: block;
+        }
+
+        .report-inner {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .report-header {
+            text-align: center;
+            margin-bottom: 36px;
+        }
+
+        .report-header h1 {
+            font-size: 1.8rem; font-weight: 700;
+            background: linear-gradient(135deg, #7C3AED, #A78BFA);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        .report-header p {
+            color: #9CA3AF; font-size: 0.9rem; margin-top: 8px;
+        }
+
+        .report-card {
+            background: #1E1E32;
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 24px;
+            border: 1px solid #2D2D44;
+        }
+
+        .report-card h2 {
+            font-size: 1.15rem; font-weight: 600;
+            color: #A78BFA;
+            margin-bottom: 20px;
+            display: flex; align-items: center; gap: 10px;
+        }
+
+        .report-card h2 .icon {
+            font-size: 1.3rem;
+        }
+
+        /* Metric grid */
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .metric-box {
+            background: #0D0D1A;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .metric-box .value {
+            font-size: 1.5rem; font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            color: #A78BFA;
+        }
+
+        .metric-box .label {
+            font-size: 0.72rem; color: #9CA3AF;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            margin-top: 4px;
+        }
+
+        /* Zone bars */
+        .zone-bar-container {
+            margin-top: 16px;
+        }
+
+        .zone-bar-row {
+            display: flex; align-items: center; gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .zone-bar-label {
+            width: 120px; font-size: 0.8rem; color: #9CA3AF;
+            text-align: right; flex-shrink: 0;
+        }
+
+        .zone-bar-track {
+            flex: 1; height: 22px;
+            background: #0D0D1A;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .zone-bar-fill {
+            height: 100%;
+            border-radius: 6px;
+            transition: width 0.8s ease;
+            display: flex; align-items: center; justify-content: flex-end;
+            padding-right: 8px;
+            font-size: 0.7rem; font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Canvas containers */
+        .canvas-wrap {
+            background: #0D0D1A;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .canvas-wrap canvas {
+            width: 100%;
+            display: block;
+            border-radius: 8px;
+        }
+
+        .canvas-label {
+            font-size: 0.75rem; color: #9CA3AF;
+            text-align: center; margin-top: 8px;
+        }
+
+        /* IKI histogram */
+        .iki-histogram {
+            display: flex; align-items: flex-end; gap: 4px;
+            height: 100px;
+            margin-top: 12px;
+        }
+
+        .iki-bar-group {
+            flex: 1; display: flex; flex-direction: column;
+            align-items: center;
+        }
+
+        .iki-bar {
+            width: 100%;
+            background: linear-gradient(to top, #7C3AED, #A78BFA);
+            border-radius: 4px 4px 0 0;
+            min-height: 2px;
+            transition: height 0.6s ease;
+        }
+
+        .iki-bar-label {
+            font-size: 0.6rem; color: #9CA3AF;
+            margin-top: 4px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Text display */
+        .text-display {
+            background: #0D0D1A;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .text-display p {
+            border-left: 3px solid #7C3AED;
+            padding-left: 16px;
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            color: #D1D5DB;
+        }
+
+        /* Check items */
+        .check-row {
+            display: flex; align-items: center; gap: 10px;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+        }
+
+        .check-icon {
+            width: 22px; height: 22px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.75rem; font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .check-pass { background: #10B98133; color: #10B981; }
+        .check-fail { background: #EF444433; color: #EF4444; }
+
+        /* Authenticity panel */
+        .auth-panel {
+            background: #0D0D1A;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 16px;
+        }
+
+        .auth-score {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .auth-score .big {
+            font-size: 2.5rem; font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            color: #A78BFA;
+        }
+
+        .auth-score .sublabel {
+            font-size: 0.75rem; color: #9CA3AF;
+        }
+
+        .auth-detail-row {
+            display: flex; justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #2D2D44;
+            font-size: 0.82rem;
+        }
+
+        .auth-detail-row:last-child { border: none; }
+        .auth-detail-row .dl { color: #9CA3AF; }
+        .auth-detail-row .dv { color: #D1D5DB; font-family: 'JetBrains Mono', monospace; font-weight: 600; }
+
+        /* Emotional markers */
+        .marker-tags {
+            display: flex; flex-wrap: wrap; gap: 6px;
+            margin-top: 8px;
+        }
+
+        .marker-tag {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-weight: 500;
+        }
+
+        .marker-tag.positive { background: #10B98122; color: #10B981; }
+        .marker-tag.negative { background: #EF444422; color: #EF4444; }
+
+        /* Chat replay */
+        .chat-replay {
+            max-height: 300px;
+            overflow-y: auto;
+            background: #0D0D1A;
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .chat-replay .msg {
+            margin-bottom: 10px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 0.82rem;
+            line-height: 1.5;
+            max-width: 85%;
+        }
+
+        .chat-replay .msg.ai-r {
+            background: #7C3AED;
+            color: white;
+            margin-right: auto;
+            border-bottom-left-radius: 4px;
+        }
+
+        .chat-replay .msg.user-r {
+            background: #2D2D44;
+            color: #D1D5DB;
+            margin-left: auto;
+            border-bottom-right-radius: 4px;
+        }
+
+        /* Score ring */
+        .score-ring-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .score-ring {
+            width: 160px; height: 160px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            position: relative;
+        }
+
+        .score-ring .inner {
+            width: 120px; height: 120px;
+            background: #1E1E32;
+            border-radius: 50%;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+        }
+
+        .score-ring .inner .pct {
+            font-size: 2rem; font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            color: #A78BFA;
+        }
+
+        .score-ring .inner .sub {
+            font-size: 0.7rem; color: #9CA3AF;
+        }
+
+        /* Engagement bars */
+        .eng-bar-row {
+            display: flex; align-items: center; gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .eng-bar-label {
+            width: 100px; font-size: 0.78rem; color: #9CA3AF;
+            text-align: right; flex-shrink: 0;
+        }
+
+        .eng-bar-track {
+            flex: 1; height: 10px;
+            background: #0D0D1A;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .eng-bar-fill {
+            height: 100%;
+            border-radius: 5px;
+            background: linear-gradient(90deg, #7C3AED, #A78BFA);
+            transition: width 0.8s ease;
+        }
+
+        .eng-bar-val {
+            width: 40px; font-size: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+            color: #D1D5DB;
+        }
+
+        /* Insights list */
+        .insights-list {
+            margin-top: 20px;
+        }
+
+        .insight-item {
+            padding: 10px 16px;
+            background: #0D0D1A;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            font-size: 0.82rem;
+            color: #D1D5DB;
+            border-left: 3px solid #7C3AED;
+        }
+
+        /* Nav button */
+        .report-nav {
+            text-align: center;
+            margin-top: 32px;
+        }
+
+        .report-nav button {
+            padding: 16px 40px;
+            font-size: 1.05rem; font-weight: 600;
+            font-family: 'DM Sans', sans-serif;
+            background: #7C3AED;
+            color: white;
+            border: none; border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(124,58,237,0.3);
+        }
+
+        .report-nav button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(124,58,237,0.5);
+        }
+
+        /* Tooltips */
+        .metric-box[data-tip] {
+            position: relative;
+            cursor: help;
+        }
+
+        .metric-box[data-tip]:hover::after {
+            content: attr(data-tip);
+            position: absolute;
+            bottom: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: #0D0D1A;
+            color: #D1D5DB;
+            border: 1px solid #7C3AED;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 0.72rem;
+            line-height: 1.5;
+            width: 260px;
+            z-index: 100;
+            pointer-events: none;
+            text-transform: none;
+            letter-spacing: normal;
+            font-weight: 400;
+            font-family: 'DM Sans', sans-serif;
+            white-space: normal;
+            text-align: left;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        }
+
+        .metric-box[data-tip]:hover::before {
+            content: '';
+            position: absolute;
+            bottom: calc(100% + 2px);
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-top-color: #7C3AED;
+            z-index: 101;
+        }
+
+        /* Explanation blocks */
+        .explain {
+            background: #16162a;
+            border-left: 3px solid #7C3AED44;
+            border-radius: 0 8px 8px 0;
+            padding: 12px 16px;
+            margin: 12px 0;
+            font-size: 0.78rem;
+            line-height: 1.6;
+            color: #9CA3AF;
+        }
+
+        .explain strong { color: #A78BFA; }
+
+        .auth-examples {
+            margin-top: 6px;
+            padding-left: 12px;
+            font-style: italic;
+            color: #6B7280;
+            font-size: 0.72rem;
+        }
+
+        .auth-examples span {
+            display: inline;
+            color: #A78BFA;
+            font-style: normal;
+        }
+
+        /* Error highlights */
+        .error-item {
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 10px 14px;
+            background: #0D0D1A;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            font-size: 0.8rem;
+            line-height: 1.5;
+        }
+
+        .error-item .err-badge {
+            flex-shrink: 0;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .err-badge.spelling { background: #EF444433; color: #EF4444; }
+        .err-badge.grammar { background: #F59E0B33; color: #F59E0B; }
+
+        .error-item .err-found { color: #EF4444; text-decoration: line-through; font-family: 'JetBrains Mono', monospace; }
+        .error-item .err-fix { color: #10B981; font-family: 'JetBrains Mono', monospace; }
+        .error-item .err-desc { color: #9CA3AF; }
+
+        /* Punctuation mini bars */
+        .punct-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 8px;
+            margin: 12px 0;
+        }
+
+        .punct-item {
+            background: #0D0D1A;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .punct-char {
+            font-size: 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            color: #A78BFA;
+        }
+
+        .punct-count {
+            font-size: 0.9rem;
+            font-family: 'JetBrains Mono', monospace;
+            color: #D1D5DB;
+            margin-top: 2px;
+        }
+
+        .punct-name {
+            font-size: 0.6rem;
+            color: #6B7280;
+            margin-top: 2px;
+        }
+
+        /* Connective pills */
+        .conn-group {
+            margin-bottom: 12px;
+        }
+
+        .conn-group-label {
+            font-size: 0.72rem;
+            color: #9CA3AF;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .conn-pills {
+            display: flex; flex-wrap: wrap; gap: 5px;
+        }
+
+        .conn-pill {
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        .conn-pill.additive { background: #10B98122; color: #10B981; }
+        .conn-pill.adversative { background: #EF444422; color: #EF4444; }
+        .conn-pill.causal { background: #F59E0B22; color: #F59E0B; }
+        .conn-pill.temporal { background: #3B82F622; color: #3B82F6; }
+
+        /* LLM analysis */
+        .llm-analysis {
+            background: linear-gradient(135deg, #1a1a35, #1E1E32);
+            border: 1px solid #7C3AED44;
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 24px;
+        }
+
+        .llm-analysis h2 {
+            font-size: 1.15rem; font-weight: 600;
+            color: #A78BFA;
+            margin-bottom: 16px;
+            display: flex; align-items: center; gap: 10px;
+        }
+
+        .llm-paragraphs p {
+            font-size: 0.88rem;
+            line-height: 1.8;
+            color: #D1D5DB;
+            margin-bottom: 16px;
+            text-align: justify;
+        }
+
+        .llm-loading {
+            text-align: center;
+            padding: 30px;
+            color: #9CA3AF;
+            font-size: 0.85rem;
+        }
+
+        .llm-loading .dots {
+            display: inline-flex; gap: 4px; margin-left: 8px;
+        }
+
+        .llm-loading .dots span {
+            width: 6px; height: 6px;
+            background: #7C3AED;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out;
+        }
+
+        .llm-loading .dots span:nth-child(2) { animation-delay: 0.2s; }
+        .llm-loading .dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        /* Grammar Specialist Panels */
+        .grammar-specialists {
+            background: #1E1E32;
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 24px;
+            border: 1px solid #2D2D44;
+        }
+        .grammar-specialists > h2 {
+            font-size: 1.15rem; font-weight: 600;
+            color: #A78BFA;
+            margin-bottom: 8px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .grammar-specialists > .explain {
+            color: #9CA3AF; font-size: 0.82rem;
+            line-height: 1.6; margin-bottom: 20px;
+        }
+        .specialist-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        @media (max-width: 768px) {
+            .specialist-grid { grid-template-columns: 1fr; }
+        }
+        .specialist-panel {
+            background: #0D0D1A;
+            border-radius: 14px;
+            padding: 20px;
+            border: 1px solid #2D2D44;
+            transition: border-color 0.4s ease;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+        }
+        .specialist-panel.loaded {
+            border-color: var(--panel-accent, #2D2D44);
+        }
+        .specialist-panel.error {
+            border-color: #EF444466;
+        }
+        .specialist-panel-header {
+            display: flex; align-items: center; gap: 10px;
+            margin-bottom: 14px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #2D2D44;
+        }
+        .specialist-panel-icon {
+            width: 36px; height: 36px;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        .specialist-panel-title {
+            font-size: 0.85rem; font-weight: 600; color: #E5E7EB;
+        }
+        .specialist-panel-subtitle {
+            font-size: 0.68rem; color: #6B7280; margin-top: 2px;
+        }
+        .specialist-panel-body {
+            flex: 1;
+            font-size: 0.82rem;
+            line-height: 1.7;
+            color: #D1D5DB;
+            overflow-y: auto;
+            max-height: 500px;
+        }
+        .specialist-panel-body p {
+            margin-bottom: 10px;
+        }
+        .specialist-panel-body strong {
+            color: #E5E7EB;
+        }
+        .specialist-panel[data-specialist="ortografia"] { --panel-accent: #EF444488; }
+        .specialist-panel[data-specialist="ortografia"] .specialist-panel-icon { background: #EF444422; color: #EF4444; }
+        .specialist-panel[data-specialist="sintaxe"] { --panel-accent: #F59E0B88; }
+        .specialist-panel[data-specialist="sintaxe"] .specialist-panel-icon { background: #F59E0B22; color: #F59E0B; }
+        .specialist-panel[data-specialist="oracoes"] { --panel-accent: #7C3AED88; }
+        .specialist-panel[data-specialist="oracoes"] .specialist-panel-icon { background: #7C3AED22; color: #A78BFA; }
+        .specialist-panel[data-specialist="formalidade"] { --panel-accent: #10B98188; }
+        .specialist-panel[data-specialist="formalidade"] .specialist-panel-icon { background: #10B98122; color: #10B981; }
+
+        .specialist-skeleton {
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        .specialist-skeleton .skel-line {
+            height: 12px;
+            background: linear-gradient(90deg, #1E1E32 25%, #2D2D44 50%, #1E1E32 75%);
+            background-size: 200% 100%;
+            border-radius: 6px;
+            animation: shimmer 1.5s infinite;
+        }
+        .specialist-skeleton .skel-line:nth-child(1) { width: 90%; }
+        .specialist-skeleton .skel-line:nth-child(2) { width: 75%; }
+        .specialist-skeleton .skel-line:nth-child(3) { width: 85%; }
+        .specialist-skeleton .skel-line:nth-child(4) { width: 60%; }
+        .specialist-skeleton .skel-line:nth-child(5) { width: 80%; }
+        .specialist-skeleton .skel-line:nth-child(6) { width: 70%; }
+        .specialist-skeleton .skel-line:nth-child(7) { width: 88%; }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .sophistication-bar {
+            display: flex; align-items: center; gap: 8px;
+            margin: 12px 0;
+        }
+
+        .soph-segment {
+            flex: 1; height: 8px;
+            border-radius: 4px;
+            background: #2D2D44;
+            position: relative;
+        }
+
+        .soph-segment.active { background: #7C3AED; }
+        .soph-segment.active.level2 { background: #A78BFA; }
+        .soph-segment.active.level3 { background: #10B981; }
+
+        .soph-label {
+            font-size: 0.65rem; color: #9CA3AF;
+            text-align: center; margin-top: 4px;
+        }
+
         /* ===== RESPONSIVE ===== */
         @media (max-width: 900px) {
             .main {
@@ -357,6 +1115,11 @@
             .timer { font-size: 1.1rem; padding: 4px 12px; }
             .editor-footer { flex-direction: column; gap: 12px; }
             .submit-btn { width: 100%; }
+            .report-container { padding: 16px 12px 40px; }
+            .report-card { padding: 18px; }
+            .metric-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .zone-bar-label, .eng-bar-label { width: 80px; font-size: 0.7rem; }
+            .report-header h1 { font-size: 1.4rem; }
         }
     </style>
 </head>
@@ -371,16 +1134,25 @@
         </div>
     </div>
 
-    <!-- ===== MAIN CONTENT ===== -->
+    <!-- ===== COUNTDOWN OVERLAY ===== -->
+    <div class="countdown-overlay" id="countdownOverlay">
+        <div class="countdown-content">
+            <div class="countdown-label">A atividade começa em</div>
+            <div class="countdown-number" id="countdownNumber">5</div>
+            <div class="countdown-ring" id="countdownRing"></div>
+        </div>
+    </div>
+
+    <!-- ===== MAIN CONTENT (editor) ===== -->
     <div class="main-container" id="mainContainer">
-        <div class="header">
+        <div class="header" id="header-zone">
             <h1>Escrita sobre Personalidade</h1>
             <div class="timer" id="timer">0:00</div>
         </div>
 
         <div class="main">
             <div class="editor-section">
-                <div class="instructions">
+                <div class="instructions" id="instructions-zone">
                     <h3>Instruções</h3>
                     <ul>
                         <li>Escreva 2 parágrafos sobre sua personalidade</li>
@@ -390,7 +1162,7 @@
                     </ul>
                 </div>
 
-                <textarea id="text-input" placeholder="Comece a escrever sobre quem você é..."></textarea>
+                <textarea id="text-input" placeholder="Comece a escrever sobre quem você é..." disabled></textarea>
 
                 <div class="editor-footer">
                     <div class="stats">
@@ -427,7 +1199,7 @@
                     </div>
                 </div>
 
-                <div class="chat-input">
+                <div class="chat-input" id="chat-input-zone">
                     <input type="text" id="chat-input" placeholder="Converse com o especialista..." onkeypress="if(event.key==='Enter')sendChat()">
                     <button onclick="sendChat()">Enviar</button>
                 </div>
@@ -435,159 +1207,2910 @@
         </div>
     </div>
 
+    <!-- ===== REPORT SCREEN ===== -->
+    <div class="report-container" id="reportContainer">
+        <div class="report-inner">
+            <div class="report-header">
+                <h1>Relatório de Processo de Escrita</h1>
+                <p id="report-subtitle"></p>
+            </div>
+            <div id="report-sections"></div>
+            <div class="report-nav">
+                <button onclick="window.location.href='questionario.html'">Ir para Questionário →</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // =============================================
-        // ENTRY ANIMATION
-        // =============================================
-        window.addEventListener('load', () => {
-            // Título aparece após pausa inicial
-            setTimeout(() => {
-                document.getElementById('entryTitle').classList.add('visible');
-            }, 800);
+    // =============================================
+    // ENTRY ANIMATION + COUNTDOWN + SESSION START
+    // =============================================
+    let sessionStartTime = 0;
+    let sessionActive = false;
+    const studentId = 'student_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
 
-            // Subtítulo e detalhe — triggers via CSS transition-delay
-            setTimeout(() => {
-                document.getElementById('entrySubtitle').classList.add('visible');
-                document.getElementById('entryDetail').classList.add('visible');
-            }, 800);
+    window.addEventListener('load', () => {
+        // Phase 1: Title animation
+        setTimeout(() => document.getElementById('entryTitle').classList.add('visible'), 800);
+        setTimeout(() => {
+            document.getElementById('entrySubtitle').classList.add('visible');
+            document.getElementById('entryDetail').classList.add('visible');
+        }, 800);
 
-            // Overlay sobe depois de dar tempo de ler tudo (~7s)
-            setTimeout(() => {
-                document.getElementById('entryOverlay').classList.add('slide-up');
-            }, 7000);
+        // Phase 2: Slide away entry, show blurred editor
+        setTimeout(() => document.getElementById('entryOverlay').classList.add('slide-up'), 7000);
+        setTimeout(() => {
+            const mc = document.getElementById('mainContainer');
+            mc.classList.add('visible');
+            mc.classList.add('blurred');
+        }, 8200);
 
-            // Conteúdo principal aparece após overlay subir
-            setTimeout(() => {
-                document.getElementById('mainContainer').classList.add('visible');
-            }, 8200);
-        });
+        // Phase 3: Countdown 5-4-3-2-1
+        setTimeout(() => startCountdown(), 8600);
+    });
 
-        // =============================================
-        // TIMER
-        // =============================================
-        const startTime = Date.now();
+    function startCountdown() {
+        const overlay = document.getElementById('countdownOverlay');
+        const numEl = document.getElementById('countdownNumber');
+        overlay.classList.add('active');
 
+        let count = 5;
+        numEl.textContent = count;
+
+        const interval = setInterval(() => {
+            count--;
+            if (count > 0) {
+                numEl.textContent = count;
+            } else {
+                clearInterval(interval);
+                // Fade out countdown
+                overlay.classList.add('fade-out');
+                setTimeout(() => { overlay.style.display = 'none'; }, 400);
+
+                // Unblur editor
+                document.getElementById('mainContainer').classList.remove('blurred');
+
+                // START SESSION
+                beginSession();
+            }
+        }, 1000);
+    }
+
+    function beginSession() {
+        sessionStartTime = Date.now();
+        sessionActive = true;
+
+        // Inicializar referência de texto para diff posicional
+        captureRefText();
+        updateCursorPos();
+
+        // Enable textarea and focus
+        textInput.disabled = false;
+        textInput.focus();
+
+        // Start timer
         setInterval(() => {
-            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            if (!sessionActive) return;
+            const elapsed = Math.floor((Date.now() - sessionStartTime) / 1000);
             const minutes = Math.floor(elapsed / 60);
             const seconds = elapsed % 60;
             document.getElementById('timer').textContent =
                 minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
         }, 1000);
 
-        // =============================================
-        // STUDENT ID
-        // =============================================
-        const studentId = 'student_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        // Start all telemetry intervals
+        startMouseTracking();
+        startSnapshotTracking();
 
-        // =============================================
-        // WORD COUNT
-        // =============================================
-        const textInput = document.getElementById('text-input');
-        const wordCountEl = document.getElementById('word-count');
-        const charCountEl = document.getElementById('char-count');
-        const submitBtn = document.getElementById('submit-btn');
-
-        let submitEnabled = false;
-
-        textInput.addEventListener('input', () => {
-            const text = textInput.value;
-            const words = text.trim().split(/\s+/).filter(w => w).length;
-            const chars = text.length;
-
-            wordCountEl.textContent = words;
-            charCountEl.textContent = chars;
-        });
-
-        // Habilitar botão após 30 segundos
+        // Enable submit after 30s from session start
         setTimeout(() => {
             submitEnabled = true;
             submitBtn.disabled = false;
         }, 30000);
+    }
 
-        // =============================================
-        // SUBMIT TEXT → QUESTIONÁRIO
-        // =============================================
-        function submitText() {
-            const text = textInput.value;
-            const words = text.trim().split(/\s+/).filter(w => w).length;
-            const timeSpent = Date.now() - startTime;
+    // =============================================
+    // WORD COUNT
+    // =============================================
+    const textInput = document.getElementById('text-input');
+    const wordCountEl = document.getElementById('word-count');
+    const charCountEl = document.getElementById('char-count');
+    const submitBtn = document.getElementById('submit-btn');
 
-            // Save to localStorage for the questionnaire
-            localStorage.setItem('letramento_studentId', studentId);
-            localStorage.setItem('letramento_text', text);
-            localStorage.setItem('letramento_wordCount', words);
-            localStorage.setItem('letramento_timeSpent', timeSpent);
-            localStorage.setItem('letramento_chatHistory', JSON.stringify(chatHistory));
+    let submitEnabled = false;
 
-            // Navigate to questionnaire
-            window.location.href = 'questionario.html';
+    textInput.addEventListener('input', () => {
+        const text = textInput.value;
+        const words = text.trim().split(/\s+/).filter(w => w).length;
+        wordCountEl.textContent = words;
+        charCountEl.textContent = text.length;
+    });
+
+    // (submit enable moved to beginSession)
+
+    // =============================================
+    // TELEMETRY: Mouse tracking (3Hz) — started by beginSession()
+    // =============================================
+    const telMouse = [];
+    const MOUSE_CAP = 10000;
+    let mouseHasMoved = false;
+
+    // Zone detection: element containment + coordinate fallback
+    const zoneElements = {
+        editor: null,
+        instructions: null,
+        'chat-messages': null,
+        'chat-input': null,
+        header: null
+    };
+    let zoneRects = {}; // cached bounding rects, refreshed periodically
+
+    function cacheZoneElements() {
+        zoneElements.editor = document.getElementById('text-input');
+        zoneElements.instructions = document.getElementById('instructions-zone');
+        zoneElements['chat-messages'] = document.getElementById('chat-messages');
+        zoneElements['chat-input'] = document.getElementById('chat-input-zone');
+        zoneElements.header = document.getElementById('header-zone');
+        refreshZoneRects();
+    }
+
+    function refreshZoneRects() {
+        for (const [zone, el] of Object.entries(zoneElements)) {
+            if (el) {
+                const r = el.getBoundingClientRect();
+                zoneRects[zone] = { x: r.x, y: r.y, w: r.width, h: r.height };
+            }
+        }
+    }
+    cacheZoneElements();
+    // Refresh rects every 5s to handle layout shifts / scrolls
+    setInterval(refreshZoneRects, 5000);
+
+    function pointInRect(px, py, r) {
+        return px >= r.x && px <= r.x + r.w && py >= r.y && py <= r.y + r.h;
+    }
+
+    function detectZone(x, y) {
+        // Primary: element containment (most accurate when elementFromPoint works)
+        const el = document.elementFromPoint(x, y);
+        if (el) {
+            for (const [zone, zoneEl] of Object.entries(zoneElements)) {
+                if (zoneEl && zoneEl.contains(el)) return zone;
+            }
+        }
+        // Fallback: coordinate-in-rect (handles viewport edges, null elements)
+        // Check in priority order: more specific zones first
+        const priority = ['editor', 'chat-input', 'chat-messages', 'instructions', 'header'];
+        for (const zone of priority) {
+            const r = zoneRects[zone];
+            if (r && pointInRect(x, y, r)) return zone;
+        }
+        return 'other';
+    }
+
+    let lastMouseX = -1, lastMouseY = -1;
+    let mouseIsOutside = false;
+    let mouseTrackingInterval = null;
+
+    // Track mouse position with every move (high precision)
+    document.addEventListener('mousemove', (e) => {
+        lastMouseX = e.clientX;
+        lastMouseY = e.clientY;
+        mouseHasMoved = true;
+        mouseIsOutside = false;
+    });
+
+    // Detect mouse leaving the viewport
+    document.addEventListener('mouseleave', (e) => {
+        mouseIsOutside = true;
+        if (!sessionActive) return;
+        // Record the exit point + outside zone immediately
+        if (telMouse.length < MOUSE_CAP) {
+            const now = Date.now();
+            telMouse.push({ x: e.clientX, y: e.clientY, z: 'outside', t: now - sessionStartTime });
+        }
+    });
+
+    document.addEventListener('mouseenter', (e) => {
+        mouseIsOutside = false;
+        if (!sessionActive) return;
+        // Record re-entry immediately
+        if (telMouse.length < MOUSE_CAP) {
+            lastMouseX = e.clientX;
+            lastMouseY = e.clientY;
+            const now = Date.now();
+            const z = detectZone(lastMouseX, lastMouseY);
+            telMouse.push({ x: lastMouseX, y: lastMouseY, z: z, t: now - sessionStartTime });
+        }
+    });
+
+    function startMouseTracking() {
+        mouseTrackingInterval = setInterval(() => {
+            if (!sessionActive) return;
+            if (!mouseHasMoved) return;
+            if (telMouse.length >= MOUSE_CAP) return;
+            const now = Date.now();
+            if (mouseIsOutside) {
+                telMouse.push({ x: -1, y: -1, z: 'outside', t: now - sessionStartTime });
+            } else {
+                const z = detectZone(lastMouseX, lastMouseY);
+                telMouse.push({ x: lastMouseX, y: lastMouseY, z: z, t: now - sessionStartTime });
+            }
+        }, 333);
+    }
+
+    // =============================================
+    // TELEMETRY: Keystrokes
+    // =============================================
+    const telKeys = [];
+    const KEY_CAP = 20000;
+
+    function classifyKey(e) {
+        if (e.key === 'Backspace') return 'backspace';
+        if (e.key === 'Delete') return 'delete';
+        if (e.key.startsWith('Arrow')) return 'arrow';
+        if (e.key === 'Enter') return 'enter';
+        if (e.key === 'Tab') return 'tab';
+        if (e.key.length === 1) return 'char';
+        return 'other';
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // CURSOR & SELECTION TRACKING
+    // Captura posição do cursor e seleção ANTES de cada operação de edição.
+    // Essencial para saber ONDE a edição aconteceu (não apenas O QUÊ).
+    // ─────────────────────────────────────────────────────────────────────────────
+    let telCursorPos = 0;    // última posição conhecida do cursor
+    let telSelStart = 0;     // início da seleção
+    let telSelEnd = 0;       // fim da seleção
+    let telHasSelection = false;
+
+    function updateCursorPos() {
+        if (!textInput) return;
+        telCursorPos = textInput.selectionStart;
+        telSelStart = textInput.selectionStart;
+        telSelEnd = textInput.selectionEnd;
+        telHasSelection = telSelStart !== telSelEnd;
+    }
+
+    // Atualiza posição ao mover cursor (clique, setas, tab)
+    textInput.addEventListener('keyup', (e) => {
+        if (!sessionActive) return;
+        const type = classifyKey(e);
+        if (type === 'arrow' || type === 'tab') updateCursorPos();
+    });
+    textInput.addEventListener('click', updateCursorPos);
+    textInput.addEventListener('select', updateCursorPos);
+
+    // Fallback: selectionchange cobre casos que os eventos acima não capturam
+    document.addEventListener('selectionchange', () => {
+        if (!sessionActive || !textInput) return;
+        if (document.activeElement === textInput) {
+            telCursorPos = textInput.selectionStart;
+            telSelStart = textInput.selectionStart;
+            telSelEnd = textInput.selectionEnd;
+            telHasSelection = telSelStart !== telSelEnd;
+        }
+    });
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // REFERENCE TEXT — Reconciliação por diff
+    // Manter uma cópia de referência do texto e diffar a cada input event.
+    // Isso nos diz EXATAMENTE o que mudou e ONDE, incluindo operações compounded.
+    // ─────────────────────────────────────────────────────────────────────────────
+    let refText = '';  // referência do texto no momento anterior ao input event
+
+    function captureRefText() { refText = textInput.value; }
+
+    // Chamar no início da sessão e após cada input event
+    function syncRefText() { refText = textInput.value; }
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // INPUT EVENT — Captura sofisticada com diff posicional
+    // ─────────────────────────────────────────────────────────────────────────────
+    let pendingOps = [];      // operações pendentes de batch
+    let pendingTimer = null;  // timer para processar batch após pequenos delays
+
+    function flushPendingOps(now) {
+        if (pendingOps.length === 0) return;
+        // Ordena por posição (para operações na mesma posição, deleta vem antes de insere)
+        pendingOps.sort((a, b) => a.pos - b.pos);
+        for (const op of pendingOps) {
+            telKeys.push(op.record);
+        }
+        pendingOps = [];
+        if (pendingTimer) { clearTimeout(pendingTimer); pendingTimer = null; }
+    }
+
+    function processInputEvent(e) {
+        if (!sessionActive) return;
+        if (telKeys.length >= KEY_CAP) return;
+
+        const now = Date.now() - sessionStartTime;
+        const newText = textInput.value;
+        const oldText = refText;
+
+        // Diff: encontrar a posição e tamanho da mudança
+        // Estrategia: caminhar do início até encontrar diferença
+        let commonPrefixLen = 0;
+        const maxCompareLen = Math.min(oldText.length, newText.length);
+        while (commonPrefixLen < maxCompareLen && oldText[commonPrefixLen] === newText[commonPrefixLen]) {
+            commonPrefixLen++;
         }
 
-        // =============================================
-        // CHAT WITH ESPECIALISTA
-        // =============================================
-        const chatInput = document.getElementById('chat-input');
-        const messagesEl = document.getElementById('chat-messages');
-        const chatHistory = [];
+        // Sufixo comum
+        let commonSuffixLen = 0;
+        while (commonSuffixLen < maxCompareLen - commonPrefixLen &&
+               oldText[oldText.length - 1 - commonSuffixLen] === newText[newText.length - 1 - commonSuffixLen]) {
+            commonSuffixLen++;
+        }
 
-        async function sendChat() {
-            const message = chatInput.value.trim();
-            if (!message) return;
+        const delLen = oldText.length - commonPrefixLen - commonSuffixLen;
+        const insText = newText.substring(commonPrefixLen, newText.length - commonSuffixLen);
+        const pos = commonPrefixLen;  // posição onde ocorreu a mudança
 
-            addMessage('user', message);
-            chatHistory.push({ role: 'user', content: message });
-            chatInput.value = '';
+        // Atualizar referência
+        refText = newText;
 
-            showThinking();
+        // Se não houve mudança real, sair
+        if (delLen === 0 && insText.length === 0) return;
 
-            try {
-                const response = await fetch('https://letramento-website.vercel.app/api/especialista', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        message,
-                        history: chatHistory,
-                        studentText: textInput.value
-                    })
+        // Se o que mudou é texto colado (múltiplos chars inseridos de uma vez)
+        // OU se há deletion + insertion na mesma posição (seleção substituída)
+        if (insText.length > 1 || (delLen > 0 && insText.length > 0)) {
+            // ── OPERAÇÃO COMPOSTA: paste ou replace ──
+            // Registrar a seleção que existia ANTES (capturada por selectionchange)
+            const selStart = telSelStart;
+            const selEnd = telSelEnd;
+            const hadSelection = telSelStart !== telSelEnd;
+
+            if (delLen > 0 && insText.length > 0) {
+                // ── REPLACE (seleção substituída por novo texto) ──
+                // keydown pode ter disparado deleteContentBackward — ignorar no replay
+                // Registrar como uma única operação composta
+                telKeys.push({
+                    t: now,
+                    type: 'replace',
+                    pos: pos,
+                    delLen: delLen,
+                    delText: oldText.substring(pos, pos + delLen),
+                    insText: insText,
+                    selStart: selStart,
+                    selEnd: selEnd,
+                    fromPaste: insText.length > 3  // heurística: >3 chars = paste
                 });
-
-                const data = await response.json();
-                hideThinking();
-
-                if (data.response) {
-                    addMessage('ai', data.response);
-                    chatHistory.push({ role: 'assistant', content: data.response });
+            } else if (insText.length > 1) {
+                // ── PASTE (inserção de múltiplos caracteres) ──
+                // Verificar se havia seleção sendo substituída
+                if (hadSelection && selStart === pos) {
+                    telKeys.push({
+                        t: now,
+                        type: 'replace',
+                        pos: pos,
+                        delLen: delLen > 0 ? delLen : selEnd - selStart,
+                        delText: oldText.substring(pos, pos + (delLen > 0 ? delLen : selEnd - selStart)),
+                        insText: insText,
+                        selStart: selStart,
+                        selEnd: selEnd,
+                        fromPaste: true
+                    });
                 } else {
-                    addMessage('ai', 'Desculpe, não consegui responder agora. Tente novamente.');
+                    telKeys.push({
+                        t: now,
+                        type: 'paste',
+                        pos: pos,
+                        text: insText,
+                        len: insText.length,
+                        selStart: selStart,
+                        selEnd: selEnd
+                    });
                 }
-            } catch (e) {
-                hideThinking();
-                addMessage('ai', 'Erro de conexão. Verifique sua internet e tente novamente.');
+            }
+        } else if (delLen > 0 && insText.length === 0) {
+            // ── DELETE (backspace ou delete com cursor/seleção) ──
+            telKeys.push({
+                t: now,
+                type: 'delete',
+                pos: pos,
+                delLen: delLen,
+                delText: oldText.substring(pos, pos + delLen),
+                fromSel: telHasSelection,
+                selStart: telSelStart,
+                selEnd: telSelEnd
+            });
+        } else if (insText.length === 1) {
+            // ── INSERT (tecla de caractere único) ──
+            telKeys.push({
+                t: now,
+                type: 'char',
+                k: insText,
+                c: insText.charCodeAt(0),
+                pos: pos
+            });
+        }
+
+        syncRefText();
+    }
+
+    // keydown: captura teclas de controle E antes de qualquer input event
+    textInput.addEventListener('keydown', (e) => {
+        if (!sessionActive) return;
+        if (telKeys.length >= KEY_CAP) return;
+        const type = classifyKey(e);
+        if (type === 'char' || type === 'other') {
+            // Para chars, marcar que vamos processar via input event
+            // Capturar referência ANTES que o navegador modifique o value
+            captureRefText();
+            return;
+        }
+        // Teclas de controle: captura posição antes
+        updateCursorPos();
+        captureRefText();
+
+        const now = Date.now() - sessionStartTime;
+        telKeys.push({
+            k: e.key.substring(0, 12),
+            c: e.keyCode,
+            t: now,
+            type: type,
+            pos: telCursorPos
+        });
+    });
+
+    // input: processa todas as inserções e deleções com diff posicional
+    textInput.addEventListener('input', (e) => {
+        if (!sessionActive) return;
+        if (telKeys.length >= KEY_CAP) return;
+        // Ignora inputTypes gerenciados por keydown (Enter já capturado)
+        if (e.inputType === 'insertLineBreak') return;
+        // processInputEvent faz diff e captura tudo (chars, paste, replace, delete)
+        processInputEvent(e);
+    });
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // TELEMETRY: Copy/Paste
+    // ─────────────────────────────────────────────────────────────────────────────
+    const telCopyPaste = [];
+
+    textInput.addEventListener('copy', () => {
+        if (!sessionActive) return;
+        const sel = window.getSelection().toString();
+        telCopyPaste.push({
+            action: 'copy',
+            text: sel.substring(0, 500),
+            len: sel.length,
+            t: Date.now() - sessionStartTime
+        });
+    });
+
+    textInput.addEventListener('paste', (e) => {
+        if (!sessionActive) return;
+        updateCursorPos();
+        captureRefText();
+        try {
+            const pasted = (e.clipboardData || window.clipboardData).getData('text') || '';
+            telCopyPaste.push({
+                action: 'paste',
+                text: pasted.substring(0, 500),
+                len: pasted.length,
+                t: Date.now() - sessionStartTime
+            });
+        } catch (err) {
+            // Clipboard inacessível (cross-origin etc.)
+        }
+    });
+
+    textInput.addEventListener('cut', (e) => {
+        if (!sessionActive) return;
+        updateCursorPos();
+        captureRefText();
+        const sel = window.getSelection().toString();
+        if (sel) {
+            telCopyPaste.push({
+                action: 'cut',
+                text: sel.substring(0, 500),
+                len: sel.length,
+                t: Date.now() - sessionStartTime
+            });
+        }
+    });
+
+    // =============================================
+    // TELEMETRY: Clicks
+    // =============================================
+    const telClicks = [];
+
+    document.addEventListener('click', (e) => {
+        if (!sessionActive) return;
+        const z = detectZone(e.clientX, e.clientY);
+        telClicks.push({
+            x: e.clientX,
+            y: e.clientY,
+            z: z,
+            btn: e.button,
+            t: Date.now() - sessionStartTime
+        });
+    });
+
+    // =============================================
+    // TELEMETRY: Scroll (2Hz throttled)
+    // =============================================
+    const telScroll = [];
+    let scrollThrottleTimer = null;
+
+    function handleScroll(e) {
+        if (!sessionActive) return;
+        if (scrollThrottleTimer) return;
+        scrollThrottleTimer = setTimeout(() => { scrollThrottleTimer = null; }, 500);
+        const target = e.target;
+        const zone = target.id === 'text-input' ? 'editor' :
+                     target.id === 'chat-messages' ? 'chat-messages' : 'other';
+        telScroll.push({
+            top: target.scrollTop || 0,
+            zone: zone,
+            t: Date.now() - sessionStartTime
+        });
+    }
+
+    textInput.addEventListener('scroll', handleScroll);
+    document.getElementById('chat-messages').addEventListener('scroll', handleScroll);
+
+    // =============================================
+    // TELEMETRY: Text Snapshots (every 10s)
+    // =============================================
+    const telSnapshots = [];
+
+    function startSnapshotTracking() {
+        setInterval(() => {
+            if (!sessionActive) return;
+            const text = textInput.value;
+            const wc = text.trim().split(/\s+/).filter(w => w).length;
+            telSnapshots.push({ text: text, wc: wc, t: Date.now() - sessionStartTime });
+        }, 10000);
+    }
+
+    // =============================================
+    // CHAT WITH ESPECIALISTA
+    // =============================================
+    const chatInputEl = document.getElementById('chat-input');
+    const messagesEl = document.getElementById('chat-messages');
+    const chatHistory = [];
+
+    async function sendChat() {
+        if (!sessionActive) return;
+        const message = chatInputEl.value.trim();
+        if (!message) return;
+
+        addMessage('user', message);
+        chatHistory.push({ role: 'user', content: message, t: Date.now() - sessionStartTime });
+        chatInputEl.value = '';
+
+        showThinking();
+
+        try {
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    studentId: studentId,
+                    message: message,
+                    studentText: textInput.value,
+                    history: chatHistory
+                })
+            });
+
+            const data = await response.json();
+            hideThinking();
+
+            if (data.response) {
+                addMessage('ai', data.response);
+                chatHistory.push({ role: 'assistant', content: data.response, t: Date.now() - sessionStartTime });
+            } else {
+                addMessage('ai', 'Desculpe, não consegui responder agora. Tente novamente.');
+            }
+        } catch (e) {
+            hideThinking();
+            addMessage('ai', 'Erro de conexão. Verifique sua internet e tente novamente.');
+        }
+    }
+
+    function addMessage(type, text) {
+        const div = document.createElement('div');
+        div.className = 'message ' + type;
+        div.textContent = text;
+        messagesEl.appendChild(div);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    function showThinking() {
+        const div = document.createElement('div');
+        div.id = 'thinking';
+        div.className = 'thinking';
+        div.innerHTML = '<span></span><span></span><span></span>';
+        messagesEl.appendChild(div);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    function hideThinking() {
+        const el = document.getElementById('thinking');
+        if (el) el.remove();
+    }
+
+    // =============================================
+    // ANALYSIS MODULES
+    // =============================================
+
+    function computeKeystrokes(keys) {
+        const charKeys = keys.filter(k => k.type === 'char');
+        const pasteKeys = keys.filter(k => k.type === 'paste' || k.type === 'replace');
+        const backspaceKeys = keys.filter(k => k.type === 'backspace');
+        const deleteKeys = keys.filter(k => k.type === 'delete');
+        const deleteOpKeys = keys.filter(k => k.type === 'delete' || k.type === 'deleteOp');
+
+        // Total chars produced (typed + pasted/replaced)
+        const totalCharsProduced = charKeys.length + pasteKeys.reduce((sum, k) => sum + (k.text || k.insText || '').length, 0);
+
+        // IKI (inter-key intervals) — entre eventos de input, não entre chars individuais de um paste
+        const ikiArr = [];
+        for (let i = 1; i < keys.length; i++) {
+            const gap = keys[i].t - keys[i - 1].t;
+            // Ignora gaps entre chars dentro de um mesmo paste (chars do mesmo evento)
+            const sameEvent = (keys[i].type === 'char' && keys[i-1].type === 'char' && (keys[i].t - keys[i-1].t) < 50);
+            if (!sameEvent) ikiArr.push(gap);
+        }
+
+        // Pauses > 2000ms
+        const pauses = ikiArr.filter(iki => iki > 2000);
+        const pauseCount = pauses.length;
+        const pauseAvg = pauses.length > 0 ? pauses.reduce((a, b) => a + b, 0) / pauses.length : 0;
+        const longPauses = ikiArr.filter(iki => iki > 5000).length;
+
+        // P-Bursts (pause-bounded production: sequências entre pausas >2s)
+        // Inclui chars individuais E chars de operações de paste/replace
+        const pBursts = [];
+        let currentBurstSize = 0;
+        for (let i = 0; i < keys.length; i++) {
+            if (i > 0 && (keys[i].t - keys[i - 1].t) > 2000) {
+                if (currentBurstSize > 0) pBursts.push(currentBurstSize);
+                currentBurstSize = 0;
+            }
+            if (keys[i].type === 'char') {
+                currentBurstSize++;
+            } else if (keys[i].type === 'paste') {
+                currentBurstSize += (keys[i].text || '').length;
+            } else if (keys[i].type === 'replace') {
+                currentBurstSize += (keys[i].insText || '').length;
+            }
+        }
+        if (currentBurstSize > 0) pBursts.push(currentBurstSize);
+
+        // R-Bursts (revision-bounded: sequências entre backspaces/deletes)
+        const rBursts = [];
+        let rBurstSize = 0;
+        for (let i = 0; i < keys.length; i++) {
+            if (keys[i].type === 'backspace' || keys[i].type === 'delete' || keys[i].type === 'deleteOp') {
+                if (rBurstSize > 0) rBursts.push(rBurstSize);
+                rBurstSize = 0;
+            } else if (keys[i].type === 'char') {
+                rBurstSize++;
+            } else if (keys[i].type === 'paste') {
+                rBurstSize += (keys[i].text || '').length;
+            } else if (keys[i].type === 'replace') {
+                rBurstSize += (keys[i].insText || '').length;
+            }
+        }
+        if (rBurstSize > 0) rBursts.push(rBurstSize);
+
+        // CPM over time (30s windows) — considera chars de paste/replace como produção
+        const cpmOverTime = [];
+        if (keys.length > 0) {
+            const totalMs = keys[keys.length - 1].t;
+            const windowMs = 30000;
+            for (let start = 0; start < totalMs; start += windowMs) {
+                const end = start + windowMs;
+                const charsInWindow = charKeys.filter(k => k.t >= start && k.t < end).length;
+                // + chars from paste/replace in window
+                const pasteChars = pasteKeys.filter(k => k.t >= start && k.t < end)
+                    .reduce((sum, k) => sum + (k.text || k.insText || '').length, 0);
+                const windowDuration = Math.min(windowMs, totalMs - start);
+                const cpm = windowDuration > 0 ? ((charsInWindow + pasteChars) / windowDuration) * 60000 : 0;
+                cpmOverTime.push({ t: start + windowMs / 2, cpm: Math.round(cpm) });
             }
         }
 
-        function addMessage(type, text) {
-            const div = document.createElement('div');
-            div.className = 'message ' + type;
-            div.textContent = text;
-            messagesEl.appendChild(div);
-            messagesEl.scrollTop = messagesEl.scrollHeight;
+        // Rhythm consistency (CV of IKIs, only for IKIs < 2000ms)
+        const typingIKIs = ikiArr.filter(iki => iki > 0 && iki < 2000);
+        let rhythmCV = 0;
+        if (typingIKIs.length > 1) {
+            const mean = typingIKIs.reduce((a, b) => a + b, 0) / typingIKIs.length;
+            const variance = typingIKIs.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / typingIKIs.length;
+            const stdDev = Math.sqrt(variance);
+            rhythmCV = mean > 0 ? Math.round((stdDev / mean) * 100) : 0;
         }
 
-        function showThinking() {
-            const div = document.createElement('div');
-            div.id = 'thinking';
-            div.className = 'thinking';
-            div.innerHTML = '<span></span><span></span><span></span>';
-            messagesEl.appendChild(div);
-            messagesEl.scrollTop = messagesEl.scrollHeight;
+        // IKI histogram (buckets of 100ms)
+        const ikiBuckets = new Array(11).fill(0); // 0-100, 100-200, ... 900-1000, 1000+
+        for (const iki of ikiArr) {
+            if (iki < 0) continue;
+            const bucket = Math.min(Math.floor(iki / 100), 10);
+            ikiBuckets[bucket]++;
         }
 
-        function hideThinking() {
-            const el = document.getElementById('thinking');
-            if (el) el.remove();
+        return {
+            total: keys.length,
+            chars: totalCharsProduced,
+            rawChars: charKeys.length,
+            pasteCount: pasteKeys.length,
+            replaceCount: keys.filter(k => k.type === 'replace').length,
+            backspaces: backspaceKeys.length + deleteKeys.length,
+            backspacePct: keys.length > 0 ? Math.round(((backspaceKeys.length + deleteKeys.length) / keys.length) * 100) : 0,
+            pauseCount, pauseAvg: Math.round(pauseAvg), longPauses,
+            pBursts: pBursts.length,
+            pBurstAvg: pBursts.length > 0 ? Math.round(pBursts.reduce((a, b) => a + b, 0) / pBursts.length) : 0,
+            rBursts: rBursts.length,
+            rBurstAvg: rBursts.length > 0 ? Math.round(rBursts.reduce((a, b) => a + b, 0) / rBursts.length) : 0,
+            cpmOverTime, rhythmCV, ikiBuckets, ikiArr
+        };
+    }
+
+    function computeMouse(mouseData) {
+        let totalDist = 0;
+        for (let i = 1; i < mouseData.length; i++) {
+            // Skip distance when mouse is outside viewport
+            if (mouseData[i].z === 'outside' || mouseData[i - 1].z === 'outside') continue;
+            const dx = mouseData[i].x - mouseData[i - 1].x;
+            const dy = mouseData[i].y - mouseData[i - 1].y;
+            totalDist += Math.sqrt(dx * dx + dy * dy);
         }
+
+        const durationS = mouseData.length > 1 ? (mouseData[mouseData.length - 1].t - mouseData[0].t) / 1000 : 1;
+        const avgSpeed = durationS > 0 ? Math.round(totalDist / durationS) : 0;
+
+        // Compute zone percentages from actual sample zone data (accurate)
+        const zoneSamples = { editor: 0, instructions: 0, 'chat-messages': 0, 'chat-input': 0, header: 0, other: 0, outside: 0 };
+        const zoneTimeMs = { editor: 0, instructions: 0, 'chat-messages': 0, 'chat-input': 0, header: 0, other: 0, outside: 0 };
+        for (let i = 0; i < mouseData.length; i++) {
+            const z = mouseData[i].z || 'other';
+            zoneSamples[z] = (zoneSamples[z] || 0) + 1;
+            // Time weight: gap to next sample (or 333ms for last)
+            const dt = (i < mouseData.length - 1) ? (mouseData[i + 1].t - mouseData[i].t) : 333;
+            zoneTimeMs[z] = (zoneTimeMs[z] || 0) + dt;
+        }
+
+        const totalSamples = mouseData.length || 1;
+        const zonePct = {};
+        for (const [zone, count] of Object.entries(zoneSamples)) {
+            zonePct[zone] = Math.round((count / totalSamples) * 100);
+        }
+
+        return {
+            totalDist: Math.round(totalDist),
+            avgSpeed,
+            zonePct,
+            zoneTimeMs,
+            zoneSamples
+        };
+    }
+
+    // Portuguese syllable counter (rule-based, ~90% accuracy)
+    function countSyllablesPT(word) {
+        const w = word.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        if (w.length <= 2) return 1;
+        // Replace known diphthongs with single marker
+        let s = w.replace(/(?:ao|au|ei|eu|oi|ou|ai|ui|ae|oe|ue|ia|ie|io|iu|ua|uo)/g, 'V');
+        // Count vowel groups
+        const vowels = s.match(/[aeiouV]+/g);
+        return vowels ? Math.max(1, vowels.length) : 1;
+    }
+
+    function computeText(text) {
+        const words = text.trim().split(/\s+/).filter(w => w);
+        const wordCount = words.length;
+        const lowerWords = words.map(w => w.toLowerCase().replace(/[.,;:!?()""''…]/g, ''));
+        const cleanWords = lowerWords.filter(w => w.length > 0);
+        const uniqueWords = new Set(cleanWords);
+        const ttr = wordCount > 0 ? uniqueWords.size / wordCount : 0;
+
+        // Word frequency map
+        const wordFreq = {};
+        for (const w of cleanWords) { wordFreq[w] = (wordFreq[w] || 0) + 1; }
+
+        // Hapax Legomenon (words appearing only once)
+        const hapaxCount = Object.values(wordFreq).filter(c => c === 1).length;
+        const hapaxRatio = uniqueWords.size > 0 ? Math.round((hapaxCount / uniqueWords.size) * 100) : 0;
+
+        // Yule's K (vocabulary richness — lower = more diverse)
+        let yulesK = 0;
+        if (wordCount > 0) {
+            const freqOfFreqs = {};
+            for (const f of Object.values(wordFreq)) { freqOfFreqs[f] = (freqOfFreqs[f] || 0) + 1; }
+            let sumFiI2 = 0;
+            for (const [i, fi] of Object.entries(freqOfFreqs)) { sumFiI2 += fi * Math.pow(parseInt(i), 2); }
+            yulesK = wordCount > 1 ? Math.round(10000 * (sumFiI2 - wordCount) / (wordCount * wordCount)) : 0;
+        }
+
+        // Sentences
+        const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+        const sentenceCount = sentences.length;
+        const avgWordsPerSentence = sentenceCount > 0 ? Math.round((wordCount / sentenceCount) * 10) / 10 : 0;
+
+        // Average word length
+        const totalChars = cleanWords.reduce((a, w) => a + w.length, 0);
+        const avgWordLen = wordCount > 0 ? Math.round((totalChars / wordCount) * 10) / 10 : 0;
+
+        // Syllable count & Flesch Reading Ease (PT-BR adaptation)
+        let totalSyllables = 0;
+        for (const w of cleanWords) { totalSyllables += countSyllablesPT(w); }
+        const avgSyllablesPerWord = wordCount > 0 ? Math.round((totalSyllables / wordCount) * 100) / 100 : 0;
+        const fleschPT = sentenceCount > 0 && wordCount > 0
+            ? Math.round(206.84 - 1.02 * (wordCount / sentenceCount) - 60.76 * (totalSyllables / wordCount))
+            : 0;
+        const fleschClamped = Math.max(0, Math.min(100, fleschPT));
+        let fleschLabel = '';
+        if (fleschClamped >= 75) fleschLabel = 'Muito fácil';
+        else if (fleschClamped >= 50) fleschLabel = 'Fácil';
+        else if (fleschClamped >= 30) fleschLabel = 'Padrão';
+        else fleschLabel = 'Difícil';
+
+        // Paragraphs
+        const paragraphs = text.split(/\n\s*\n/).filter(p => p.trim().length > 0);
+        const paragraphCount = paragraphs.length;
+
+        const lowerText = text.toLowerCase();
+
+        // ====== SENTIMENT (expanded lexicon with valence) ======
+        const sentimentLex = {
+            // Positive (valence +0.5 to +1.0)
+            'alegria':0.9,'feliz':0.9,'amo':0.8,'amor':0.8,'gosto':0.6,'adoro':0.8,'paixão':0.8,
+            'otimista':0.7,'esperança':0.7,'gentil':0.6,'carinhoso':0.7,'carinhosa':0.7,
+            'empático':0.7,'empática':0.7,'forte':0.6,'dedicado':0.6,'dedicada':0.6,
+            'criativo':0.7,'criativa':0.7,'determinado':0.7,'determinada':0.7,'orgulho':0.7,
+            'confiante':0.7,'alegre':0.8,'gratidão':0.8,'grato':0.7,'grata':0.7,
+            'tranquilo':0.6,'tranquila':0.6,'paciente':0.5,'curioso':0.6,'curiosa':0.6,
+            'bom':0.5,'boa':0.5,'ótimo':0.8,'ótima':0.8,'maravilhoso':0.9,'maravilhosa':0.9,
+            'incrível':0.8,'perfeito':0.7,'lindo':0.7,'linda':0.7,'querido':0.6,'querida':0.6,
+            'honesto':0.6,'honesta':0.6,'responsável':0.6,'maduro':0.6,'madura':0.6,
+            'divertido':0.7,'divertida':0.7,'engraçado':0.6,'engraçada':0.6,'simpático':0.6,
+            'corajoso':0.7,'corajosa':0.7,'generoso':0.7,'generosa':0.7,'resiliente':0.7,
+            'calmo':0.5,'calma':0.5,'seguro':0.5,'segura':0.5,'satisfeito':0.6,'satisfeita':0.6,
+            // Negative (valence -0.5 to -1.0)
+            'triste':-0.8,'raiva':-0.8,'medo':-0.7,'ansiedade':-0.7,'ansioso':-0.7,'ansiosa':-0.7,
+            'inseguro':-0.6,'insegura':-0.6,'nervoso':-0.6,'nervosa':-0.6,'tímido':-0.5,'tímida':-0.5,
+            'frustrado':-0.7,'frustrada':-0.7,'solitário':-0.7,'solitária':-0.7,
+            'impaciente':-0.5,'irritado':-0.7,'irritada':-0.7,'preocupado':-0.6,'preocupada':-0.6,
+            'difícil':-0.4,'defeito':-0.5,'estresse':-0.6,'cansado':-0.5,'cansada':-0.5,
+            'fraco':-0.6,'fraca':-0.6,'ruim':-0.7,'péssimo':-0.9,'péssima':-0.9,
+            'ódio':-0.9,'deprimido':-0.9,'deprimida':-0.9,'furioso':-0.8,'furiosa':-0.8,
+            'medroso':-0.6,'medrosa':-0.6,'chato':-0.5,'chata':-0.5,'preguiçoso':-0.5,'preguiçosa':-0.5,
+            'teimoso':-0.4,'teimosa':-0.4,'ciumento':-0.5,'ciumenta':-0.5,'egoísta':-0.6
+        };
+        let sentimentSum = 0, sentimentCount = 0;
+        const foundPositive = [], foundNegative = [];
+        for (const w of cleanWords) {
+            if (sentimentLex[w] !== undefined) {
+                sentimentSum += sentimentLex[w];
+                sentimentCount++;
+                if (sentimentLex[w] > 0) { if (!foundPositive.includes(w)) foundPositive.push(w); }
+                else { if (!foundNegative.includes(w)) foundNegative.push(w); }
+            }
+        }
+        const sentimentScore = sentimentCount > 0 ? Math.round((sentimentSum / sentimentCount) * 100) / 100 : 0;
+        let sentimentLabel = 'Neutro';
+        if (sentimentScore > 0.3) sentimentLabel = 'Positivo';
+        else if (sentimentScore > 0.1) sentimentLabel = 'Levemente positivo';
+        else if (sentimentScore < -0.3) sentimentLabel = 'Negativo';
+        else if (sentimentScore < -0.1) sentimentLabel = 'Levemente negativo';
+        const emotionalBalance = foundPositive.length > 0 && foundNegative.length > 0;
+
+        // ====== PERSONAL VOICE INDICATORS ======
+        // 1st person density
+        const fpMatches = lowerText.match(/\b(eu|meu|minha|meus|minhas|me|mim|comigo|sou|tenho|estou|fui|sinto|acredito|penso|acho|sei|gosto|quero|preciso|consigo)\b/g) || [];
+        const firstPersonDensity = wordCount > 0 ? Math.round((fpMatches.length / wordCount) * 100 * 10) / 10 : 0;
+
+        // Self vs other reference ratio
+        const selfRefs = (lowerText.match(/\b(eu|meu|minha|me|mim|comigo)\b/g) || []).length;
+        const otherRefs = (lowerText.match(/\b(ele|ela|eles|elas|seu|sua|seus|suas|outro|outra|outros|outras|pessoas|gente|alguém|ninguém)\b/g) || []).length;
+        const selfFocusRatio = (selfRefs + otherRefs) > 0 ? Math.round((selfRefs / (selfRefs + otherRefs)) * 100) : 50;
+
+        // Hedging (uncertainty markers)
+        const hedgeMatches = lowerText.match(/\b(acho|talvez|parece|meio|quase|tipo|mais ou menos|creio|suponho|não sei|pode ser)\b/g) || [];
+        const hedgingDensity = wordCount > 0 ? Math.round((hedgeMatches.length / wordCount) * 100 * 10) / 10 : 0;
+
+        // Specificity markers
+        const properNouns = words.filter(w => /^[A-ZÁÉÍÓÚÂÊÔÃÕÇ]/.test(w) && w.length > 1 && words.indexOf(w) > 0).length;
+        const numbers = words.filter(w => /\d/.test(w)).length;
+        const demonstratives = (lowerText.match(/\b(este|esta|esse|essa|aquele|aquela|isto|isso|aquilo)\b/g) || []).length;
+        const specificityScore = wordCount > 0 ? Math.round(((properNouns + numbers * 2 + demonstratives) / wordCount) * 100 * 10) / 10 : 0;
+
+        // ====== TEMPORAL ORIENTATION ======
+        const pastMatches = (lowerText.match(/\b(fui|era|estava|fazia|tinha|foi|foram|conheci|aprendi|aconteceu|lembro|lembrava|sentia|vivia|costumava|fiz|disse|vi|ouvi|cresci|passei)\b/g) || []).length;
+        const presentMatches = (lowerText.match(/\b(sou|estou|faço|é|tenho|gosto|acho|sei|vivo|sinto|acredito|penso|quero|preciso|consigo|parece|fico)\b/g) || []).length;
+        const futureMatches = (lowerText.match(/\b(vou|será|farei|pretendo|espero|planejo|quero|desejo|sonho|irei|terei)\b/g) || []).length;
+        const temporalTotal = pastMatches + presentMatches + futureMatches;
+        const temporalOrientation = {
+            past: temporalTotal > 0 ? Math.round((pastMatches / temporalTotal) * 100) : 0,
+            present: temporalTotal > 0 ? Math.round((presentMatches / temporalTotal) * 100) : 0,
+            future: temporalTotal > 0 ? Math.round((futureMatches / temporalTotal) * 100) : 0
+        };
+        let temporalLabel = 'Presente';
+        if (temporalOrientation.past > temporalOrientation.present && temporalOrientation.past > temporalOrientation.future) temporalLabel = 'Passado';
+        else if (temporalOrientation.future > temporalOrientation.present) temporalLabel = 'Futuro';
+
+        // ====== COGNITIVE COMPLEXITY ======
+        const complexMarkers = (lowerText.match(/\b(porque|embora|apesar|se|caso|quando|enquanto|para que|a fim de|desde que|mesmo que|ainda que|visto que|já que|uma vez que|por isso|portanto|contudo|todavia|no entanto|entretanto)\b/g) || []);
+        const cognitiveComplexity = wordCount > 0 ? Math.round((complexMarkers.length / wordCount) * 100 * 10) / 10 : 0;
+        let cognitiveLabel = 'Simples';
+        if (complexMarkers.length >= 4) cognitiveLabel = 'Elaborado';
+        else if (complexMarkers.length >= 2) cognitiveLabel = 'Moderado';
+
+        // ====== CONCRETE EXAMPLES & SELF-CRITIQUE (improved) ======
+        const concreteMatches = lowerText.match(/\b(por exemplo|quando|uma vez|lembro|aconteceu|situação|momento|dia|vez que|caso|episódio|experiência|história|fato)\b/g) || [];
+        const selfCritiqueMatches = lowerText.match(/\b(mas|porém|embora|apesar|defeito|dificuldade|preciso melhorar|nem sempre|às vezes|por outro lado|no entanto|reconheço|admito|infelizmente|problema)\b/g) || [];
+        const cliches = ['sou uma pessoa', 'dou o meu melhor', 'sou muito esforçado', 'trabalho em equipe',
+            'sou proativo', 'sou dedicado', 'me considero uma pessoa', 'me considero', 'acima de tudo',
+            'sempre fui assim', 'sou como sou'];
+        const clicheMatches = cliches.filter(c => lowerText.includes(c));
+
+        // ====== AUTHENTICITY SCORE (recomposed — 7 factors) ======
+        let authScore = 0;
+        // Factor 1: First person voice (0-20) — density-based
+        authScore += Math.min(20, Math.round(firstPersonDensity * 2.5));
+        // Factor 2: Emotional disclosure (0-15) — sentiment words found
+        authScore += Math.min(15, sentimentCount * 3);
+        // Factor 3: Concrete examples (0-15)
+        authScore += Math.min(15, concreteMatches.length * 5);
+        // Factor 4: Self-critique / nuance (0-15)
+        authScore += Math.min(15, selfCritiqueMatches.length * 4);
+        // Factor 5: Cognitive complexity (0-10)
+        authScore += Math.min(10, complexMarkers.length * 3);
+        // Factor 6: Emotional balance — both positive AND negative (0-10)
+        authScore += emotionalBalance ? 10 : (sentimentCount > 0 ? 5 : 0);
+        // Factor 7: Specificity / concreteness (0-10)
+        authScore += Math.min(10, Math.round(specificityScore * 3));
+        // Penalty: clichés
+        authScore -= clicheMatches.length * 8;
+        // Penalty: very short text
+        if (wordCount < 40) authScore -= 15;
+        else if (wordCount < 80) authScore -= 5;
+        authScore = Math.max(0, Math.min(100, Math.round(authScore)));
+
+        let authLabel = 'Insuficiente';
+        if (authScore >= 70) authLabel = 'Genuíno';
+        else if (authScore >= 50) authLabel = 'Moderado';
+        else if (authScore >= 30) authLabel = 'Superficial';
+
+        // Vocabulary richness (improved — combines TTR + Hapax + word count)
+        let richness = Math.round(ttr * 60 + (hapaxRatio * 0.2) + Math.min(20, wordCount > 50 ? Math.log2(uniqueWords.size) * 3 : 0));
+        richness = Math.max(0, Math.min(100, richness));
+
+        return {
+            wordCount, sentenceCount,
+            ttr: Math.round(ttr * 100) / 100, richness,
+            hapaxCount, hapaxRatio, yulesK,
+            avgWordsPerSentence, avgWordLen, avgSyllablesPerWord,
+            fleschPT: fleschClamped, fleschLabel,
+            paragraphCount, paragraphPass: paragraphCount >= 2,
+            wordCountPass: wordCount >= 80 && wordCount <= 160,
+            // Sentiment
+            sentimentScore, sentimentLabel, sentimentCount,
+            foundPositive, foundNegative, emotionalBalance,
+            // Personal voice
+            firstPersonDensity, selfFocusRatio, hedgingDensity,
+            specificityScore,
+            hedgeMatches: [...new Set(hedgeMatches)],
+            // Temporal
+            temporalOrientation, temporalLabel,
+            // Cognitive
+            cognitiveComplexity, cognitiveLabel,
+            complexMarkers: [...new Set(complexMarkers)],
+            // Authenticity
+            authScore, authLabel,
+            authDetails: {
+                firstPerson: fpMatches.length, concreteExamples: concreteMatches.length,
+                selfCritique: selfCritiqueMatches.length, clicheCount: clicheMatches.length,
+                emotionalWords: sentimentCount, complexity: complexMarkers.length,
+                clicheMatches
+            }
+        };
+    }
+
+    function computeEngagement(timeSpentMs, keystrokeData, chatHistory, mouseData) {
+        const totalMinutes = timeSpentMs / 60000;
+
+        // Time score (0-100): ideal 5-15 min range
+        let timeScore = 0;
+        if (totalMinutes >= 3 && totalMinutes <= 25) {
+            timeScore = totalMinutes >= 5 && totalMinutes <= 15 ? 100 :
+                totalMinutes < 5 ? Math.round((totalMinutes / 5) * 100) :
+                    Math.round(Math.max(0, 100 - (totalMinutes - 15) * 10));
+        } else if (totalMinutes > 0) {
+            timeScore = 20;
+        }
+
+        // Typing activity score
+        const charsTyped = keystrokeData.chars || 0;
+        const typingScore = Math.min(100, Math.round((charsTyped / 200) * 100));
+
+        // Chat engagement score
+        const userMessages = chatHistory.filter(m => m.role === 'user').length;
+        const chatScore = Math.min(100, userMessages * 25);
+
+        // Editor focus score (% time in editor zone)
+        const zoneTimeMs = mouseData.zoneTimeMs || {};
+        const totalZoneMs = Object.values(zoneTimeMs).reduce((a, b) => a + b, 0) || 1;
+        const editorMs = (zoneTimeMs.editor || 0);
+        const focusScore = Math.round((editorMs / totalZoneMs) * 100);
+
+        // Composite: time 20%, activity 30%, chat 20%, focus 30%
+        const composite = Math.round(timeScore * 0.2 + typingScore * 0.3 + chatScore * 0.2 + focusScore * 0.3);
+
+        return {
+            composite: Math.min(100, composite),
+            time: timeScore,
+            activity: typingScore,
+            chat: chatScore,
+            focus: focusScore
+        };
+    }
+
+    // =============================================
+    // SEMANTIC ANALYSIS
+    // =============================================
+
+    function computeSemantic(text) {
+        const words = text.trim().split(/\s+/).filter(w => w);
+        const lowerWords = words.map(w => w.toLowerCase().replace(/[.,;:!?()""'']/g, ''));
+        const wordCount = words.length;
+
+        // Function words list (PT-BR)
+        const functionWords = new Set([
+            'o','a','os','as','um','uma','uns','umas','de','da','do','das','dos',
+            'em','na','no','nas','nos','ao','aos','à','às','por','pelo','pela',
+            'com','sem','sob','sobre','para','pra','até','entre','contra','desde',
+            'eu','tu','ele','ela','nós','vós','eles','elas','me','te','se','nos',
+            'lhe','lhes','meu','minha','meus','minhas','teu','tua','seu','sua',
+            'seus','suas','este','esta','esse','essa','aquele','aquela','isto',
+            'isso','aquilo','que','qual','quem','onde','cujo','e','ou','nem',
+            'mas','porém','contudo','todavia','porque','pois','se','caso',
+            'embora','ainda','como','não','já','mais','muito','pouco','bem',
+            'também','só','há','ter','ser','estar','ir','vir','foi','é','são',
+            'tem','está','vai','era','foram','seria','será','pode','deve',
+            'quando','então','assim','tão','todo','toda','todos','todas',
+            'algum','alguma','nenhum','nenhuma','outro','outra','cada','qual',
+            'quanto','quanta','nada','tudo','algo','alguém','ninguém'
+        ]);
+
+        // Lexical density
+        const contentWords = lowerWords.filter(w => w.length > 0 && !functionWords.has(w));
+        const lexicalDensity = wordCount > 0 ? Math.round((contentWords.length / wordCount) * 100) : 0;
+
+        // Connective analysis
+        const lowerText = text.toLowerCase();
+        const connectives = {
+            additive: ['e também', 'além disso', 'além de', 'igualmente', 'não só', 'também', 'ainda', 'inclusive'],
+            adversative: ['mas', 'porém', 'contudo', 'todavia', 'entretanto', 'no entanto', 'pelo contrário', 'ao invés', 'ao passo que', 'embora'],
+            causal: ['porque', 'pois', 'já que', 'uma vez que', 'visto que', 'por isso', 'por conseguinte', 'portanto', 'consequentemente'],
+            temporal: ['quando', 'enquanto', 'antes de', 'depois de', 'durante', 'logo', 'depois', 'antes', 'até que', 'desde que', 'sempre que', 'assim que']
+        };
+
+        const foundConnectives = { additive: [], adversative: [], causal: [], temporal: [] };
+        let connectiveCount = 0;
+        for (const [type, list] of Object.entries(connectives)) {
+            for (const conn of list) {
+                const regex = new RegExp('\\b' + conn.replace(/\s+/g, '\\s+') + '\\b', 'gi');
+                const matches = lowerText.match(regex);
+                if (matches) {
+                    foundConnectives[type].push(conn);
+                    connectiveCount += matches.length;
+                }
+            }
+        }
+
+        const connectiveBreakdown = {
+            additive: foundConnectives.additive.length,
+            adversative: foundConnectives.adversative.length,
+            causal: foundConnectives.causal.length,
+            temporal: foundConnectives.temporal.length
+        };
+
+        // Discourse markers
+        const discourseMarkers = [
+            'por exemplo', 'a saber', 'em outras palavras', 'quer dizer',
+            'de fato', 'na verdade', 'sem dúvida', 'certamente', 'obviamente',
+            'em conclusão', 'em resumo', 'enfim', 'finalmente', 'em suma', 'afinal',
+            'primeiro', 'em primeiro lugar', 'em seguida', 'por fim',
+            'dessa forma', 'desse modo', 'assim sendo', 'com efeito',
+            'em particular', 'especialmente', 'ou seja', 'isto é',
+            'por outro lado', 'ao mesmo tempo', 'nesse sentido'
+        ];
+        const foundDiscourseMarkers = [];
+        let discourseMarkerCount = 0;
+        for (const dm of discourseMarkers) {
+            const regex = new RegExp('\\b' + dm.replace(/\s+/g, '\\s+') + '\\b', 'gi');
+            const matches = lowerText.match(regex);
+            if (matches) {
+                foundDiscourseMarkers.push(dm);
+                discourseMarkerCount += matches.length;
+            }
+        }
+
+        // Paragraph coherence (word overlap between consecutive paragraphs)
+        const paragraphs = text.split(/\n\s*\n/).filter(p => p.trim().length > 0);
+        let paragraphCoherence = 0;
+        if (paragraphs.length >= 2) {
+            let totalOverlap = 0;
+            for (let i = 1; i < paragraphs.length; i++) {
+                const prevWords = new Set(paragraphs[i - 1].toLowerCase().split(/\s+/).filter(w => w.length > 3));
+                const currWords = paragraphs[i].toLowerCase().split(/\s+/).filter(w => w.length > 3);
+                const overlap = currWords.filter(w => prevWords.has(w)).length;
+                const maxPossible = Math.max(currWords.length, 1);
+                totalOverlap += (overlap / maxPossible);
+            }
+            paragraphCoherence = Math.round((totalOverlap / (paragraphs.length - 1)) * 100);
+        }
+
+        // Semantic fields
+        const fields = {
+            'personalidade': ['personalidade', 'caráter', 'temperamento', 'jeito', 'modo de ser', 'natureza'],
+            'emoções': ['sinto', 'sentimento', 'emoção', 'alegria', 'tristeza', 'raiva', 'medo', 'feliz', 'triste'],
+            'relações': ['família', 'amigos', 'amigo', 'pai', 'mãe', 'irmão', 'irmã', 'pessoas', 'convívio'],
+            'escola/trabalho': ['escola', 'estudo', 'trabalho', 'professor', 'aula', 'faculdade', 'profissão'],
+            'valores': ['honesto', 'honestidade', 'respeito', 'lealdade', 'justiça', 'verdade', 'ética'],
+            'aspirações': ['sonho', 'futuro', 'objetivo', 'meta', 'quero', 'pretendo', 'desejo', 'espero'],
+            'autoconhecimento': ['percebo', 'reconheço', 'aceito', 'consciência', 'reflexão', 'aprendi']
+        };
+
+        const detectedFields = [];
+        for (const [field, keywords] of Object.entries(fields)) {
+            for (const kw of keywords) {
+                if (lowerText.includes(kw)) {
+                    detectedFields.push(field);
+                    break;
+                }
+            }
+        }
+
+        // Sentence type variety
+        const sentences = text.split(/(?<=[.!?])\s+/).filter(s => s.trim().length > 0);
+        const sentenceTypes = { declarative: 0, interrogative: 0, exclamatory: 0 };
+        for (const s of sentences) {
+            const trimmed = s.trim();
+            if (trimmed.endsWith('?')) sentenceTypes.interrogative++;
+            else if (trimmed.endsWith('!')) sentenceTypes.exclamatory++;
+            else sentenceTypes.declarative++;
+        }
+
+        return {
+            lexicalDensity,
+            contentWordCount: contentWords.length,
+            functionWordCount: wordCount - contentWords.length,
+            connectiveCount,
+            connectiveBreakdown,
+            foundConnectives,
+            discourseMarkerCount,
+            foundDiscourseMarkers,
+            paragraphCoherence,
+            semanticFields: detectedFields,
+            sentenceTypes,
+            sentenceCount: sentences.length
+        };
+    }
+
+    // =============================================
+    // GRAMMAR & SPELLING ANALYSIS (robust)
+    // =============================================
+
+    // LanguageTool results will be fetched async and merged later
+    let languageToolResults = null;
+
+    function computeGrammarSpelling(text) {
+        const allIssues = [];
+
+        // === ORTOGRAFIA (30+ patterns) ===
+        const spellingRules = [
+            { p: /\bconcerteza\b/gi, fix: 'com certeza', desc: 'Sempre separado.', cat: 'ortografia' },
+            { p: /\bderrepente\b/gi, fix: 'de repente', desc: 'Sempre separado.', cat: 'ortografia' },
+            { p: /\bporisso\b/gi, fix: 'por isso', desc: 'Sempre separado.', cat: 'ortografia' },
+            { p: /\bapartir\b/gi, fix: 'a partir', desc: 'Sempre separado.', cat: 'ortografia' },
+            { p: /\bdenovo\b/gi, fix: 'de novo', desc: 'Sempre separado.', cat: 'ortografia' },
+            { p: /\bafim\s+de\b/gi, fix: 'a fim de', desc: '"A fim de" (propósito) é separado. "Afim" (junto) = semelhante.', cat: 'ortografia' },
+            { p: /\bagente\b(?!\s+(?:secreto|público|federal|policial|imobiliário|de))/gi, fix: 'a gente', desc: '"A gente" (pronome) é separado. "Agente" (junto) é substantivo.', cat: 'ortografia' },
+            { p: /\bna medida que\b/gi, fix: 'à medida que', desc: 'Locução proporcional exige crase: "à medida que".', cat: 'ortografia' },
+            { p: /\bvoce\b/gi, fix: 'você', desc: 'Falta acento circunflexo.', cat: 'ortografia' },
+            { p: /\btambem\b/gi, fix: 'também', desc: 'Falta acento.', cat: 'ortografia' },
+            { p: /\bnao\b/gi, fix: 'não', desc: 'Falta til.', cat: 'ortografia' },
+            { p: /\bseria\b(?=\s+melhor)/gi, fix: null, desc: null, cat: null }, // skip, valid
+            { p: /\bhá\s+\d+\s+(?:anos?|dias?|meses?)\s+atrás\b/gi, fix: 'há... (sem atrás)', desc: 'Redundância: "há" já indica passado. Use "há 2 anos" ou "2 anos atrás".', cat: 'ortografia' },
+            { p: /\b(vc|vcs|tb|tbm|pq|cmg|blz|flw|tmj|oq)\b/gi, fix: 'forma completa', desc: 'Abreviação de internet. Em texto formal, use a palavra completa.', cat: 'ortografia' },
+            { p: /\bviajem\b(?!\s)/gi, fix: 'viagem (substantivo) ou viajem (subjuntivo)', desc: '"Viagem" = substantivo. "Viajem" = verbo (que eles viajem). Verifique o contexto.', cat: 'ortografia' },
+            { p: /\bha\b(?=\s+(?:muito|pouco|anos|dias|meses|tempo|bastante))/gi, fix: 'há', desc: '"Há" (verbo haver) indica tempo passado. Requer acento.', cat: 'ortografia' },
+            { p: /\besta\b(?=\s+(?:é|foi|era|sendo))/gi, fix: 'está', desc: '"Está" (verbo estar) requer acento. "Esta" sem acento é pronome demonstrativo.', cat: 'ortografia' },
+        ];
+
+        // === CONCORDÂNCIA ===
+        const concordRules = [
+            { p: /\bhouveram\b/gi, fix: 'houve', desc: '"Haver" (existir) é impessoal — sempre singular: "Houve muitos problemas".', cat: 'concordância' },
+            { p: /\bhaviam\s+(?:muitos?|poucos?|vários?|alguns?|diversas?)\b/gi, fix: 'havia', desc: '"Haver" (existir) é impessoal — "Havia muitas pessoas".', cat: 'concordância' },
+            { p: /\bfazem\s+(?:\d+|dois|três|quatro|cinco|muitos?|poucos?|vários?)\s+(?:anos?|dias?|meses?|semanas?|horas?)\b/gi, fix: 'faz', desc: '"Fazer" (tempo) é impessoal — "Faz dois anos".', cat: 'concordância' },
+            { p: /\bnós\s+(?:vai|tem|faz|quer|sabe|pode|precisa|gosta|é|era|foi|veio|deu)\b/gi, fix: 'nós vamos/temos/fazemos...', desc: '"Nós" exige verbo na 1ª pessoa do plural.', cat: 'concordância' },
+            { p: /\ba\s+gente\s+(?:vamos|temos|fazemos|somos|fomos|queremos|sabemos|podemos)\b/gi, fix: 'a gente vai/tem/faz...', desc: '"A gente" exige verbo na 3ª pessoa do singular.', cat: 'concordância' },
+            { p: /\bela\s+mesmo\b/gi, fix: 'ela mesma', desc: 'Pronome de reforço concorda com o antecedente: "ela mesma".', cat: 'concordância' },
+            { p: /\bcujo\s+(?:o|a|os|as)\b/gi, fix: 'cujo / cuja', desc: '"Cujo" já inclui o artigo — não use artigo depois: "cujo livro" (não "cujo o livro").', cat: 'concordância' },
+            { p: /\bmeia\s+(?:triste|cansad[ao]|feliz|nervos[ao]|ansios[ao]|preocupad[ao]|confus[ao])\b/gi, fix: 'meio + adjetivo', desc: '"Meio" como advérbio é invariável: "meio cansada", não "meia cansada".', cat: 'concordância' },
+        ];
+
+        // === REGÊNCIA ===
+        const regenciaRules = [
+            { p: /\bmim\s+(?:fazer|ir|ver|ter|ser|estar|poder|falar|dizer|saber|querer|conseguir|precisar|pensar|achar|gostar|trabalhar|estudar|escrever|ler|comer|dormir|morar|comprar|pagar)\b/gi, fix: 'eu + verbo', desc: '"Mim" não conjuga verbo. Use "para eu fazer".', cat: 'regência' },
+            { p: /\bpra\s+mim\s+\w+[aei]r\b/gi, fix: 'para eu + verbo', desc: '"Para mim" + infinitivo é incorreto. "Para eu fazer".', cat: 'regência' },
+            { p: /\bchegar\s+em\b/gi, fix: 'chegar a', desc: '"Chegar" exige preposição "a": "chegar a casa", "chegar ao trabalho".', cat: 'regência' },
+            { p: /\bnamorar\s+com\b/gi, fix: 'namorar', desc: '"Namorar" é transitivo direto: "namorar alguém" (não "namorar com").', cat: 'regência' },
+            { p: /\bimplicar\s+em\b/gi, fix: 'implicar', desc: '"Implicar" (acarretar) é transitivo direto: "implica riscos" (não "implica em riscos").', cat: 'regência' },
+            { p: /\bassistir\s+(?:o\s|os\s|a\s+(?!(?:um|uma|esse|essa|est)))/gi, fix: 'assistir a / ao', desc: '"Assistir" (ver) é transitivo indireto: "assistir ao filme".', cat: 'regência' },
+        ];
+
+        // === ESTILO ===
+        const estiloRules = [
+            { p: /\bsubir\s+(?:para\s+)?cima\b/gi, fix: 'subir', desc: 'Pleonasmo: "subir" já implica "para cima".', cat: 'estilo' },
+            { p: /\bdescer\s+(?:para\s+)?baixo\b/gi, fix: 'descer', desc: 'Pleonasmo: "descer" já implica "para baixo".', cat: 'estilo' },
+            { p: /\bentrar\s+(?:para\s+)?dentro\b/gi, fix: 'entrar', desc: 'Pleonasmo: "entrar" já implica "para dentro".', cat: 'estilo' },
+            { p: /\bsair\s+(?:para\s+)?fora\b/gi, fix: 'sair', desc: 'Pleonasmo: "sair" já implica "para fora".', cat: 'estilo' },
+            { p: /\badiar\s+(?:para\s+)?depois\b/gi, fix: 'adiar', desc: 'Pleonasmo: "adiar" já significa "para depois".', cat: 'estilo' },
+            { p: /\bencarar\s+de\s+frente\b/gi, fix: 'encarar', desc: 'Pleonasmo: "encarar" já pressupõe "de frente".', cat: 'estilo' },
+            { p: /\ba\s+nível\s+de\b/gi, fix: 'em relação a / quanto a', desc: '"A nível de" é vício de linguagem — use "em relação a" ou "quanto a".', cat: 'estilo' },
+            { p: /\bem\s+termos\s+de\b/gi, fix: 'quanto a / sobre', desc: '"Em termos de" é vago e coloquial em textos formais.', cat: 'estilo' },
+        ];
+
+        const allRules = [...spellingRules, ...concordRules, ...regenciaRules, ...estiloRules];
+
+        for (const rule of allRules) {
+            if (!rule.cat) continue;
+            const matches = text.match(rule.p);
+            if (matches) {
+                for (const m of matches) {
+                    allIssues.push({
+                        found: m,
+                        fix: rule.fix || '',
+                        desc: rule.desc,
+                        type: rule.cat,
+                        source: 'patterns'
+                    });
+                }
+            }
+        }
+
+        // Structural grammar checks
+        const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+
+        // Repeated adjacent words
+        const repeatedMatches = text.match(/\b(\w{2,})\s+\1\b/gi) || [];
+        for (const r of repeatedMatches) {
+            allIssues.push({ found: r, fix: r.split(/\s+/)[0], desc: 'Palavra repetida adjacente.', type: 'gramática', source: 'patterns' });
+        }
+
+        // Very long sentences
+        let longSentences = 0;
+        for (const s of sentences) {
+            const wc = s.trim().split(/\s+/).filter(w => w).length;
+            if (wc > 35) {
+                longSentences++;
+                allIssues.push({ found: s.trim().substring(0, 50) + '...', fix: 'Dividir em frases menores', desc: `Frase com ${wc} palavras — considere dividir para melhorar a leitura.`, type: 'gramática', source: 'patterns' });
+            }
+        }
+
+        // Lowercase after period
+        const lcStarts = text.match(/[.!?]\s+[a-záéíóúâêôãõç]/g) || [];
+        if (lcStarts.length > 0) {
+            allIssues.push({ found: `${lcStarts.length}× minúscula após ponto`, fix: 'Iniciar com maiúscula', desc: 'Frases devem começar com letra maiúscula.', type: 'gramática', source: 'patterns' });
+        }
+
+        // Missing final punctuation
+        if (text.trim().length > 0 && !/[.!?]$/.test(text.trim())) {
+            allIssues.push({ found: '(fim do texto)', fix: 'Adicionar ponto final', desc: 'O texto não termina com pontuação.', type: 'gramática', source: 'patterns' });
+        }
+
+        // Categorize counts
+        const byCat = {};
+        for (const i of allIssues) {
+            byCat[i.type] = (byCat[i.type] || 0) + 1;
+        }
+
+        return {
+            allIssues,
+            totalIssues: allIssues.length,
+            byCat,
+            spellingErrorCount: (byCat['ortografia'] || 0),
+            grammarIssueCount: (byCat['concordância'] || 0) + (byCat['regência'] || 0) + (byCat['gramática'] || 0),
+            styleIssueCount: (byCat['estilo'] || 0),
+            repeatedWords: repeatedMatches.length,
+            longSentences,
+            sentenceCount: sentences.length,
+            languageTool: null // will be populated async
+        };
+    }
+
+    // =============================================
+    // PUNCTUATION ANALYSIS (ENEM-based)
+    // =============================================
+
+    function computePunctuation(text) {
+        const words = text.trim().split(/\s+/).filter(w => w);
+        const wordCount = words.length;
+
+        const punctTypes = {
+            '.': { name: 'Ponto final', count: 0, level: 'básico' },
+            ',': { name: 'Vírgula', count: 0, level: 'básico' },
+            '...': { name: 'Reticências', count: 0, level: 'intermediário' },
+            ';': { name: 'Ponto e vírgula', count: 0, level: 'avançado' },
+            ':': { name: 'Dois pontos', count: 0, level: 'avançado' },
+            '!': { name: 'Exclamação', count: 0, level: 'intermediário' },
+            '?': { name: 'Interrogação', count: 0, level: 'intermediário' },
+            '—': { name: 'Travessão', count: 0, level: 'avançado' },
+            '()': { name: 'Parênteses', count: 0, level: 'avançado' },
+            '""': { name: 'Aspas', count: 0, level: 'avançado' }
+        };
+
+        // Count reticências first (... or …), then subtract their dots from period count
+        punctTypes['...'].count = (text.match(/\.{3}|…/g) || []).length;
+        const dotsInEllipsis = (text.match(/\.{3}/g) || []).length * 3; // each ... = 3 dots
+        punctTypes['.'].count = Math.max(0, (text.match(/\./g) || []).length - dotsInEllipsis);
+        punctTypes[','].count = (text.match(/,/g) || []).length;
+        punctTypes[';'].count = (text.match(/;/g) || []).length;
+        punctTypes[':'].count = (text.match(/:/g) || []).length;
+        punctTypes['!'].count = (text.match(/!/g) || []).length;
+        punctTypes['?'].count = (text.match(/\?/g) || []).length;
+        punctTypes['—'].count = (text.match(/[—–]/g) || []).length;
+        punctTypes['()'].count = Math.floor((text.match(/[()]/g) || []).length / 2);
+        punctTypes['""'].count = Math.floor((text.match(/[""\"\u201C\u201D]/g) || []).length / 2);
+
+        const totalPossible = 10;
+        const typesUsed = Object.values(punctTypes).filter(p => p.count > 0).length;
+        const totalMarks = Object.values(punctTypes).reduce((a, p) => a + p.count, 0);
+        const endMarks = punctTypes['.'].count + punctTypes['!'].count + punctTypes['?'].count;
+
+        // NPD — Normalized Punctuation Density (marks per word)
+        const npd = wordCount > 0 ? Math.round((totalMarks / wordCount) * 100) / 100 : 0;
+
+        // SBR — Sentence Boundary Rate (end marks vs expected sentences)
+        const expectedSentences = Math.max(1, Math.round(wordCount / 15));
+        const sbr = Math.round((endMarks / expectedSentences) * 100) / 100;
+
+        // Commas per sentence
+        const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+        const commasPerSentence = sentences.length > 0 ? Math.round((punctTypes[','].count / sentences.length) * 10) / 10 : 0;
+
+        // Type diversity ratio
+        const typeRatio = Math.round((typesUsed / totalPossible) * 100);
+
+        // ENEM-based competency level (0-4)
+        // Level 0: No punctuation at all (pré-convencional)
+        // Level 1: Only end-of-text mark or random placement (emergente)
+        // Level 2: Sentence-end marks present, internal punctuation weak (básico)
+        // Level 3: End + internal marks used appropriately (adequado)
+        // Level 4: Full range including advanced marks (elaborado)
+        let enem, enemLabel, enemDesc;
+        const hasAnyPunct = totalMarks > 0;
+        const hasEndMarks = endMarks > 0;
+        const hasCommas = punctTypes[','].count > 0;
+        const hasAdvanced = punctTypes[';'].count > 0 || punctTypes[':'].count > 0 || punctTypes['—'].count > 0 || punctTypes['()'].count > 0;
+
+        if (!hasAnyPunct) {
+            enem = 0; enemLabel = 'Pré-convencional';
+            enemDesc = 'Ausência total de pontuação. O texto aparece como bloco contínuo sem delimitação de frases. Indica que o conceito de frase escrita como unidade ainda não foi internalizado.';
+        } else if (!hasEndMarks || (endMarks === 1 && endMarks < expectedSentences * 0.3)) {
+            enem = 1; enemLabel = 'Emergente';
+            enemDesc = 'Pontuação esporádica — marcas de fim de frase ausentes ou raras. Há sinais de que o estudante conhece a pontuação, mas não a aplica sistematicamente para segmentar o texto.';
+        } else if (hasEndMarks && !hasCommas && !hasAdvanced) {
+            enem = 2; enemLabel = 'Básico';
+            enemDesc = 'Pontos finais presentes, mas pontuação interna (vírgulas, ponto e vírgula) ausente ou insuficiente. As frases são delimitadas, mas a organização interna precisa evoluir.';
+        } else if (hasEndMarks && hasCommas && !hasAdvanced) {
+            enem = 3; enemLabel = 'Adequado';
+            enemDesc = 'Uso funcional de pontos e vírgulas. As frases são delimitadas e organizadas internamente. Para alcançar nível elaborado, incluir ponto e vírgula, dois pontos ou travessão.';
+        } else {
+            enem = 4; enemLabel = 'Elaborado';
+            enemDesc = 'Uso diversificado e funcional de pontuação, incluindo sinais avançados. Demonstra domínio de estruturas complexas e maturidade sintática.';
+        }
+
+        // NPD diagnostic
+        let npdDiag;
+        if (npd < 0.04) npdDiag = 'Ausência quase total de pontuação';
+        else if (npd < 0.09) npdDiag = 'Pontuação escassa — texto pouco segmentado';
+        else if (npd <= 0.18) npdDiag = 'Densidade adequada para textos formais';
+        else if (npd <= 0.22) npdDiag = 'Pontuação levemente acima do esperado';
+        else npdDiag = 'Excesso de pontuação — pode indicar fragmentação ou vírgulas em excesso';
+
+        // SBR diagnostic
+        let sbrDiag;
+        if (sbr < 0.5) sbrDiag = 'Muito poucas marcas de fim de frase — texto precisa de mais pontos';
+        else if (sbr < 0.8) sbrDiag = 'Abaixo do esperado — algumas frases muito longas';
+        else if (sbr <= 1.3) sbrDiag = 'Proporção adequada entre frases e pontuação final';
+        else sbrDiag = 'Muitas marcas de fim — frases possivelmente muito curtas';
+
+        return {
+            punctTypes, totalPossible, typesUsed, totalMarks, endMarks,
+            npd, npdDiag,
+            sbr, sbrDiag,
+            commasPerSentence, typeRatio,
+            enem, enemLabel, enemDesc
+        };
+    }
+
+    // =============================================
+    // REPORT RENDERER
+    // =============================================
+
+    function renderReport(metrics) {
+        const sections = document.getElementById('report-sections');
+        sections.innerHTML = '';
+
+        const timeSpentMs = Date.now() - sessionStartTime;
+        const mins = Math.floor(timeSpentMs / 60000);
+        const secs = Math.floor((timeSpentMs % 60000) / 1000);
+        document.getElementById('report-subtitle').textContent =
+            `Sessão: ${mins}m ${secs}s | ${metrics.text.wordCount} palavras | ${studentId.substring(0, 20)}...`;
+
+        // A. Mouse Behavior
+        sections.innerHTML += renderMouseSection(metrics.mouse);
+
+        // B. Typing Behavior
+        sections.innerHTML += renderTypingSection(metrics.keystrokes, metrics.copyPasteCount);
+
+        // C. Grammar Specialists (4 LLM panels)
+        sections.innerHTML += renderGrammarSpecialistsSection(metrics.grammar);
+
+        // E. Punctuation Diversity (NEW)
+        sections.innerHTML += renderPunctuationSection(metrics.punctuation);
+
+        // F. Text Analysis (existing)
+        sections.innerHTML += renderTextSection(metrics.text);
+
+        // G. Chat Interaction
+        sections.innerHTML += renderChatSection();
+
+        // H. Summary
+        sections.innerHTML += renderSummarySection(metrics.engagement, metrics);
+
+        // I. LLM Specialist Analysis (placeholder, loaded async)
+        sections.innerHTML += `<div id="llm-section" class="llm-analysis">
+            <h2><span class="icon">🧠</span> Análise do Especialista (IA)</h2>
+            <div class="llm-loading" id="llm-loading">Gerando análise especializada<span class="dots"><span></span><span></span><span></span></span></div>
+            <div class="llm-paragraphs" id="llm-paragraphs" style="display:none"></div>
+        </div>`;
+
+        // Draw canvases after DOM insertion
+        requestAnimationFrame(() => {
+            initMouseReplay();
+            drawCPMChart(metrics.keystrokes.cpmOverTime);
+            initTypingReplay();
+            renderTypingFrame(0);
+        });
+
+        // Fetch LLM analyses (all fire in parallel)
+        fetchLLMAnalysis(metrics);
+        fetchMouseLLMAnalysis(metrics);
+        fetchTypingLLMAnalysis(metrics.keystrokes, metrics.copyPasteCount, metrics.text.wordCount, timeSpentMs);
+
+        // 4 grammar specialist panels (parallel)
+        var studentText = textInput.value;
+        var wc = metrics.text.wordCount;
+        fetchGrammarSpecialist('ortografia', studentText, wc);
+        fetchGrammarSpecialist('sintaxe', studentText, wc);
+        fetchGrammarSpecialist('oracoes', studentText, wc);
+        fetchGrammarSpecialist('formalidade', studentText, wc);
+
+        // Text analysis LLM specialist
+        fetchTextAnalysis(studentText, metrics.text);
+    }
+
+    function renderMouseSection(mouse) {
+        const zoneLabels = {
+            editor: 'Editor',
+            instructions: 'Instruções',
+            'chat-messages': 'Chat (leitura)',
+            'chat-input': 'Chat (escrita)',
+            header: 'Cabeçalho',
+            outside: 'Fora da tela',
+            other: 'Outros'
+        };
+        const zoneColors = {
+            editor: '#7C3AED',
+            instructions: '#A78BFA',
+            'chat-messages': '#10B981',
+            'chat-input': '#F59E0B',
+            header: '#6B7280',
+            outside: '#EF4444',
+            other: '#4B5563'
+        };
+
+        let zoneBars = '';
+        for (const [zone, label] of Object.entries(zoneLabels)) {
+            const pct = mouse.zonePct[zone] || 0;
+            zoneBars += `
+                <div class="zone-bar-row">
+                    <div class="zone-bar-label">${label}</div>
+                    <div class="zone-bar-track">
+                        <div class="zone-bar-fill" style="width:${pct}%;background:${zoneColors[zone]}">${pct > 5 ? pct + '%' : ''}</div>
+                    </div>
+                </div>`;
+        }
+
+        return `
+        <div class="report-card">
+            <h2><span class="icon">🖱</span> Comportamento do Mouse</h2>
+            <div class="explain">O mapa abaixo mostra a trajetória do mouse durante a sessão. As áreas coloridas representam as zonas da interface (editor, instruções, chat). A cor da linha muda de <strong>roxo</strong> (início) para <strong>verde</strong> (fim), mostrando a progressão temporal.</div>
+            <div class="metric-grid">
+                <div class="metric-box" data-tip="Distância total percorrida pelo cursor do mouse em pixels. Valores altos indicam bastante movimentação entre zonas."><div class="value">${(mouse.totalDist / 1000).toFixed(1)}k</div><div class="label">Distância (px)</div></div>
+                <div class="metric-box" data-tip="Velocidade média do cursor em pixels por segundo."><div class="value">${mouse.avgSpeed}</div><div class="label">Velocidade (px/s)</div></div>
+                <div class="metric-box" data-tip="Número de posições registradas (amostragem a 3Hz = 3 por segundo)."><div class="value">${telMouse.length}</div><div class="label">Amostras</div></div>
+            </div>
+            <div class="canvas-wrap">
+                <canvas id="mouseCanvas" width="840" height="400"></canvas>
+                <div style="display:flex;align-items:center;gap:12px;margin-top:8px;flex-wrap:wrap">
+                    <button id="mousePlayBtn" onclick="mouseReplayToggle()" style="background:#7C3AED;color:#fff;border:none;padding:6px 16px;border-radius:6px;cursor:pointer;font-family:'DM Sans';font-size:0.78rem;font-weight:600">▶ Reproduzir</button>
+                    <select id="mouseSpeedSel" onchange="mouseReplaySpeed(this.value)" style="background:#1E1E32;color:#D1D5DB;border:1px solid #2D2D44;padding:4px 8px;border-radius:4px;font-size:0.75rem;font-family:'JetBrains Mono'">
+                        <option value="0.5">0.5x</option>
+                        <option value="1" selected>1x (tempo real)</option>
+                        <option value="2">2x</option>
+                    </select>
+                    <div id="mouseTimeLabel" style="font-family:'JetBrains Mono';font-size:0.72rem;color:#9CA3AF">00:00 / 00:00</div>
+                    <div style="flex:1;min-width:120px">
+                        <input type="range" id="mouseSeekBar" min="0" max="100" value="0" oninput="mouseReplaySeek(this.value)" style="width:100%;accent-color:#7C3AED;height:4px">
+                    </div>
+                </div>
+                <div class="canvas-label">Replay do mouse — zonas coloridas mostram Editor, Instruções, Chat e Cabeçalho</div>
+            </div>
+            <div class="explain">As barras abaixo mostram quanto <strong>tempo</strong> o cursor permaneceu em cada zona da interface. Tempo no editor indica foco na escrita; tempo no chat indica interação com o especialista.</div>
+            <div class="zone-bar-container">${zoneBars}</div>
+            <div id="mouse-llm-box" style="margin-top:16px;background:#0D0D1A;border:1px solid #2D2D44;border-radius:10px;padding:16px">
+                <div style="font-size:0.7rem;color:#A78BFA;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;font-weight:600">🤖 Interpretação do Especialista</div>
+                <div id="mouse-llm-text" style="font-size:0.82rem;color:#D1D5DB;line-height:1.6">Gerando análise<span class="dots"><span></span><span></span><span></span></span></div>
+            </div>
+        </div>`;
+    }
+
+    function renderTypingSection(ks, copyPasteCount) {
+        // IKI histogram
+        const maxBucket = Math.max(...ks.ikiBuckets, 1);
+        const bucketLabels = ['0-100', '100-200', '200-300', '300-400', '400-500', '500-600', '600-700', '700-800', '800-900', '900-1k', '1k+'];
+        let histHTML = '';
+        for (let i = 0; i < ks.ikiBuckets.length; i++) {
+            const h = Math.round((ks.ikiBuckets[i] / maxBucket) * 100);
+            histHTML += `
+                <div class="iki-bar-group">
+                    <div class="iki-bar" style="height:${h}px"></div>
+                    <div class="iki-bar-label">${bucketLabels[i]}</div>
+                </div>`;
+        }
+
+        return `
+        <div class="report-card">
+            <h2><span class="icon">⌨</span> Comportamento de Digitação</h2>
+            <div class="explain">Analisa como você digitou: ritmo, pausas, revisões e fluência. Métricas baseadas em pesquisa de processo de escrita (keystroke logging).</div>
+            <div class="metric-grid">
+                <div class="metric-box" data-tip="Número total de eventos de input capturados (teclas, operações de edição, incluindo paste)."><div class="value">${ks.total}</div><div class="label">Total eventos</div></div>
+                <div class="metric-box" data-tip="Caracteres produzidos (digitados + colados/substituídos). Exclui backspace, setas e teclas de controle."><div class="value">${ks.chars}</div><div class="label">Chars produzidos</div></div>
+                <div class="metric-box" data-tip="Operações de colar (Ctrl+V) detectadas. Texto colado é contado nos chars produzidos."><div class="value">${ks.pasteCount || 0}</div><div class="label">Colagens</div></div>
+                <div class="metric-box" data-tip="Operações de substituição (seleção substituída por novo texto)."><div class="value">${ks.replaceCount || 0}</div><div class="label">Substituições</div></div>
+                <div class="metric-box" data-tip="Quantidade de vezes que Backspace/Delete foi pressionado. Porcentagem sobre total de eventos."><div class="value">${ks.backspaces} (${ks.backspacePct}%)</div><div class="label">Backspace</div></div>
+                <div class="metric-box" data-tip="Momentos em que o estudante parou de digitar por mais de 2 segundos."><div class="value">${ks.pauseCount}</div><div class="label">Pausas >2s</div></div>
+            </div>
+            <div class="canvas-wrap">
+                <canvas id="cpmCanvas" width="840" height="200"></canvas>
+                <div class="canvas-label">Caracteres por minuto ao longo do tempo (janelas de 30s)</div>
+            </div>
+            <div class="metric-grid">
+                <div class="metric-box" data-tip="P-Burst (Pause Burst): sequência de caracteres digitados entre duas pausas de >2 segundos. Mede a produção contínua — quantos 'jatos de escrita' o estudante fez antes de parar para pensar."><div class="value">${ks.pBursts}</div><div class="label">P-Bursts</div></div>
+                <div class="metric-box" data-tip="Comprimento médio de cada P-Burst em caracteres. Um P-Burst longo (>20) indica escrita fluente; um curto (<5) indica hesitação frequente."><div class="value">${ks.pBurstAvg}</div><div class="label">Média P-Burst</div></div>
+                <div class="metric-box" data-tip="R-Burst (Revision Burst): sequência de caracteres digitados entre dois usos de Backspace/Delete. Mede o quanto o estudante escreve antes de revisar — mais R-Bursts indicam mais ciclos de escrita-revisão."><div class="value">${ks.rBursts}</div><div class="label">R-Bursts</div></div>
+                <div class="metric-box" data-tip="Comprimento médio de cada R-Burst em caracteres. Valor alto significa que o estudante escreve bastante antes de apagar; valor baixo indica revisão constante."><div class="value">${ks.rBurstAvg}</div><div class="label">Média R-Burst</div></div>
+            </div>
+            <div class="explain">O <strong>Histograma IKI</strong> (Inter-Key Interval) mostra a distribuição dos intervalos entre teclas em milissegundos. A maioria das teclas aparece na faixa 50-300ms (digitação normal). Intervalos maiores indicam pausas para pensar.</div>
+            <h2 style="font-size:0.9rem;color:#9CA3AF;margin-top:8px;">Histograma IKI (ms)</h2>
+            <div class="iki-histogram">${histHTML}</div>
+
+            <h2 style="font-size:0.9rem;color:#9CA3AF;margin-top:24px;margin-bottom:8px;">Replay da Escrita</h2>
+            <div class="explain">Reprodução em tempo real de como o estudante escreveu no editor e interagiu no chat. Cada tecla aparece no momento exato em que foi digitada.</div>
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap">
+                <button id="typingPlayBtn" onclick="typingReplayToggle()" style="background:#7C3AED;color:#fff;border:none;padding:6px 16px;border-radius:6px;cursor:pointer;font-family:'DM Sans';font-size:0.78rem;font-weight:600">▶ Reproduzir</button>
+                <select id="typingSpeedSel" onchange="typingReplaySpeed(this.value)" style="background:#1E1E32;color:#D1D5DB;border:1px solid #2D2D44;padding:4px 8px;border-radius:4px;font-size:0.75rem;font-family:'JetBrains Mono'">
+                    <option value="1">1x</option>
+                    <option value="2">2x</option>
+                    <option value="5" selected>5x</option>
+                    <option value="10">10x</option>
+                </select>
+                <div id="typingTimeLabel" style="font-family:'JetBrains Mono';font-size:0.72rem;color:#9CA3AF">0:00 / 0:00</div>
+                <div style="flex:1;min-width:120px">
+                    <input type="range" id="typingSeekBar" min="0" max="100" value="0" oninput="typingReplaySeek(this.value)" style="width:100%;accent-color:#7C3AED;height:4px">
+                </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div>
+                    <div style="font-size:0.7rem;color:#A78BFA;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;font-weight:600">Editor</div>
+                    <div id="editorReplay" style="background:#0D0D1A;border:1px solid #2D2D44;border-radius:8px;padding:12px;min-height:180px;max-height:300px;overflow-y:auto;font-family:'DM Sans';font-size:0.82rem;color:#D1D5DB;line-height:1.6;white-space:pre-wrap;word-wrap:break-word"><span id="editorReplayCursor" style="border-right:2px solid #7C3AED;animation:blink 1s step-end infinite">&nbsp;</span></div>
+                </div>
+                <div>
+                    <div style="font-size:0.7rem;color:#10B981;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;font-weight:600">Chat com Especialista</div>
+                    <div id="chatReplay" style="background:#0D0D1A;border:1px solid #2D2D44;border-radius:8px;padding:12px;min-height:180px;max-height:300px;overflow-y:auto;font-size:0.78rem;color:#9CA3AF"></div>
+                </div>
+            </div>
+
+            <div id="typing-llm-box" style="margin-top:16px;background:#0D0D1A;border:1px solid #2D2D44;border-radius:10px;padding:16px">
+                <div style="font-size:0.7rem;color:#A78BFA;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;font-weight:600">🤖 Interpretação do Especialista em Digitação</div>
+                <div id="typing-llm-text" style="font-size:0.82rem;color:#D1D5DB;line-height:1.6">Gerando análise<span class="dots"><span></span><span></span><span></span></span></div>
+            </div>
+        </div>`;
+    }
+
+    function renderTextSection(tx) {
+        // Render paragraphs
+        const paragraphs = textInput.value.split(/\n\s*\n/).filter(p => p.trim());
+        let paraHTML = '';
+        for (const p of paragraphs) { paraHTML += `<p>${escapeHTML(p.trim())}</p>`; }
+
+        // Emotional markers
+        let positiveTags = tx.foundPositive.map(w => `<span class="marker-tag positive">${w}</span>`).join('');
+        let negativeTags = tx.foundNegative.map(w => `<span class="marker-tag negative">${w}</span>`).join('');
+        if (!positiveTags && !negativeTags) {
+            positiveTags = '<span style="color:#9CA3AF;font-size:0.8rem">Nenhum marcador detectado</span>';
+        }
+
+        // Temporal bars
+        const tO = tx.temporalOrientation;
+        const tempBarHTML = `<div style="display:flex;gap:4px;height:8px;border-radius:4px;overflow:hidden;margin:6px 0">
+            <div style="width:${tO.past}%;background:#60A5FA" title="Passado ${tO.past}%"></div>
+            <div style="width:${tO.present}%;background:#A78BFA" title="Presente ${tO.present}%"></div>
+            <div style="width:${tO.future}%;background:#34D399" title="Futuro ${tO.future}%"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:0.65rem;color:#6B7280">
+            <span>Passado ${tO.past}%</span><span>Presente ${tO.present}%</span><span>Futuro ${tO.future}%</span>
+        </div>`;
+
+        // Sentiment color
+        const sentColor = tx.sentimentScore > 0.1 ? '#10B981' : tx.sentimentScore < -0.1 ? '#EF4444' : '#9CA3AF';
+
+        // Auth color
+        const authColor = tx.authScore >= 70 ? '#10B981' : tx.authScore >= 50 ? '#F59E0B' : tx.authScore >= 30 ? '#F97316' : '#EF4444';
+
+        // Clichés found
+        const clicheHTML = tx.authDetails.clicheMatches.length > 0
+            ? `<div style="margin-top:6px;font-size:0.72rem;color:#EF4444">Clichês: ${tx.authDetails.clicheMatches.map(c => '"' + c + '"').join(', ')}</div>` : '';
+
+        return `
+        <div class="report-card">
+            <h2><span class="icon">📝</span> Análise do Texto</h2>
+            <div class="text-display">${paraHTML}</div>
+            <div style="margin-bottom:16px">
+                <div class="check-row">
+                    <div class="check-icon ${tx.paragraphPass ? 'check-pass' : 'check-fail'}">${tx.paragraphPass ? '✓' : '✗'}</div>
+                    <span>Parágrafos: ${tx.paragraphCount} (mínimo 2)</span>
+                </div>
+                <div class="check-row">
+                    <div class="check-icon ${tx.wordCountPass ? 'check-pass' : 'check-fail'}">${tx.wordCountPass ? '✓' : '✗'}</div>
+                    <span>Palavras: ${tx.wordCount} (80-160)</span>
+                </div>
+            </div>
+
+            <h2 style="font-size:0.9rem;color:#9CA3AF;margin:12px 0 8px;">Diversidade Vocabular</h2>
+            <div class="metric-grid">
+                <div class="metric-box" data-tip="TTR (Type-Token Ratio): palavras únicas / total. 0.50+ = boa diversidade. 0.70+ = excelente."><div class="value">${tx.ttr}</div><div class="label">TTR</div></div>
+                <div class="metric-box" data-tip="Hapax: % de palavras que aparecem apenas 1 vez. Quanto maior, mais diverso o vocabulário. 40-60% = bom."><div class="value">${tx.hapaxRatio}%</div><div class="label">Hapax ratio</div></div>
+                <div class="metric-box" data-tip="K de Yule: mede concentração vocabular. Menor = mais diverso. <100 = bom, >150 = repetitivo."><div class="value">${tx.yulesK}</div><div class="label">K de Yule</div></div>
+                <div class="metric-box" data-tip="Score composto de riqueza vocabular (0-100). Combina TTR, hapax e tamanho do vocabulário."><div class="value">${tx.richness}</div><div class="label">Riqueza (0-100)</div></div>
+            </div>
+
+            <h2 style="font-size:0.9rem;color:#9CA3AF;margin:12px 0 8px;">Legibilidade e Estrutura</h2>
+            <div class="metric-grid">
+                <div class="metric-box" data-tip="Índice Flesch adaptado ao PT-BR. 75+= muito fácil, 50-74= fácil, 30-49= padrão, <30= difícil."><div class="value">${tx.fleschPT}</div><div class="label">Flesch (${tx.fleschLabel})</div></div>
+                <div class="metric-box" data-tip="Média de sílabas por palavra. PT-BR tende a 2.0-2.5. Acima de 2.5 indica vocabulário mais elaborado."><div class="value">${tx.avgSyllablesPerWord}</div><div class="label">Sílabas/palavra</div></div>
+                <div class="metric-box" data-tip="Média de palavras por frase. <8 = telegráfico, 8-15 = adequado, >20 = complexo."><div class="value">${tx.avgWordsPerSentence}</div><div class="label">Palavras/frase</div></div>
+                <div class="metric-box" data-tip="Média de caracteres por palavra. >5 sugere vocabulário mais elaborado."><div class="value">${tx.avgWordLen}</div><div class="label">Caracteres/palavra</div></div>
+            </div>
+
+            <h2 style="font-size:0.9rem;color:#9CA3AF;margin:12px 0 8px;">Sentimento e Emoção</h2>
+            <div class="explain">Análise baseada em léxico expandido com 90+ palavras emocionais (valência -1.0 a +1.0). Score composto: <strong style="color:${sentColor}">${tx.sentimentScore} (${tx.sentimentLabel})</strong>. ${tx.emotionalBalance ? '<span style="color:#10B981">Equilíbrio emocional detectado (positivo + negativo).</span>' : ''}</div>
+            <div class="marker-tags">${positiveTags}${negativeTags}</div>
+
+            <h2 style="font-size:0.9rem;color:#9CA3AF;margin:12px 0 8px;">Voz Pessoal e Subjetividade</h2>
+            <div class="metric-grid">
+                <div class="metric-box" data-tip="% de palavras em 1ª pessoa (eu, meu, sou, tenho, sinto, etc.). 5-10% = voz pessoal forte. <2% = impessoal."><div class="value">${tx.firstPersonDensity}%</div><div class="label">Densidade 1ª pessoa</div></div>
+                <div class="metric-box" data-tip="Foco em si mesmo vs outros. >60% = autofocado (esperado em texto sobre personalidade)."><div class="value">${tx.selfFocusRatio}%</div><div class="label">Autofoco</div></div>
+                <div class="metric-box" data-tip="Marcadores de incerteza (acho, talvez, parece, meio). 1-3% = honestidade reflexiva. >5% = excesso de hesitação."><div class="value">${tx.hedgingDensity}%</div><div class="label">Hedging</div></div>
+                <div class="metric-box" data-tip="Especificidade: nomes próprios, números, demonstrativos. Quanto maior, mais concreto e detalhado o texto."><div class="value">${tx.specificityScore}%</div><div class="label">Especificidade</div></div>
+            </div>
+
+            <h2 style="font-size:0.9rem;color:#9CA3AF;margin:12px 0 8px;">Orientação Temporal</h2>
+            <div class="explain">Foco temporal dominante: <strong>${tx.temporalLabel}</strong>. Textos reflexivos equilibrados combinam passado (experiências) com presente (autoconhecimento) e futuro (aspirações).</div>
+            ${tempBarHTML}
+
+            <h2 style="font-size:0.9rem;color:#9CA3AF;margin:12px 0 8px;">Complexidade Cognitiva</h2>
+            <div class="explain">Marcadores de subordinação e raciocínio lógico: <strong>${tx.cognitiveLabel}</strong> (${tx.complexMarkers.length} marcadores). ${tx.complexMarkers.length > 0 ? 'Encontrados: ' + tx.complexMarkers.join(', ') : 'Nenhum marcador de subordinação detectado.'}</div>
+
+            <div class="auth-panel" style="margin-top:16px">
+                <div class="auth-score">
+                    <div class="big" style="color:${authColor}">${tx.authScore}</div>
+                    <div class="sublabel">Autenticidade (${tx.authLabel})</div>
+                </div>
+                <div class="explain" style="margin-top:8px;">Score composto de 7 fatores: voz pessoal, divulgação emocional, exemplos concretos, autocrítica/nuance, complexidade cognitiva, equilíbrio emocional e especificidade. Clichês e textos curtos penalizam.</div>
+                <div class="auth-detail-row"><span class="dl">Voz pessoal (1ª pessoa)</span><span class="dv">${tx.authDetails.firstPerson} usos</span></div>
+                <div class="auth-detail-row"><span class="dl">Palavras emocionais</span><span class="dv">${tx.authDetails.emotionalWords}</span></div>
+                <div class="auth-detail-row"><span class="dl">Exemplos concretos</span><span class="dv">${tx.authDetails.concreteExamples}</span></div>
+                <div class="auth-detail-row"><span class="dl">Autocrítica / nuance</span><span class="dv">${tx.authDetails.selfCritique}</span></div>
+                <div class="auth-detail-row"><span class="dl">Complexidade cognitiva</span><span class="dv">${tx.authDetails.complexity}</span></div>
+                <div class="auth-detail-row"><span class="dl">Clichês (penaliza)</span><span class="dv" style="color:${tx.authDetails.clicheCount > 0 ? '#EF4444' : '#10B981'}">${tx.authDetails.clicheCount}</span></div>
+                ${clicheHTML}
+            </div>
+
+            <div id="text-llm-section" style="margin-top:20px;padding:16px;background:#0D0D1A;border-radius:12px;border:1px solid #2D2D44">
+                <h2 style="font-size:0.9rem;color:#A78BFA;margin:0 0 8px;display:flex;align-items:center;gap:8px">
+                    <span>🔬</span> Reflexão do Especialista em Texto
+                </h2>
+                <div id="text-llm-body" style="font-size:0.82rem;line-height:1.7;color:#D1D5DB">
+                    <div class="specialist-skeleton">
+                        <div class="skel-line"></div><div class="skel-line"></div><div class="skel-line"></div>
+                        <div class="skel-line"></div><div class="skel-line"></div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    }
+
+    function renderChatSection() {
+        const userMsgs = chatHistory.filter(m => m.role === 'user');
+        const aiMsgs = chatHistory.filter(m => m.role === 'assistant');
+        const totalChatWords = userMsgs.reduce((a, m) => a + m.content.split(/\s+/).filter(w => w).length, 0);
+        const avgWordsPerMsg = userMsgs.length > 0 ? Math.round(totalChatWords / userMsgs.length) : 0;
+
+        let replayHTML = '';
+        // Include initial AI message
+        replayHTML += `<div class="msg ai-r">Olá! Sou seu especialista em escrita e reflexão. Enquanto você escreve, estou aqui para ajudar a pensar sobre o que coloca no papel.</div>`;
+        for (const msg of chatHistory) {
+            const cls = msg.role === 'user' ? 'user-r' : 'ai-r';
+            replayHTML += `<div class="msg ${cls}">${escapeHTML(msg.content)}</div>`;
+        }
+
+        return `
+        <div class="report-card">
+            <h2><span class="icon">💬</span> Interação com Especialista</h2>
+            <div class="metric-grid">
+                <div class="metric-box" data-tip="Quantidade de mensagens enviadas pelo estudante ao especialista. Não inclui as respostas do especialista."><div class="value">${userMsgs.length}</div><div class="label">Mensagens enviadas</div></div>
+                <div class="metric-box" data-tip="Quantidade de respostas recebidas do especialista."><div class="value">${aiMsgs.length}</div><div class="label">Respostas recebidas</div></div>
+                <div class="metric-box" data-tip="Total de palavras escritas pelo estudante no chat."><div class="value">${totalChatWords}</div><div class="label">Palavras no chat</div></div>
+                <div class="metric-box" data-tip="Média de palavras por mensagem do estudante."><div class="value">${avgWordsPerMsg}</div><div class="label">Palavras/mensagem</div></div>
+            </div>
+            <div class="chat-replay">${replayHTML}</div>
+        </div>`;
+    }
+
+    function renderSummarySection(eng, metrics) {
+        const deg = Math.round((eng.composite / 100) * 360);
+        const ringBg = `conic-gradient(#7C3AED ${deg}deg, #2D2D44 ${deg}deg)`;
+
+        // Generate insights
+        const insights = [];
+        const editorPct = metrics.mouse.zonePct.editor || 0;
+        insights.push(`Passou ${editorPct}% do tempo na zona do editor`);
+
+        if (metrics.keystrokes.longPauses > 0) {
+            insights.push(`${metrics.keystrokes.longPauses} pausa(s) >5s sugerem reflexão cuidadosa`);
+        }
+
+        if (metrics.keystrokes.backspacePct > 20) {
+            insights.push(`Taxa de backspace de ${metrics.keystrokes.backspacePct}% indica revisão frequente`);
+        } else if (metrics.keystrokes.backspacePct < 5) {
+            insights.push(`Baixa taxa de revisão (${metrics.keystrokes.backspacePct}%) — escrita fluida`);
+        }
+
+        if (chatHistory.filter(m => m.role === 'user').length >= 3) {
+            insights.push('Engajamento ativo com o especialista — múltiplas interações');
+        } else if (chatHistory.filter(m => m.role === 'user').length === 0) {
+            insights.push('Não houve interação com o especialista');
+        }
+
+        if (metrics.keystrokes.rhythmCV < 40) {
+            insights.push('Ritmo de digitação consistente (baixa variação)');
+        } else if (metrics.keystrokes.rhythmCV > 80) {
+            insights.push('Ritmo de digitação variável — alternância entre fluência e hesitação');
+        }
+
+        if (metrics.text.authScore >= 70) {
+            insights.push('Alto score de autenticidade — texto pessoal e reflexivo');
+        }
+
+        const insightsHTML = insights.map(i => `<div class="insight-item">${i}</div>`).join('');
+
+        return `
+        <div class="report-card">
+            <h2><span class="icon">📊</span> Resumo</h2>
+            <div class="score-ring-wrap">
+                <div class="score-ring" style="background:${ringBg}">
+                    <div class="inner">
+                        <div class="pct">${eng.composite}</div>
+                        <div class="sub">Engajamento</div>
+                    </div>
+                </div>
+            </div>
+            <div style="max-width:400px;margin:0 auto">
+                <div class="eng-bar-row">
+                    <div class="eng-bar-label">Tempo</div>
+                    <div class="eng-bar-track"><div class="eng-bar-fill" style="width:${eng.time}%"></div></div>
+                    <div class="eng-bar-val">${eng.time}%</div>
+                </div>
+                <div class="eng-bar-row">
+                    <div class="eng-bar-label">Atividade</div>
+                    <div class="eng-bar-track"><div class="eng-bar-fill" style="width:${eng.activity}%"></div></div>
+                    <div class="eng-bar-val">${eng.activity}%</div>
+                </div>
+                <div class="eng-bar-row">
+                    <div class="eng-bar-label">Chat</div>
+                    <div class="eng-bar-track"><div class="eng-bar-fill" style="width:${eng.chat}%"></div></div>
+                    <div class="eng-bar-val">${eng.chat}%</div>
+                </div>
+                <div class="eng-bar-row">
+                    <div class="eng-bar-label">Foco</div>
+                    <div class="eng-bar-track"><div class="eng-bar-fill" style="width:${eng.focus}%"></div></div>
+                    <div class="eng-bar-val">${eng.focus}%</div>
+                </div>
+            </div>
+            <div class="insights-list">${insightsHTML}</div>
+        </div>`;
+    }
+
+    // =============================================
+    // NEW RENDER SECTIONS
+    // =============================================
+
+    function renderSemanticSection(sem) {
+        // Connective pills
+        let connHTML = '';
+        const connTypes = [
+            { key: 'additive', label: 'Aditivos', desc: 'adicionam informação' },
+            { key: 'adversative', label: 'Adversativos', desc: 'indicam contraste' },
+            { key: 'causal', label: 'Causais', desc: 'expressam causa/razão' },
+            { key: 'temporal', label: 'Temporais', desc: 'sequenciam no tempo' }
+        ];
+        for (const ct of connTypes) {
+            const found = sem.foundConnectives[ct.key];
+            if (found.length > 0) {
+                connHTML += `<div class="conn-group">
+                    <div class="conn-group-label">${ct.label} (${ct.desc})</div>
+                    <div class="conn-pills">${found.map(c => `<span class="conn-pill ${ct.key}">${c}</span>`).join('')}</div>
+                </div>`;
+            }
+        }
+        if (!connHTML) connHTML = '<div style="color:#6B7280;font-size:0.8rem;">Nenhum conectivo identificado</div>';
+
+        // Discourse markers
+        let dmHTML = sem.foundDiscourseMarkers.length > 0
+            ? sem.foundDiscourseMarkers.map(d => `<span class="conn-pill additive">${d}</span>`).join(' ')
+            : '<span style="color:#6B7280;font-size:0.8rem;">Nenhum marcador discursivo identificado</span>';
+
+        // Semantic fields
+        let fieldsHTML = sem.semanticFields.length > 0
+            ? sem.semanticFields.map(f => `<span class="marker-tag positive">${f}</span>`).join('')
+            : '<span style="color:#6B7280;font-size:0.8rem;">Nenhum campo semântico identificado</span>';
+
+        return `
+        <div class="report-card">
+            <h2><span class="icon">🔍</span> Análise Semântica</h2>
+            <div class="explain">A análise semântica avalia a <strong>profundidade e coerência</strong> do texto. Baseada em Halliday (1985) para densidade lexical e Halliday &amp; Hasan (1976) para coesão textual. Mede a proporção de palavras com conteúdo significativo, o uso de conectivos que articulam ideias e a coerência entre parágrafos.</div>
+            <div class="metric-grid">
+                <div class="metric-box" data-tip="Proporção de palavras com conteúdo (substantivos, verbos, adjetivos, advérbios) em relação ao total. Textos acadêmicos têm ~60-70%. Textos mais densos são informativamente ricos."><div class="value">${sem.lexicalDensity}%</div><div class="label">Densidade lexical</div></div>
+                <div class="metric-box" data-tip="Total de conectivos encontrados (e, mas, porque, quando, etc.). Conectivos ligam ideias e criam coesão. Mais conectivos = texto mais articulado."><div class="value">${sem.connectiveCount}</div><div class="label">Conectivos</div></div>
+                <div class="metric-box" data-tip="Marcadores que organizam o discurso: 'por exemplo', 'em resumo', 'ou seja', etc. Indicam maturidade textual."><div class="value">${sem.discourseMarkerCount}</div><div class="label">Marcadores discursivos</div></div>
+                <div class="metric-box" data-tip="Percentual de palavras compartilhadas entre parágrafos consecutivos. Indica se as ideias fluem logicamente de um parágrafo para outro. >15% = boa coerência."><div class="value">${sem.paragraphCoherence}%</div><div class="label">Coerência entre parágrafos</div></div>
+            </div>
+            <h2 style="font-size:0.9rem;color:#9CA3AF;margin:16px 0 8px;">Conectivos encontrados</h2>
+            ${connHTML}
+            <h2 style="font-size:0.9rem;color:#9CA3AF;margin:16px 0 8px;">Marcadores discursivos</h2>
+            <div class="conn-pills">${dmHTML}</div>
+            <h2 style="font-size:0.9rem;color:#9CA3AF;margin:16px 0 8px;">Campos semânticos detectados</h2>
+            <div class="marker-tags">${fieldsHTML}</div>
+            <div class="explain" style="margin-top:12px">
+                <strong>Tipos de frase:</strong> ${sem.sentenceTypes.declarative} declarativas, ${sem.sentenceTypes.interrogative} interrogativas, ${sem.sentenceTypes.exclamatory} exclamativas (total: ${sem.sentenceCount} frases).
+                A variedade de tipos de frase enriquece o texto — interrogações e exclamações adicionam expressividade.
+            </div>
+        </div>`;
+    }
+
+    function renderGrammarSpecialistsSection(gram) {
+        const regexSummary = gram.totalIssues > 0
+            ? `Pré-análise rápida (regex): ${gram.totalIssues} desvio(s) detectado(s) — ${gram.spellingErrorCount} ortografia, ${gram.grammarIssueCount} gramática, ${gram.styleIssueCount} estilo.`
+            : 'Pré-análise rápida (regex): nenhum desvio nos padrões mais comuns.';
+
+        const skeletonHTML = `<div class="specialist-skeleton">
+            <div class="skel-line"></div><div class="skel-line"></div><div class="skel-line"></div>
+            <div class="skel-line"></div><div class="skel-line"></div><div class="skel-line"></div>
+            <div class="skel-line"></div>
+        </div>`;
+
+        return `
+        <div class="grammar-specialists">
+            <h2><span class="icon">✍</span> Análise Linguística Especializada</h2>
+            <div class="explain">
+                Quatro especialistas em linguística analisam o texto simultaneamente, cada um com foco diferente — ortografia, gramática, estrutura sintática e registro de formalidade.
+                <span style="color:#6B7280;font-size:0.75rem;display:block;margin-top:4px;">${regexSummary}</span>
+            </div>
+            <div class="specialist-grid">
+                <div class="specialist-panel" data-specialist="ortografia" id="panel-ortografia">
+                    <div class="specialist-panel-header">
+                        <div class="specialist-panel-icon">🔤</div>
+                        <div>
+                            <div class="specialist-panel-title">Ortografia e Digitação</div>
+                            <div class="specialist-panel-subtitle">Desvios ortográficos, acentuação, abreviações</div>
+                        </div>
+                    </div>
+                    <div class="specialist-panel-body" id="body-ortografia">${skeletonHTML}</div>
+                </div>
+
+                <div class="specialist-panel" data-specialist="sintaxe" id="panel-sintaxe">
+                    <div class="specialist-panel-header">
+                        <div class="specialist-panel-icon">⚙</div>
+                        <div>
+                            <div class="specialist-panel-title">Gramática e Sintaxe</div>
+                            <div class="specialist-panel-subtitle">Concordância, regência, crase, conectivos</div>
+                        </div>
+                    </div>
+                    <div class="specialist-panel-body" id="body-sintaxe">${skeletonHTML}</div>
+                </div>
+
+                <div class="specialist-panel" data-specialist="oracoes" id="panel-oracoes">
+                    <div class="specialist-panel-header">
+                        <div class="specialist-panel-icon">🏗</div>
+                        <div>
+                            <div class="specialist-panel-title">Classificação de Orações</div>
+                            <div class="specialist-panel-subtitle">Estrutura sintática, períodos, subordinação</div>
+                        </div>
+                    </div>
+                    <div class="specialist-panel-body" id="body-oracoes">${skeletonHTML}</div>
+                </div>
+
+                <div class="specialist-panel" data-specialist="formalidade" id="panel-formalidade">
+                    <div class="specialist-panel-header">
+                        <div class="specialist-panel-icon">🎭</div>
+                        <div>
+                            <div class="specialist-panel-title">Formalidade e Registro</div>
+                            <div class="specialist-panel-subtitle">Adequação ao contexto acadêmico</div>
+                        </div>
+                    </div>
+                    <div class="specialist-panel-body" id="body-formalidade">${skeletonHTML}</div>
+                </div>
+            </div>
+        </div>`;
+    }
+
+    function renderPunctuationSection(punct) {
+        // Punctuation grid (show ALL types, dim the unused ones)
+        let punctGrid = '';
+        for (const [char, data] of Object.entries(punct.punctTypes)) {
+            const display = char === '()' ? '( )' : char === '""' ? '" "' : char;
+            const opacity = data.count > 0 ? '1' : '0.3';
+            punctGrid += `
+                <div class="punct-item" style="opacity:${opacity}">
+                    <div class="punct-char">${display}</div>
+                    <div class="punct-count">${data.count}</div>
+                    <div class="punct-name">${data.name}</div>
+                    <div style="font-size:0.55rem;color:#6B7280;margin-top:2px">${data.level}</div>
+                </div>`;
+        }
+
+        // ENEM level bar
+        const levels = ['Pré-convencional', 'Emergente', 'Básico', 'Adequado', 'Elaborado'];
+        const levelColors = ['#EF4444', '#F59E0B', '#F59E0B', '#10B981', '#7C3AED'];
+        let enemBar = '<div class="sophistication-bar">';
+        for (let i = 0; i < 5; i++) {
+            const active = i <= punct.enem;
+            const color = active ? levelColors[i] : '#2D2D44';
+            enemBar += `<div style="text-align:center;flex:1">
+                <div class="soph-segment" style="background:${color};height:${i === punct.enem ? '12px' : '8px'}"></div>
+                <div class="soph-label" style="${i === punct.enem ? 'color:#D1D5DB;font-weight:600' : ''}">${levels[i]}</div>
+            </div>`;
+        }
+        enemBar += '</div>';
+
+        return `
+        <div class="report-card">
+            <h2><span class="icon">📌</span> Uso de Pontuação</h2>
+            <div class="explain">Avaliação baseada nos critérios da <strong>Competência I do ENEM</strong> (domínio da norma culta) e métricas de avaliação automatizada de redações (AES). Analisa presença, densidade, variedade e funcionalidade dos sinais de pontuação.</div>
+
+            <div style="background:#0D0D1A;border-radius:12px;padding:20px;margin-bottom:16px;text-align:center">
+                <div style="font-size:0.7rem;color:#9CA3AF;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Nível de pontuação</div>
+                <div style="font-size:1.8rem;font-weight:700;font-family:'JetBrains Mono';color:${levelColors[punct.enem]}">${punct.enem}/4</div>
+                <div style="font-size:1rem;font-weight:600;color:${levelColors[punct.enem]};margin:4px 0">${punct.enemLabel}</div>
+                <div style="font-size:0.78rem;color:#9CA3AF;max-width:500px;margin:8px auto 0;line-height:1.5">${punct.enemDesc}</div>
+            </div>
+
+            ${enemBar}
+
+            <div class="metric-grid" style="margin-top:20px">
+                <div class="metric-box" data-tip="NPD (Normalized Punctuation Density): sinais de pontuação por palavra. Faixa adequada para PT-BR formal: 0.10-0.18. Abaixo de 0.04 = ausência preocupante."><div class="value">${punct.npd}</div><div class="label">NPD (marcas/palavra)</div></div>
+                <div class="metric-box" data-tip="SBR (Sentence Boundary Rate): razão entre marcas de fim de frase (. ! ?) e a quantidade esperada de frases (palavras/15). Ideal próximo de 1.0."><div class="value">${punct.sbr}</div><div class="label">SBR (taxa de limite)</div></div>
+                <div class="metric-box" data-tip="Quantos dos 9 tipos possíveis de pontuação foram usados (. , ; : ! ? — () &quot;&quot;)."><div class="value">${punct.typesUsed}/${punct.totalPossible}</div><div class="label">Tipos usados</div></div>
+                <div class="metric-box" data-tip="Média de vírgulas por frase. Textos com 0 vírgulas indicam frases simples ou ausência de organização interna. 1-2 é adequado."><div class="value">${punct.commasPerSentence}</div><div class="label">Vírgulas/frase</div></div>
+            </div>
+
+            <div class="explain">
+                <strong>Densidade (NPD):</strong> ${punct.npdDiag}.<br>
+                <strong>Limites de frase (SBR):</strong> ${punct.sbrDiag}.
+            </div>
+
+            <h2 style="font-size:0.9rem;color:#9CA3AF;margin:16px 0 8px;">Sinais de pontuação</h2>
+            <div class="punct-grid">${punctGrid}</div>
+        </div>`;
+    }
+
+    // =============================================
+    // LLM SPECIALIST ANALYSIS
+    // =============================================
+
+    async function fetchLLMAnalysis(metrics) {
+        try {
+            const response = await fetch('/api/specialist-report', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    text: textInput.value,
+                    wordCount: metrics.text.wordCount,
+                    timeSpent: Date.now() - sessionStartTime,
+                    metrics: metrics
+                })
+            });
+
+            const data = await response.json();
+            const loadingEl = document.getElementById('llm-loading');
+            const paraEl = document.getElementById('llm-paragraphs');
+
+            if (data.success && data.analysis) {
+                loadingEl.style.display = 'none';
+                paraEl.style.display = 'block';
+                // Split into paragraphs
+                const paragraphs = data.analysis.split(/\n\n|\n/).filter(p => p.trim().length > 0);
+                paraEl.innerHTML = paragraphs.map(p => `<p>${escapeHTML(p.trim())}</p>`).join('');
+            } else {
+                loadingEl.innerHTML = 'Não foi possível gerar a análise do especialista.';
+            }
+        } catch (e) {
+            const loadingEl = document.getElementById('llm-loading');
+            if (loadingEl) {
+                loadingEl.innerHTML = 'Análise indisponível — backend offline.';
+            }
+        }
+    }
+
+    async function fetchMouseLLMAnalysis(metrics) {
+        try {
+            const timeSpent = Date.now() - sessionStartTime;
+            const response = await fetch('/api/mouse-analysis', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    mouse: metrics.mouse,
+                    timeSpent: timeSpent,
+                    sampleCount: telMouse.length,
+                    clickCount: telClicks.length,
+                    wordCount: metrics.text.wordCount,
+                    keystrokeTotal: metrics.keystrokes.total,
+                    backspacePct: metrics.keystrokes.backspacePct,
+                    pauseCount: metrics.keystrokes.pauseCount,
+                    chatMessages: chatHistory.filter(m => m.role === 'user').length,
+                    engagementScore: metrics.engagement.composite || 0,
+                    outsidePct: metrics.mouse.zonePct.outside || 0,
+                    zoneTimeMs: metrics.mouse.zoneTimeMs
+                })
+            });
+            const data = await response.json();
+            const el = document.getElementById('mouse-llm-text');
+            if (!el) return;
+            if (data.success && data.analysis) {
+                el.textContent = data.analysis;
+            } else {
+                el.textContent = 'Análise indisponível.';
+            }
+        } catch (e) {
+            const el = document.getElementById('mouse-llm-text');
+            if (el) el.textContent = 'Análise indisponível — backend offline.';
+        }
+    }
+
+    async function fetchTypingLLMAnalysis(ks, copyPasteCount, wordCount, timeSpentMs) {
+        try {
+            const response = await fetch('/api/typing-analysis', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    keystrokes: ks,
+                    copyPasteCount: copyPasteCount,
+                    wordCount: wordCount,
+                    timeSpent: timeSpentMs
+                })
+            });
+            const data = await response.json();
+            const el = document.getElementById('typing-llm-text');
+            if (!el) return;
+            if (data.success && data.analysis) {
+                el.textContent = data.analysis;
+            } else {
+                el.textContent = 'Análise indisponível — ' + (data.error || 'erro desconhecido.');
+            }
+        } catch (e) {
+            const el = document.getElementById('typing-llm-text');
+            if (el) el.textContent = 'Análise indisponível — backend offline.';
+        }
+    }
+
+    async function fetchLanguageTool(text) {
+        try {
+            const response = await fetch('/api/check-grammar', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: text })
+            });
+            const data = await response.json();
+            const loadingEl = document.getElementById('lt-loading');
+            const resultsEl = document.getElementById('lt-results');
+            if (!loadingEl || !resultsEl) return;
+
+            if (data.matches) {
+                loadingEl.style.display = 'none';
+                resultsEl.style.display = 'block';
+                if (data.matches.length === 0) {
+                    resultsEl.innerHTML = '<div style="color:#10B981;font-size:0.85rem;padding:12px;text-align:center;">LanguageTool não encontrou problemas adicionais.</div>';
+                } else {
+                    let html = `<div style="color:#9CA3AF;font-size:0.75rem;margin-bottom:8px;">${data.matches.length} problema(s) encontrado(s) pelo LanguageTool:</div>`;
+                    for (const m of data.matches) {
+                        // Proxy returns context as string, offset/length at top level
+                        const fullText = text;
+                        const mOffset = m.offset || 0;
+                        const mLen = m.length || 0;
+                        const snippetStart = Math.max(0, mOffset - 30);
+                        const snippetEnd = Math.min(fullText.length, mOffset + mLen + 30);
+                        const before = escapeHTML(fullText.substring(snippetStart, mOffset));
+                        const marked = escapeHTML(fullText.substring(mOffset, mOffset + mLen));
+                        const after = escapeHTML(fullText.substring(mOffset + mLen, snippetEnd));
+                        // Replacements are already string values from proxy
+                        const replacements = (m.replacements || []).slice(0, 3).join(', ');
+                        const catName = m.categoryName || 'Geral';
+
+                        html += `<div class="error-item" style="margin-bottom:10px">
+                            <span class="err-badge grammar" style="font-size:0.6rem">${escapeHTML(catName)}</span>
+                            <div>
+                                <div style="font-family:'JetBrains Mono';font-size:0.75rem;color:#D1D5DB;margin:4px 0;background:#0D0D1A;padding:6px 8px;border-radius:4px">
+                                    ...${before}<span style="background:#EF444440;color:#FCA5A5;text-decoration:underline wavy #EF4444;padding:1px 2px;border-radius:2px">${marked}</span>${after}...
+                                </div>
+                                <div class="err-desc">${escapeHTML(m.message)}</div>
+                                ${replacements ? `<div style="color:#10B981;font-size:0.7rem;margin-top:2px">Sugestão: ${escapeHTML(replacements)}</div>` : ''}
+                            </div>
+                        </div>`;
+                    }
+                    resultsEl.innerHTML = html;
+                }
+            } else {
+                loadingEl.innerHTML = 'LanguageTool indisponível.';
+            }
+        } catch (e) {
+            const loadingEl = document.getElementById('lt-loading');
+            if (loadingEl) loadingEl.innerHTML = 'LanguageTool indisponível — verifique a conexão.';
+        }
+    }
+
+    // Text analysis LLM specialist
+    async function fetchTextAnalysis(text, metrics) {
+        const bodyEl = document.getElementById('text-llm-body');
+        const sectionEl = document.getElementById('text-llm-section');
+        if (!bodyEl) return;
+
+        try {
+            const response = await fetch('/api/text-analysis', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: text, metrics: metrics })
+            });
+
+            const data = await response.json();
+
+            if (data.success && data.analysis) {
+                var formatted = escapeHTML(data.analysis.trim())
+                    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+                bodyEl.innerHTML = '<p style="text-align:justify">' + formatted + '</p>';
+                if (sectionEl) sectionEl.style.borderColor = '#7C3AED44';
+            } else {
+                bodyEl.innerHTML = '<p style="color:#EF4444;font-size:0.8rem;">Análise indisponível no momento.</p>';
+            }
+        } catch (e) {
+            bodyEl.innerHTML = '<p style="color:#EF4444;font-size:0.8rem;">Erro de conexão com o servidor.</p>';
+        }
+    }
+
+    // Grammar specialist async fetch (reusable for all 4 panels)
+    async function fetchGrammarSpecialist(type, text, wordCount) {
+        const panelEl = document.getElementById('panel-' + type);
+        const bodyEl = document.getElementById('body-' + type);
+        if (!bodyEl) return;
+
+        try {
+            const response = await fetch('/api/grammar/' + type, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    text: text,
+                    wordCount: wordCount,
+                    context: 'Atividade de mapeamento de letramento. Estudante do ensino medio/superior escreve 80-160 palavras em 2 paragrafos sobre sua personalidade. Contexto academico formal.'
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success && data.analysis) {
+                const paragraphs = data.analysis
+                    .split(/\n\n|\n/)
+                    .filter(p => p.trim().length > 0);
+
+                bodyEl.innerHTML = paragraphs.map(function(p) {
+                    var formatted = escapeHTML(p.trim())
+                        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+                        .replace(/→/g, '<span style="color:#10B981;font-weight:600"> → </span>');
+                    return '<p>' + formatted + '</p>';
+                }).join('');
+
+                if (panelEl) panelEl.classList.add('loaded');
+            } else {
+                bodyEl.innerHTML = '<p style="color:#EF4444;font-size:0.8rem;">Análise indisponível no momento.</p>';
+                if (panelEl) panelEl.classList.add('error');
+            }
+        } catch (e) {
+            bodyEl.innerHTML = '<p style="color:#EF4444;font-size:0.8rem;">Erro de conexão com o servidor.</p>';
+            if (panelEl) panelEl.classList.add('error');
+        }
+    }
+
+    function escapeHTML(str) {
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+
+    // =============================================
+    // CANVAS DRAWINGS
+    // =============================================
+
+    // =============================================
+    // ANIMATED MOUSE REPLAY (time-based)
+    // =============================================
+    let mouseReplayState = {
+        playing: false,
+        speed: 1,           // 1x = real-time
+        currentTimeMs: 0,   // virtual elapsed time in ms
+        playStartWall: 0,   // wall-clock when play was pressed
+        playStartVirtual: 0,// virtual time when play was pressed
+        animId: null,
+        pts: [],
+        totalDuration: 0,   // total session duration in ms
+        startT: 0,          // first sample timestamp
+        canvas: null,
+        ctx: null,
+        W: 0, H: 0,
+        pad: 12,
+        mapFns: null
+    };
+
+    function fmtTime(ms) {
+        const totalSec = Math.max(0, Math.floor(ms / 1000));
+        const m = Math.floor(totalSec / 60);
+        const s = totalSec % 60;
+        return m + ':' + (s < 10 ? '0' : '') + s;
+    }
+
+    function initMouseReplay() {
+        const canvas = document.getElementById('mouseCanvas');
+        if (!canvas || telMouse.length < 2) return;
+        const mr = mouseReplayState;
+        mr.canvas = canvas;
+        mr.ctx = canvas.getContext('2d');
+        mr.W = canvas.width;
+        mr.H = canvas.height;
+
+        // Downsample if too many points
+        let pts = telMouse;
+        if (pts.length > 3000) {
+            const step = Math.ceil(pts.length / 3000);
+            pts = pts.filter((_, i) => i % step === 0);
+        }
+        mr.pts = pts;
+        mr.startT = pts[0].t;
+        mr.totalDuration = pts[pts.length - 1].t - pts[0].t;
+
+        // Map functions
+        const minX = 0, maxX = window.innerWidth || 1400;
+        const minY = 0, maxY = window.innerHeight || 900;
+        const rangeX = Math.max(maxX - minX, 1);
+        const rangeY = Math.max(maxY - minY, 1);
+        const pad = mr.pad;
+        const W = mr.W, H = mr.H;
+        mr.mapFns = {
+            x: function(x) { return pad + ((x - minX) / rangeX) * (W - 2 * pad); },
+            y: function(y) { return pad + ((y - minY) / rangeY) * (H - 2 * pad); }
+        };
+
+        // Update time label
+        document.getElementById('mouseTimeLabel').textContent = '0:00 / ' + fmtTime(mr.totalDuration);
+
+        // Draw initial state (zones + start marker)
+        drawMouseFrame(0);
+    }
+
+    function drawMouseZones(ctx) {
+        const mr = mouseReplayState;
+        const mapX = mr.mapFns.x;
+        const mapY = mr.mapFns.y;
+        const zoneColorMap = {
+            'Editor': { fill: 'rgba(124,58,237,0.12)', border: 'rgba(124,58,237,0.35)' },
+            'Instruções': { fill: 'rgba(167,139,250,0.10)', border: 'rgba(167,139,250,0.30)' },
+            'Chat (leitura)': { fill: 'rgba(16,185,129,0.10)', border: 'rgba(16,185,129,0.30)' },
+            'Chat (escrita)': { fill: 'rgba(245,158,11,0.10)', border: 'rgba(245,158,11,0.30)' },
+            'Cabeçalho': { fill: 'rgba(107,114,128,0.08)', border: 'rgba(107,114,128,0.25)' }
+        };
+        for (const [label, rect] of Object.entries(capturedZoneRects)) {
+            const colors = zoneColorMap[label];
+            if (!colors) continue;
+            const rx = mapX(rect.x);
+            const ry = mapY(rect.y);
+            const rw = mapX(rect.x + rect.w) - rx;
+            const rh = mapY(rect.y + rect.h) - ry;
+            ctx.fillStyle = colors.fill;
+            ctx.fillRect(rx, ry, rw, rh);
+            ctx.strokeStyle = colors.border;
+            ctx.lineWidth = 1;
+            ctx.strokeRect(rx, ry, rw, rh);
+            ctx.fillStyle = colors.border;
+            ctx.font = '10px DM Sans';
+            ctx.textAlign = 'left';
+            ctx.fillText(label, rx + 4, ry + 12);
+        }
+    }
+
+    // Find the sample index for a given virtual time offset (ms from start)
+    function findSampleIdx(virtualTimeMs) {
+        const mr = mouseReplayState;
+        const targetT = mr.startT + virtualTimeMs;
+        // Binary search
+        let lo = 0, hi = mr.pts.length - 1;
+        while (lo < hi) {
+            const mid = (lo + hi + 1) >> 1;
+            if (mr.pts[mid].t <= targetT) lo = mid;
+            else hi = mid - 1;
+        }
+        return lo;
+    }
+
+    function drawMouseFrame(virtualTimeMs) {
+        const mr = mouseReplayState;
+        const ctx = mr.ctx;
+        const pts = mr.pts;
+        const mapX = mr.mapFns.x;
+        const mapY = mr.mapFns.y;
+
+        ctx.clearRect(0, 0, mr.W, mr.H);
+        drawMouseZones(ctx);
+
+        const end = findSampleIdx(virtualTimeMs);
+
+        if (end < 1) {
+            if (pts.length > 0) {
+                ctx.beginPath();
+                ctx.arc(mapX(pts[0].x), mapY(pts[0].y), 6, 0, Math.PI * 2);
+                ctx.fillStyle = '#10B981';
+                ctx.fill();
+            }
+            updateTimeUI(virtualTimeMs, end);
+            return;
+        }
+
+        // Draw trail with fading — skip segments involving 'outside'
+        for (let i = 1; i <= end; i++) {
+            // Skip drawing lines to/from outside positions
+            if (pts[i].z === 'outside' || pts[i - 1].z === 'outside') continue;
+            const ratio = i / pts.length;
+            const age = (end - i) / Math.max(end, 1);
+            const hue = 270 + (120 - 270) * ratio;
+            const alpha = Math.max(0.08, 0.6 - age * 0.5);
+            const width = Math.max(0.5, 2 - age * 1.5);
+            ctx.beginPath();
+            ctx.moveTo(mapX(pts[i - 1].x), mapY(pts[i - 1].y));
+            ctx.lineTo(mapX(pts[i].x), mapY(pts[i].y));
+            ctx.strokeStyle = `hsla(${hue}, 70%, 60%, ${alpha})`;
+            ctx.lineWidth = width;
+            ctx.stroke();
+        }
+
+        // Start marker
+        if (pts[0].z !== 'outside') {
+            ctx.beginPath();
+            ctx.arc(mapX(pts[0].x), mapY(pts[0].y), 4, 0, Math.PI * 2);
+            ctx.fillStyle = '#10B981';
+            ctx.fill();
+        }
+
+        // Current cursor
+        const isOutside = pts[end].z === 'outside';
+        if (isOutside) {
+            // Show "FORA DA TELA" indicator
+            ctx.fillStyle = 'rgba(239, 68, 68, 0.15)';
+            ctx.fillRect(0, 0, mr.W, mr.H);
+            ctx.fillStyle = '#EF4444';
+            ctx.font = 'bold 14px DM Sans';
+            ctx.textAlign = 'center';
+            ctx.fillText('MOUSE FORA DA TELA', mr.W / 2, mr.H / 2);
+        } else {
+            const cx = mapX(pts[end].x);
+            const cy = mapY(pts[end].y);
+            ctx.beginPath();
+            ctx.arc(cx, cy, 12, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(124, 58, 237, 0.2)';
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(cx, cy, 5, 0, Math.PI * 2);
+            ctx.fillStyle = '#A78BFA';
+            ctx.fill();
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+        }
+
+        // Draw click markers (yellow bursts)
+        for (let c = 0; c < telClicks.length; c++) {
+            if (telClicks[c].t > virtualTimeMs) break;
+            const age = virtualTimeMs - telClicks[c].t;
+            if (age > 5000) continue; // Only show clicks from last 5s
+            const fadeAlpha = Math.max(0.1, 1 - age / 5000);
+            const cx2 = mapX(telClicks[c].x);
+            const cy2 = mapY(telClicks[c].y);
+            // Outer ring
+            ctx.beginPath();
+            ctx.arc(cx2, cy2, 8 + (age / 5000) * 6, 0, Math.PI * 2);
+            ctx.strokeStyle = `rgba(245, 158, 11, ${fadeAlpha * 0.6})`;
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+            // Center dot
+            ctx.beginPath();
+            ctx.arc(cx2, cy2, 3, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(245, 158, 11, ${fadeAlpha})`;
+            ctx.fill();
+        }
+
+        // End marker if finished
+        if (end >= pts.length - 1 && pts[pts.length - 1].z !== 'outside') {
+            ctx.beginPath();
+            ctx.arc(mapX(pts[pts.length - 1].x), mapY(pts[pts.length - 1].y), 5, 0, Math.PI * 2);
+            ctx.fillStyle = '#EF4444';
+            ctx.fill();
+        }
+
+        updateTimeUI(virtualTimeMs, end);
+    }
+
+    function updateTimeUI(virtualTimeMs, endIdx) {
+        const mr = mouseReplayState;
+        const tl = document.getElementById('mouseTimeLabel');
+        if (tl) tl.textContent = fmtTime(virtualTimeMs) + ' / ' + fmtTime(mr.totalDuration);
+        const sb = document.getElementById('mouseSeekBar');
+        if (sb && mr.playing) sb.value = mr.totalDuration > 0 ? Math.round((virtualTimeMs / mr.totalDuration) * 100) : 0;
+    }
+
+    function mouseReplayTick() {
+        const mr = mouseReplayState;
+        if (!mr.playing) return;
+
+        // Time-based: virtual time = start virtual + (wall elapsed × speed)
+        const wallElapsed = performance.now() - mr.playStartWall;
+        mr.currentTimeMs = mr.playStartVirtual + wallElapsed * mr.speed;
+
+        if (mr.currentTimeMs >= mr.totalDuration) {
+            mr.currentTimeMs = mr.totalDuration;
+            mr.playing = false;
+            const btn = document.getElementById('mousePlayBtn');
+            if (btn) btn.textContent = '↻ Replay';
+            drawMouseFrame(mr.currentTimeMs);
+            return;
+        }
+
+        drawMouseFrame(mr.currentTimeMs);
+        mr.animId = requestAnimationFrame(mouseReplayTick);
+    }
+
+    // Expose globally for onclick handlers
+    window.mouseReplayToggle = function() {
+        const mr = mouseReplayState;
+        const btn = document.getElementById('mousePlayBtn');
+        if (mr.playing) {
+            // Pause
+            mr.playing = false;
+            if (mr.animId) cancelAnimationFrame(mr.animId);
+            if (btn) btn.textContent = '▶ Continuar';
+        } else {
+            // If at end, restart
+            if (mr.currentTimeMs >= mr.totalDuration) {
+                mr.currentTimeMs = 0;
+            }
+            mr.playing = true;
+            mr.playStartWall = performance.now();
+            mr.playStartVirtual = mr.currentTimeMs;
+            if (btn) btn.textContent = '⏸ Pausar';
+            mr.animId = requestAnimationFrame(mouseReplayTick);
+        }
+    };
+
+    window.mouseReplaySpeed = function(val) {
+        const mr = mouseReplayState;
+        // Preserve current position when changing speed mid-play
+        if (mr.playing) {
+            const wallElapsed = performance.now() - mr.playStartWall;
+            mr.currentTimeMs = mr.playStartVirtual + wallElapsed * mr.speed;
+            mr.playStartWall = performance.now();
+            mr.playStartVirtual = mr.currentTimeMs;
+        }
+        mr.speed = parseFloat(val) || 1;
+    };
+
+    window.mouseReplaySeek = function(val) {
+        const mr = mouseReplayState;
+        mr.currentTimeMs = (parseInt(val) / 100) * mr.totalDuration;
+        if (mr.playing) {
+            mr.playStartWall = performance.now();
+            mr.playStartVirtual = mr.currentTimeMs;
+        }
+        drawMouseFrame(mr.currentTimeMs);
+    };
+
+    // =============================================
+    // TYPING + CHAT REPLAY ENGINE
+    // =============================================
+    let typingReplayState = {
+        playing: false,
+        speed: 5,
+        currentTimeMs: 0,
+        playStartWall: 0,
+        playStartVirtual: 0,
+        animId: null,
+        totalDuration: 0,
+        // Pre-built text state at each keystroke index
+        textStates: [],
+        chatShownIdx: 0
+    };
+
+    function initTypingReplay() {
+        const tr = typingReplayState;
+        if (telKeys.length === 0) {
+            tr.totalDuration = 0;
+            return;
+        }
+        tr.totalDuration = telKeys[telKeys.length - 1].t;
+        // Also consider last chat message time
+        for (const msg of chatHistory) {
+            if (msg.t && msg.t > tr.totalDuration) tr.totalDuration = msg.t;
+        }
+
+        // Pre-build text states: replay keystrokes to get text at each step
+        let text = '';
+        let cursorPos = 0;
+        const states = [{ text: '', cursor: 0, t: 0 }];
+        for (const key of telKeys) {
+            if (key.type === 'char') {
+                text = text.substring(0, cursorPos) + key.k + text.substring(cursorPos);
+                cursorPos++;
+            } else if (key.type === 'paste') {
+                // Paste: insere texto inteiro na posição registrada
+                // Cursor vai para depois do texto colado
+                text = text.substring(0, key.pos) + key.text + text.substring(key.pos);
+                cursorPos = key.pos + key.text.length;
+            } else if (key.type === 'replace') {
+                // Replace: deleta seleção (delLen chars em pos) e insere insText
+                // Cursor vai para depois do texto inserido
+                text = text.substring(0, key.pos) + key.insText + text.substring(key.pos + key.delLen);
+                cursorPos = key.pos + key.insText.length;
+            } else if (key.type === 'delete') {
+                // Delete: remove delLen caracteres a partir de pos
+                text = text.substring(0, key.pos) + text.substring(key.pos + key.delLen);
+                cursorPos = key.pos;
+            } else if (key.type === 'backspace') {
+                if (cursorPos > 0) {
+                    text = text.substring(0, cursorPos - 1) + text.substring(cursorPos);
+                    cursorPos--;
+                }
+            } else if (key.type === 'delete') {
+                if (cursorPos < text.length) {
+                    text = text.substring(0, cursorPos) + text.substring(cursorPos + 1);
+                }
+            } else if (key.type === 'enter') {
+                text = text.substring(0, cursorPos) + '\n' + text.substring(cursorPos);
+                cursorPos++;
+            } else if (key.type === 'arrow') {
+                if (key.k === 'ArrowLeft' && cursorPos > 0) cursorPos--;
+                else if (key.k === 'ArrowRight' && cursorPos < text.length) cursorPos++;
+                else if (key.k === 'ArrowUp') cursorPos = Math.max(0, cursorPos - 40);
+                else if (key.k === 'ArrowDown') cursorPos = Math.min(text.length, cursorPos + 40);
+            } else if (key.type === 'tab') {
+                text = text.substring(0, cursorPos) + '    ' + text.substring(cursorPos);
+                cursorPos += 4;
+            }
+            states.push({ text: text, cursor: cursorPos, t: key.t });
+        }
+        tr.textStates = states;
+
+        // Update time label
+        document.getElementById('typingTimeLabel').textContent = '0:00 / ' + fmtTime(tr.totalDuration);
+    }
+
+    function renderTypingFrame(virtualTimeMs) {
+        const tr = typingReplayState;
+
+        // Find text state at this time
+        let stateIdx = 0;
+        for (let i = tr.textStates.length - 1; i >= 0; i--) {
+            if (tr.textStates[i].t <= virtualTimeMs) { stateIdx = i; break; }
+        }
+        const state = tr.textStates[stateIdx] || { text: '', cursor: 0 };
+
+        // Render editor with cursor
+        const el = document.getElementById('editorReplay');
+        if (el) {
+            const before = escapeHTML(state.text.substring(0, state.cursor));
+            const after = escapeHTML(state.text.substring(state.cursor));
+            el.innerHTML = before +
+                '<span id="editorReplayCursor" style="border-right:2px solid #7C3AED;animation:blink 1s step-end infinite">&nbsp;</span>' +
+                after;
+            // Auto-scroll to bottom
+            el.scrollTop = el.scrollHeight;
+        }
+
+        // Render chat messages up to this time
+        const chatEl = document.getElementById('chatReplay');
+        if (chatEl) {
+            let chatHTML = '';
+            for (const msg of chatHistory) {
+                const msgT = msg.t || 0;
+                if (msgT > virtualTimeMs) break;
+                const isUser = msg.role === 'user';
+                const color = isUser ? '#A78BFA' : '#10B981';
+                const label = isUser ? 'Estudante' : 'Especialista';
+                const time = fmtTime(msgT);
+                chatHTML += `<div style="margin-bottom:10px;${isUser ? '' : 'padding-left:8px;border-left:2px solid #10B98140'}">
+                    <div style="font-size:0.65rem;color:${color};font-weight:600;margin-bottom:2px">${label} <span style="color:#6B7280;font-weight:400">${time}</span></div>
+                    <div style="color:#D1D5DB;font-size:0.78rem;line-height:1.5">${escapeHTML(msg.content)}</div>
+                </div>`;
+            }
+            if (!chatHTML) chatHTML = '<div style="color:#6B7280;font-size:0.75rem;text-align:center;padding:20px">Nenhuma mensagem ainda</div>';
+            chatEl.innerHTML = chatHTML;
+            chatEl.scrollTop = chatEl.scrollHeight;
+        }
+
+        // Update time UI
+        const tl = document.getElementById('typingTimeLabel');
+        if (tl) tl.textContent = fmtTime(virtualTimeMs) + ' / ' + fmtTime(tr.totalDuration);
+        const sb = document.getElementById('typingSeekBar');
+        if (sb && tr.playing) sb.value = tr.totalDuration > 0 ? Math.round((virtualTimeMs / tr.totalDuration) * 100) : 0;
+    }
+
+    function typingReplayTick() {
+        const tr = typingReplayState;
+        if (!tr.playing) return;
+
+        const wallElapsed = performance.now() - tr.playStartWall;
+        tr.currentTimeMs = tr.playStartVirtual + wallElapsed * tr.speed;
+
+        if (tr.currentTimeMs >= tr.totalDuration) {
+            tr.currentTimeMs = tr.totalDuration;
+            tr.playing = false;
+            const btn = document.getElementById('typingPlayBtn');
+            if (btn) btn.textContent = '↻ Replay';
+            renderTypingFrame(tr.currentTimeMs);
+            return;
+        }
+
+        renderTypingFrame(tr.currentTimeMs);
+        tr.animId = requestAnimationFrame(typingReplayTick);
+    }
+
+    window.typingReplayToggle = function() {
+        const tr = typingReplayState;
+        const btn = document.getElementById('typingPlayBtn');
+        if (tr.playing) {
+            tr.playing = false;
+            if (tr.animId) cancelAnimationFrame(tr.animId);
+            if (btn) btn.textContent = '▶ Continuar';
+        } else {
+            if (tr.currentTimeMs >= tr.totalDuration) tr.currentTimeMs = 0;
+            tr.playing = true;
+            tr.playStartWall = performance.now();
+            tr.playStartVirtual = tr.currentTimeMs;
+            if (btn) btn.textContent = '⏸ Pausar';
+            tr.animId = requestAnimationFrame(typingReplayTick);
+        }
+    };
+
+    window.typingReplaySpeed = function(val) {
+        const tr = typingReplayState;
+        if (tr.playing) {
+            const wallElapsed = performance.now() - tr.playStartWall;
+            tr.currentTimeMs = tr.playStartVirtual + wallElapsed * tr.speed;
+            tr.playStartWall = performance.now();
+            tr.playStartVirtual = tr.currentTimeMs;
+        }
+        tr.speed = parseFloat(val) || 5;
+    };
+
+    window.typingReplaySeek = function(val) {
+        const tr = typingReplayState;
+        tr.currentTimeMs = (parseInt(val) / 100) * tr.totalDuration;
+        if (tr.playing) {
+            tr.playStartWall = performance.now();
+            tr.playStartVirtual = tr.currentTimeMs;
+        }
+        renderTypingFrame(tr.currentTimeMs);
+    };
+
+    function drawCPMChart(cpmData) {
+        const canvas = document.getElementById('cpmCanvas');
+        if (!canvas || cpmData.length < 2) return;
+        const ctx = canvas.getContext('2d');
+        const W = canvas.width;
+        const H = canvas.height;
+        ctx.clearRect(0, 0, W, H);
+
+        const maxCPM = Math.max(...cpmData.map(d => d.cpm), 10);
+        const pad = { top: 20, right: 20, bottom: 30, left: 50 };
+        const plotW = W - pad.left - pad.right;
+        const plotH = H - pad.top - pad.bottom;
+
+        // Grid
+        ctx.strokeStyle = '#2D2D4444';
+        ctx.lineWidth = 1;
+        for (let i = 0; i <= 4; i++) {
+            const y = pad.top + (plotH / 4) * i;
+            ctx.beginPath();
+            ctx.moveTo(pad.left, y);
+            ctx.lineTo(W - pad.right, y);
+            ctx.stroke();
+
+            // Y labels
+            const val = Math.round(maxCPM - (maxCPM / 4) * i);
+            ctx.fillStyle = '#9CA3AF';
+            ctx.font = '11px JetBrains Mono';
+            ctx.textAlign = 'right';
+            ctx.fillText(val.toString(), pad.left - 8, y + 4);
+        }
+
+        // X labels
+        ctx.textAlign = 'center';
+        const maxT = cpmData[cpmData.length - 1].t;
+        for (let i = 0; i < cpmData.length; i += Math.max(1, Math.floor(cpmData.length / 6))) {
+            const x = pad.left + (cpmData[i].t / maxT) * plotW;
+            const mins = Math.floor(cpmData[i].t / 60000);
+            const secs = Math.floor((cpmData[i].t % 60000) / 1000);
+            ctx.fillText(`${mins}:${secs < 10 ? '0' : ''}${secs}`, x, H - 8);
+        }
+
+        // Fill under line
+        ctx.beginPath();
+        ctx.moveTo(pad.left, pad.top + plotH);
+        for (let i = 0; i < cpmData.length; i++) {
+            const x = pad.left + (cpmData[i].t / maxT) * plotW;
+            const y = pad.top + plotH - (cpmData[i].cpm / maxCPM) * plotH;
+            ctx.lineTo(x, y);
+        }
+        ctx.lineTo(pad.left + (cpmData[cpmData.length - 1].t / maxT) * plotW, pad.top + plotH);
+        ctx.closePath();
+        ctx.fillStyle = 'rgba(124, 58, 237, 0.15)';
+        ctx.fill();
+
+        // Line
+        ctx.beginPath();
+        for (let i = 0; i < cpmData.length; i++) {
+            const x = pad.left + (cpmData[i].t / maxT) * plotW;
+            const y = pad.top + plotH - (cpmData[i].cpm / maxCPM) * plotH;
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        }
+        ctx.strokeStyle = '#7C3AED';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+    }
+
+    // =============================================
+    // SUBMIT TEXT → REPORT
+    // =============================================
+    // Store zone rects for mouse map background
+    let capturedZoneRects = {};
+
+    function submitText() {
+        // Capture zone bounding rects BEFORE hiding editor
+        const zoneElements = {
+            'Editor': document.getElementById('text-input'),
+            'Instruções': document.getElementById('instructions-zone'),
+            'Chat (leitura)': document.getElementById('chat-messages'),
+            'Chat (escrita)': document.getElementById('chat-input-zone'),
+            'Cabeçalho': document.getElementById('header-zone')
+        };
+        for (const [label, el] of Object.entries(zoneElements)) {
+            if (el) {
+                const r = el.getBoundingClientRect();
+                capturedZoneRects[label] = { x: r.x, y: r.y, w: r.width, h: r.height };
+            }
+        }
+
+        const text = textInput.value;
+        const words = text.trim().split(/\s+/).filter(w => w).length;
+        const timeSpentMs = Date.now() - sessionStartTime;
+
+        // Take final snapshot
+        telSnapshots.push({ text: text, wc: words, t: timeSpentMs });
+
+        // Compute all metrics
+        const keystrokeMetrics = computeKeystrokes(telKeys);
+        const mouseMetrics = computeMouse(telMouse);
+        const textMetrics = computeText(text);
+        const semanticMetrics = computeSemantic(text);
+        const grammarMetrics = computeGrammarSpelling(text);
+        const punctuationMetrics = computePunctuation(text);
+        const engagementMetrics = computeEngagement(timeSpentMs, keystrokeMetrics, chatHistory, mouseMetrics);
+
+        const allMetrics = {
+            keystrokes: keystrokeMetrics,
+            mouse: mouseMetrics,
+            text: textMetrics,
+            semantic: semanticMetrics,
+            grammar: grammarMetrics,
+            punctuation: punctuationMetrics,
+            engagement: engagementMetrics,
+            copyPasteCount: telCopyPaste.length
+        };
+
+        // Save to localStorage
+        localStorage.setItem('letramento_studentId', studentId);
+        localStorage.setItem('letramento_text', text);
+        localStorage.setItem('letramento_wordCount', words);
+        localStorage.setItem('letramento_timeSpent', timeSpentMs);
+        localStorage.setItem('letramento_chatHistory', JSON.stringify(chatHistory));
+        localStorage.setItem('letramento_metrics', JSON.stringify(allMetrics));
+
+        // Send to backend (graceful degradation)
+        const payload = {
+            studentId,
+            text,
+            wordCount: words,
+            timeSpent: timeSpentMs,
+            messageCount: chatHistory.length,
+            keystrokes: telKeys,
+            textSnapshots: telSnapshots,
+            mouseMovements: telMouse,
+            scrollEvents: telScroll,
+            clickEvents: telClicks,
+            copyPasteEvents: telCopyPaste,
+            chatHistory,
+            metrics: allMetrics,
+            report: {
+                generatedAt: new Date().toISOString(),
+                engagement: engagementMetrics,
+                text: textMetrics,
+                typing: keystrokeMetrics
+            }
+        };
+
+        fetch('/api/submit-session', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        }).catch(() => {});
+
+        // Vercel endpoint skipped (CORS blocks cross-origin from localhost)
+
+        // Hide editor, show report
+        document.getElementById('mainContainer').style.display = 'none';
+        document.getElementById('reportContainer').classList.add('active');
+        document.body.style.overflow = 'auto';
+        document.body.style.background = '#0D0D1A';
+
+        renderReport(allMetrics);
+    }
+
     </script>
 </body>
 </html>
